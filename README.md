@@ -1,6 +1,6 @@
 # Medshare
 
-Work-in-progress inventory management that is being developed for Medshare
+Work-in-progress inventory management system that is being developed for Medshare
 
 ## Setup
 
