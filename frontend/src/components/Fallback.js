@@ -1,7 +1,8 @@
-import React from 'react'
+import React from 'react';
+
 class Fallback extends React.Component {
   render() {
-    return <h1>Fallback</h1>
+    return <h1>Fallback</h1>;
   }
 }
-export default Fallback
+export default Fallback;

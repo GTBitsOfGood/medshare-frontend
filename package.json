@@ -4,16 +4,31 @@
   "description": "Inventory management solution for Medshare",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint 'frontend/**/*.js' && eslint 'backend/**/*.js'",
+    "format": "prettier --write 'frontend/**/*.{js,css}' && prettier --write 'backend/**/*.js'"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GTBitsOfGood/medshare.git"
   },
-  "author": "Daniel <hsing.daniel@gmail.com> (http://arthelon.github.io)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/GTBitsOfGood/medshare/issues"
   },
-  "homepage": "https://github.com/GTBitsOfGood/medshare#readme"
+  "homepage": "https://github.com/GTBitsOfGood/medshare#readme",
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1"
+  }
 }
