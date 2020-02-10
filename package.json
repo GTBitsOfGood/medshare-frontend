@@ -8,6 +8,17 @@
     "lint": "eslint 'frontend/**/*.js' && eslint 'backend/**/*.js'",
     "format": "prettier --write 'frontend/**/*.{js,css}' && prettier --write 'backend/**/*.js'"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,jsx}": [
+      "eslint",
+      "prettier --write"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GTBitsOfGood/medshare.git"
@@ -30,5 +41,8 @@
     "husky": "^4.2.1",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1"
+  },
+  "dependencies": {
+    "react": "^16.12.0"
   }
 }
