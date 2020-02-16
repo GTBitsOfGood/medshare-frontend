@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const apiRoutes = require('./api');
+const apiRoutes = require('./api/search');
+const indexRoutes = require('./api/index');
 
 const app = express();
 require('dotenv').config();
@@ -21,6 +22,7 @@ app.use(
 
 // Add API routes
 app.use('/api', apiRoutes);
+app.use('/', indexRoutes);
 
 // Error Handlers
 app.use((req, res, next) => {
