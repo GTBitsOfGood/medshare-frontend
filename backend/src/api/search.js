@@ -4,11 +4,15 @@ const searchController = require('../controllers/searchController');
 /*
   GET search based on query
 
-  checks to see if query word matches any of the attributes in Product
-  more specifically ProductName, Category Name, Sub Category, ProductRef
+  Checks to see if query word matches any of the attributes in Product
+  more specifically name, productId. Category and subcategory have to
+  match as well if they are provided. All subcategories and/or categories
+  are searched if they are not provided as search params.
 
   Args:
     q (str): query key word
+    cate (str): query category
+    sub (str): query subcategory
 
   Returns:
     array of all matching products

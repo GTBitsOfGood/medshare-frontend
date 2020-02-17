@@ -11,14 +11,14 @@ searchController.queryProducts = async (queries, cate, sub) => {
       searchQuery.push({
         $and: [
           { [field]: { $regex: new RegExp(query, 'i') } },
-          { category: cate },
-          { subcategory: sub }
+          cate ? { category: cate } : {},
+          sub ? { subcategory: sub } : {}
         ]
       });
     });
   });
 
-  console.log(searchQuery[0].$and[0]);
+  console.log(searchQuery[0].$and);
 
   return Product.find()
     .or(searchQuery)
