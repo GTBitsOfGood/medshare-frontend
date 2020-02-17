@@ -9,6 +9,7 @@ const productSchema = new mongoose.Schema({
   productId: { type: String, required: true, unique: true },
   features: [
     {
+      _id: { id: false },
       count: { type: Number },
       productFeature: { type: ObjectId, ref: 'ProductFeatures' }
     }
