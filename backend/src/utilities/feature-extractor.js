@@ -8,7 +8,7 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
   'Category Name': 'category',
   'Sub Category': 'subcategory'
 };
-const FEATURE_REGEX = new RegExp([' ', '/', '-', '&', '\\*', '"', ',', '\\\\'].join('|'), 'g');
+const FEATURE_REGEX = new RegExp('\\w+', 'g');
 const FILE_ENCODING = 'utf-8';
 const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
 
@@ -60,47 +60,81 @@ function validateProductObject(productObject) {
 }
 
 async function processProductObjectAndInsertIntoDB(productObject) {
-  const featuresList = extractFeaturesListFromProductObject(productObject);
-  const featuresCount = countFeatures(featuresList);
-  const featuresPromises = featuresCount.map(([feature, count]) => insertFeatureIntoDatabase(feature, count));
+  const featuresListsDict = extractFeaturesListsFromProductObject(productObject);
+  const features = groupAndExtractMetadata(featuresListsDict);
+  const featuresPromises = features.map(async feature => {
+    const featureId = await insertFeatureIntoDatabase(feature);
+    // reference the feature id, n ot the name in the database
+    delete feature.featureLabel;
+    feature.productFeature = featureId;
+    return feature;
+  });
   productObject.features = await Promise.all(featuresPromises);
   return Product.insertProduct(productObject);
 }
 
-function extractFeaturesListFromProductObject(productObject) {
-  return []
-    .concat(extractFeaturesFromValue(productObject.name))
-    .concat(extractFeaturesFromValue(productObject.category))
-    .concat(extractFeaturesFromValue(productObject.subcategory));
+function extractFeaturesListsFromProductObject(productObject) {
+  return {
+    name: extractFeaturesFromValue(productObject.name),
+    category: extractFeaturesFromValue(productObject.category),
+    subcategory: extractFeaturesFromValue(productObject.subcategory)
+  };
 }
 
 function extractFeaturesFromValue(value) {
   const lowerCaseValue = value.toLowerCase();
-  return lowerCaseValue
-    .split(FEATURE_REGEX)
-    .map(string => string.trim())
-    .filter(string => string.length > 0);
+  const features = [];
+  let matchResult = FEATURE_REGEX.exec(lowerCaseValue);
+  while (matchResult !== null) {
+    const startIndex = matchResult.index;
+    const feature = lowerCaseValue.substring(startIndex, FEATURE_REGEX.lastIndex).trim();
+    features.push({ featureText: feature, startIndex });
+    matchResult = FEATURE_REGEX.exec(lowerCaseValue);
+  }
+  return features.filter(({ featureText }) => featureText.length > 0);
 }
 
-function countFeatures(featureList) {
-  const countMap = {};
+function groupAndExtractMetadata(featuresListsDict) {
+  const featuresMap = {};
+  Object.entries(featuresListsDict).forEach(([source, featuresFromSource]) => {
+    groupFeatures(source, featuresFromSource, featuresMap);
+  });
+  return Object.entries(featuresMap).map(([featureText, featureDict]) => buildFeatureObject(featureText, featureDict));
+}
+
+function groupFeatures(source, featureList, featureMap) {
   if (featureList.length > 0) {
     featureList.reduce((accumulator, feature) => {
-      if (countMap[feature] == null) {
-        countMap[feature] = 0;
+      const { featureText, startIndex } = feature;
+      if (featureMap[featureText] == null) {
+        featureMap[featureText] = {
+          name: [],
+          category: [],
+          subcategory: []
+        };
       }
-      countMap[feature] += 1;
-      return countMap;
+      featureMap[featureText][source].push(startIndex);
+      return featureMap;
     });
   }
-
-  return Object.entries(countMap);
 }
 
-async function insertFeatureIntoDatabase(feature, countInObject) {
-  const dbObject = await ProductFeatures.featureFound(feature, countInObject);
+function buildFeatureObject(featureText, featureDict) {
+  const outputFeatureObject = { featureLabel: featureText };
+  Object.entries(featureDict).forEach(([source, positions]) => {
+    positions.sort();
+    outputFeatureObject[source] = {
+      count: positions.length,
+      medianIndex: positions.length === 0 ? -1 : positions[Math.floor(positions.length / 2)]
+    };
+  });
+  return outputFeatureObject;
+}
+
+async function insertFeatureIntoDatabase(feature) {
+  const dbObject = await ProductFeatures.featureFound(feature.featureLabel, feature[feature.name.count]);
   // eslint-disable-next-line no-underscore-dangle
-  return { productFeature: dbObject._id, count: countInObject };
+  return dbObject._id;
 }
 
 module.exports = {

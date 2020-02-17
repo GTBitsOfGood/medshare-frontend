@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 
 const { ObjectId } = mongoose.Schema.Types;
 
+const featureDataSchema = {
+  _id: { id: false },
+  count: Number,
+  medianIndex: Number
+};
+
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   category: { type: String, required: true },
@@ -10,8 +16,10 @@ const productSchema = new mongoose.Schema({
   features: [
     {
       _id: { id: false },
-      count: { type: Number },
-      productFeature: { type: ObjectId, ref: 'ProductFeatures' }
+      productFeature: { type: ObjectId, ref: 'ProductFeatures' },
+      name: featureDataSchema,
+      category: featureDataSchema,
+      subcategory: featureDataSchema
     }
   ]
 });

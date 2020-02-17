@@ -5,10 +5,10 @@ const productFeaturesSchema = new mongoose.Schema({
   count: { type: Number, required: true }
 });
 
-productFeaturesSchema.statics.featureFound = async function featureFound(feature, count = 1) {
+productFeaturesSchema.statics.featureFound = async function featureFound(featureLabel, count = 1) {
   return this.findOneAndUpdate(
     {
-      name: feature
+      name: featureLabel
     },
     {
       $inc: {
