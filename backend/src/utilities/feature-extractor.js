@@ -11,7 +11,7 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
 const FEATURE_REGEX = new RegExp('\\w+', 'g');
 const FILE_ENCODING = 'utf-8';
 const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
-const PRINT_UPDATE_MESSAGE_EVERY = 1000;
+const PRINT_UPDATE_MESSAGE_EVERY = 50;
 function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPING) {
   const fileBuffer = fs.readFileSync(filePath, FILE_ENCODING);
   return parseProductsFromCsv(fileBuffer, mapping);
@@ -36,18 +36,22 @@ function checkForExpectedFields(resultFields, expectedFields) {
   return expectedFields.every(field => resultFields.includes(field));
 }
 
-function processCsvResultObjects(csvResultObjects, mapping) {
-  let count = 0;
-  return csvResultObjects
+async function processCsvResultObjects(csvResultObjects, mapping) {
+  const validCsvObjects = csvResultObjects
     .map(csvObject => csvObjectToProductObject(csvObject, mapping))
-    .filter(validateProductObject)
-    .map(productObject => {
-      count = (count + 1) % PRINT_UPDATE_MESSAGE_EVERY;
-      if (count === 0) {
-        console.log(`Inserted ${PRINT_UPDATE_MESSAGE_EVERY} objects into database`);
-      }
-      return processProductObjectAndInsertIntoDB(productObject);
-    });
+    .filter(validateProductObject);
+
+  const productPromises = [];
+  for (let count = 0; count < validCsvObjects.length; count += 1) {
+    if ((count + 1) % PRINT_UPDATE_MESSAGE_EVERY === 0) {
+      console.log(`Inserted ${PRINT_UPDATE_MESSAGE_EVERY} objects into database`);
+    }
+    const productPromise = processProductObjectAndInsertIntoDB(validCsvObjects[count]);
+    // eslint-disable-next-line no-await-in-loop
+    await productPromise; // temp solution to dupe key issue
+    productPromises.push(productPromise);
+  }
+  return Promise.all(productPromises);
 }
 
 function csvObjectToProductObject(csvObject, mapping) {
