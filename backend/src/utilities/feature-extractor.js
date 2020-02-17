@@ -11,14 +11,17 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
 const FEATURE_REGEX = new RegExp('\\w+', 'g');
 const FILE_ENCODING = 'utf-8';
 const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
-
+const PRINT_UPDATE_MESSAGE_EVERY = 1000;
 function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPING) {
   const fileBuffer = fs.readFileSync(filePath, FILE_ENCODING);
   return parseProductsFromCsv(fileBuffer, mapping);
 }
 
 function parseProductsFromCsv(fileBuffer, mapping) {
-  const result = Papa.parse(fileBuffer, { header: true });
+  const result = Papa.parse(fileBuffer, {
+    header: true,
+    skipEmptyLines: true
+  });
   const requiredFields = Object.keys(mapping);
   if (!checkForExpectedFields(result.meta.fields, requiredFields)) {
     throw new Error(
@@ -34,10 +37,17 @@ function checkForExpectedFields(resultFields, expectedFields) {
 }
 
 function processCsvResultObjects(csvResultObjects, mapping) {
+  let count = 0;
   return csvResultObjects
     .map(csvObject => csvObjectToProductObject(csvObject, mapping))
     .filter(validateProductObject)
-    .map(processProductObjectAndInsertIntoDB);
+    .map(productObject => {
+      count = (count + 1) % PRINT_UPDATE_MESSAGE_EVERY;
+      if (count === 0) {
+        console.log(`Inserted ${PRINT_UPDATE_MESSAGE_EVERY} objects into database`);
+      }
+      return processProductObjectAndInsertIntoDB(productObject);
+    });
 }
 
 function csvObjectToProductObject(csvObject, mapping) {
@@ -52,7 +62,11 @@ function validateProductObject(productObject) {
   return PRODUCT_OBJECT_KEYS.reduce((accumulator, expectedKey) => {
     let currentObjectValid = true;
     if (productObject[expectedKey] === undefined || productObject[expectedKey] instanceof String) {
-      console.log(`Missing key ${expectedKey} in ${JSON.stringify(productObject)}`);
+      console.log(
+        `WARNING: Missing key ${expectedKey} in ${JSON.stringify(
+          productObject
+        )}. It was filtered out from feature parsing.`
+      );
       currentObjectValid = false;
     }
     return accumulator && currentObjectValid;
@@ -64,7 +78,7 @@ async function processProductObjectAndInsertIntoDB(productObject) {
   const features = groupAndExtractMetadata(featuresListsDict);
   const featuresPromises = features.map(async feature => {
     const featureId = await insertFeatureIntoDatabase(feature);
-    // reference the feature id, n ot the name in the database
+    // reference the feature id, not the name in the database
     delete feature.featureLabel;
     feature.productFeature = featureId;
     return feature;
