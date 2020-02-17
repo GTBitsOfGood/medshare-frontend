@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const apiRoutes = require('./api');
+const { databaseConnectUsingEnv } = require('./database');
 
 const app = express();
 require('dotenv').config();
@@ -42,20 +42,4 @@ app.listen(process.env.PORT, () => {
 });
 
 // MongoDB connection setup
-if (!process.env.MONGO_URI) {
-  console.error('ERR: MONGO_URI env variable not found');
-  process.exit(1);
-} else {
-  mongoose
-    .connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
-    .catch(err => {
-      console.error(
-        'ERR: could not connect to MongoDB: ' + process.env.MONGO_URI
-      );
-      console.error(err.message);
-      process.exit(1);
-    });
-}
+databaseConnectUsingEnv();
