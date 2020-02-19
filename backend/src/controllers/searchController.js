@@ -4,6 +4,8 @@ const searchController = {};
 
 const fieldsOfInterest = ['name', 'productId'];
 
+const PAGE_SIZE = 15;
+
 searchController.queryProducts = async (queries, cate, sub) => {
   const searchQuery = [];
   fieldsOfInterest.forEach(field => {
@@ -22,6 +24,7 @@ searchController.queryProducts = async (queries, cate, sub) => {
 
   return Product.find()
     .or(searchQuery)
+    .limit(PAGE_SIZE)
     .then(products => {
       return products;
     });

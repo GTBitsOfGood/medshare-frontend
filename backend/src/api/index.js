@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const searchRoutes = require('./search');
 
 // Health check API endpoint
 router.get('/', (req, res) => {
@@ -6,5 +7,7 @@ router.get('/', (req, res) => {
     message: 'API is up and running!'
   });
 });
+
+router.use('/search', searchRoutes);
 
 module.exports = router;

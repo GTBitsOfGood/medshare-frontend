@@ -11,21 +11,22 @@ const searchController = require('../controllers/searchController');
 
   Args:
     q (str): query key word
-    cate (str): query category
-    sub (str): query subcategory
+    category (str): query category
+    subcategories (str): comma-separate list of subcategories
 
   Returns:
     array of all matching products
  */
-router.get('/search', async (req, res) => {
-  const { q, cate, sub } = req.query;
+router.get('/', async (req, res) => {
+  const { q, category, subcategories } = req.query;
   if (q === null || typeof q !== 'string') {
     console.log('error');
     return res.status(400).send('Query word must exist!');
   }
   const queries = q.split(' ');
   try {
-    const products = await searchController.queryProducts(queries, cate, sub);
+    const products = await searchController.queryProducts(queries, category, subcategories);
+    console.log(products.length);
     return res.send(products);
   } catch (err) {
     return res.status(500).send(err);

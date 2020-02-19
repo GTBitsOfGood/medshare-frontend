@@ -2,8 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
-const apiRoutes = require('./api/search');
-const indexRoutes = require('./api/index');
+const apiRoutes = require('./api');
 const { databaseConnectUsingEnv } = require('./database');
 
 const app = express();
@@ -22,7 +21,6 @@ app.use(
 
 // Add API routes
 app.use('/api', apiRoutes);
-app.use('/', indexRoutes);
 
 // Error Handlers
 app.use((req, res, next) => {
