@@ -15,8 +15,10 @@
   },
   "lint-staged": {
     "*.{js,css,jsx}": [
-      "eslint",
       "prettier --write"
+    ],
+    "*.{js,jsx}": [
+      "eslint"
     ]
   },
   "repository": {
@@ -24,6 +26,7 @@
     "url": "git+https://github.com/GTBitsOfGood/medshare.git"
   },
   "license": "MIT",
+
   "bugs": {
     "url": "https://github.com/GTBitsOfGood/medshare/issues"
   },
@@ -44,6 +47,7 @@
     "shx": "^0.3.2"
   },
   "dependencies": {
+    "papaparse": "^5.1.1",
     "react": "^16.12.0"
   }
 }
