@@ -2,32 +2,25 @@ const Product = require('../database/models/Product');
 
 const searchController = {};
 
-const fieldsOfInterest = ['name', 'productId'];
-
 const PAGE_SIZE = 15;
 
-searchController.queryProducts = async (queries, cate, sub) => {
-  const searchQuery = [];
-  fieldsOfInterest.forEach(field => {
-    queries.forEach(query => {
-      searchQuery.push({
-        $and: [
-          { [field]: { $regex: new RegExp(query, 'i') } },
-          cate ? { category: cate } : {},
-          sub ? { subcategory: sub } : {}
-        ]
-      });
-    });
+searchController.queryProducts = async (queries, filterCategory, filterSubcategories) => {
+  const searchQuery = queries.map(query => {
+    const baseQuery = {
+      $and: [{ name: { $regex: new RegExp(query, 'i') } }]
+    };
+    if (filterCategory) {
+      baseQuery.$and.push({ category: { $eq: filterCategory } });
+    }
+    if (filterSubcategories) {
+      baseQuery.$and.push({ subcategory: { $in: filterSubcategories } });
+    }
+    return baseQuery;
   });
-
-  console.log(searchQuery[0].$and);
 
   return Product.find()
     .or(searchQuery)
-    .limit(PAGE_SIZE)
-    .then(products => {
-      return products;
-    });
+    .limit(PAGE_SIZE);
 };
 
 module.exports = searchController;
