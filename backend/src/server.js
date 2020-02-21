@@ -24,12 +24,13 @@ app.use('/api', apiRoutes);
 
 // Error Handlers
 app.use((req, res, next) => {
-  const err = new Error('Not Found');
+  const err = new Error('Page Not Found');
   err.status = 404;
   next(err);
 });
 
-app.use((err, req, res) => {
+// eslint-disable-next-line
+app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
     message: err.message
   });
