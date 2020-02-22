@@ -16,12 +16,8 @@ const searchController = require('../controllers/searchController');
   Returns:
     array of all matching products
  */
-router.get('/', async (req, res) => {
+router.get('/', ensureParameterInRequest('q', 'string'), async (req, res) => {
   const { q, category, subcategories } = req.query;
-  if (q === null || typeof q !== 'string') {
-    console.log('error');
-    return res.status(400).send('Query word must exist!');
-  }
   const queries = q.split(' ');
   let subcategoriesArr = null;
   if (subcategories) {
@@ -32,8 +28,46 @@ router.get('/', async (req, res) => {
     return res.send(products);
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err);
+    return res.status(500).send(err.message);
   }
 });
+router.get(
+  '/autocomplete',
+  ensureParameterInRequest('q', 'string'),
+  ensureParameterInRequest('features', 'string'),
+  async (req, res) => {
+    const { q, category, subcategories, features } = req.query;
+    const queries = q.split(' ');
+    const featuresArray = features.split(',');
+    let subcategoriesArr = null;
+    if (subcategories) {
+      subcategoriesArr = subcategories.split(',');
+    }
+    try {
+      const outputFeatures = await searchController.queryFeaturesByProducts(
+        queries,
+        category,
+        subcategoriesArr,
+        featuresArray
+      );
+      return res.send(outputFeatures);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send(err.message);
+    }
+  }
+);
 
+function ensureParameterInRequest(parameterName, desiredType) {
+  return (req, res, next) => {
+    const value = req.query[parameterName];
+    // eslint-disable-next-line valid-typeof
+    if (value === null || typeof value !== desiredType) {
+      console.log('error when parsing parameters from req');
+      res.status(400).send(`${parameterName} must be a query param and be of type ${desiredType}!`);
+    } else {
+      next();
+    }
+  };
+}
 module.exports = router;
