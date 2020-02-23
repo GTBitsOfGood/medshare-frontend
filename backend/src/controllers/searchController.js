@@ -25,14 +25,14 @@ searchController.queryFeaturesByProducts = async (
   };
   return Product.aggregate()
     .match(filter)
-    .project('features')
     .unwind('features')
     .replaceRoot('features')
     .match(featureInQueryFilter)
     .group({ _id: '$productFeature' })
     .lookup({ from: 'productfeatures', localField: '_id', foreignField: '_id', as: 'productFeature' })
     .unwind('productFeature')
-    .replaceRoot('productFeature');
+    .replaceRoot('productFeature')
+    .limit(PAGE_SIZE);
 };
 
 searchController.queryProducts = async (productNameFilters, filterCategory, filterSubcategories) => {
