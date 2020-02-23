@@ -38,7 +38,7 @@ router.get(
   async (req, res) => {
     const { q, category, subcategories, features } = req.query;
     const queries = q.split(' ');
-    const featuresArray = features.split(',');
+    const featuresArray = features.split(',').filter(feature => feature.length > 0);
     let subcategoriesArr = null;
     if (subcategories) {
       subcategoriesArr = subcategories.split(',');

@@ -78,16 +78,18 @@ function generateBaseProductFilter(productFilterString, filterCategory, filterSu
 }
 
 /**
- *
+ * Note: No filter is applied if requireFeatureIds is empty
  * @param filter
  * @param requiredFeatureIds - MUST be of type MongooseId
  * @returns A Product filter with the added feature filter
  */
 function addProductFeatureFilter(filter, requiredFeatureIds) {
-  const idsFilters = requiredFeatureIds.map(id => {
-    return { $elemMatch: generateBaseProductFeatureFilter(id) };
-  });
-  filter.features = { $all: idsFilters };
+  if (requiredFeatureIds.length > 0) {
+    const idFilters = requiredFeatureIds.map(id => {
+      return { $elemMatch: generateBaseProductFeatureFilter(id) };
+    });
+    filter.features = { $all: idFilters };
+  }
   return filter;
 }
 
