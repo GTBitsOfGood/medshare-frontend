@@ -9,7 +9,7 @@ const searchController = require('../controllers/searchController');
   are searched if they are not provided as search params.
 
   Args:
-    q (str): query key word
+    q (str): query key word (required)
     category (str): query category
     subcategories (str): comma-separate list of subcategories
 
@@ -31,6 +31,27 @@ router.get('/', ensureParameterInRequest('q', 'string'), async (req, res) => {
     return res.status(500).send(err.message);
   }
 });
+
+/*
+  GET autocomplete endpoint
+
+  Gets list of ProductFeatures from Products that match the arguments filter. Note: Any ProductFeature's
+  provided in the features query string must all be in a Product document's features array for it to "match."
+  The returned ProductFeatures documents are all ProductFeatures within the matching Product document(s) minus the input
+  ProductFeatures set.
+  
+  Note: If the provides features array is empty (empty string), then all ProductFeatures will be returned
+  from Product documents matching the other supplied parameters
+
+  Args:
+    q (str): query key word
+    features (str containing Mongo object id's): comma-separated list of Mongo Object id's (required).
+    category (str): query category
+    subcategories (str): comma-separated list of subcategories
+
+  Returns:
+    array of ProductFeature documents
+ */
 router.get(
   '/autocomplete',
   ensureParameterInRequest('q', 'string'),
