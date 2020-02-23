@@ -18,13 +18,13 @@ const searchController = require('../controllers/searchController');
  */
 router.get('/', ensureParameterInRequest('q', 'string'), async (req, res) => {
   const { q, category, subcategories } = req.query;
-  const queries = q.split(' ');
+  const queries = q.toLowerCase().split(' ');
   let subcategoriesArr = null;
   if (subcategories) {
-    subcategoriesArr = subcategories.split(',');
+    subcategoriesArr = subcategories.toLowerCase().split(',');
   }
   try {
-    const products = await searchController.queryProducts(queries, category, subcategoriesArr);
+    const products = await searchController.queryProducts(queries, category.toLowerCase(), subcategoriesArr);
     return res.send(products);
   } catch (err) {
     console.log(err);
@@ -58,16 +58,18 @@ router.get(
   ensureParameterInRequest('features', 'string'),
   async (req, res) => {
     const { q, category, subcategories, features } = req.query;
-    const queries = q.split(' ');
-    const featuresArray = features.split(',').filter(feature => feature.length > 0);
+    const featuresArray = features
+      .toLowerCase()
+      .split(',')
+      .filter(feature => feature.length > 0);
     let subcategoriesArr = null;
     if (subcategories) {
-      subcategoriesArr = subcategories.split(',');
+      subcategoriesArr = subcategories.toLowerCase().split(',');
     }
     try {
       const outputFeatures = await searchController.queryFeaturesByProducts(
-        queries,
-        category,
+        q.toLowerCase(),
+        category.toLowerCase(),
         subcategoriesArr,
         featuresArray
       );

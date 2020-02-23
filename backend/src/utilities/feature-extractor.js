@@ -57,7 +57,7 @@ async function processCsvResultObjects(csvResultObjects, mapping) {
 function csvObjectToProductObject(csvObject, mapping) {
   const productObject = {};
   Object.entries(mapping).forEach(([csvKey, productKey]) => {
-    productObject[productKey] = csvObject[csvKey];
+    productObject[productKey] = csvObject[csvKey].toLowerCase();
   });
   return productObject;
 }
