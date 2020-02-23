@@ -78,7 +78,7 @@ function generateBaseProductFilter(productFilterString, filterCategory, filterSu
 }
 
 /**
- * Note: No filter is applied if requireFeatureIds is empty
+ * Note: No filter is applied if requireFeatureIds is empty (returns same number of products as the original filter)
  * @param filter
  * @param requiredFeatureIds - MUST be of type MongooseId
  * @returns A Product filter with the added feature filter
