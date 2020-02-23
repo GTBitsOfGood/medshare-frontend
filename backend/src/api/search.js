@@ -17,14 +17,17 @@ const searchController = require('../controllers/searchController');
     array of all matching products
  */
 router.get('/', ensureParameterInRequest('q', 'string'), async (req, res) => {
-  const { q, category, subcategories } = req.query;
-  const queries = q.toLowerCase().split(' ');
-  let subcategoriesArr = null;
-  if (subcategories) {
-    subcategoriesArr = subcategories.toLowerCase().split(',');
+  const { q, subcategories } = req.query;
+  let { category } = req.query;
+
+  const queries = processArrayParameterAndNormalize(q, ' ', false);
+  if (category) {
+    category = category.toLowerCase();
   }
+  const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
+
   try {
-    const products = await searchController.queryProducts(queries, category.toLowerCase(), subcategoriesArr);
+    const products = await searchController.queryProducts(queries, category, subcategoriesArr);
     return res.send(products);
   } catch (err) {
     console.log(err);
@@ -57,19 +60,18 @@ router.get(
   ensureParameterInRequest('q', 'string'),
   ensureParameterInRequest('features', 'string'),
   async (req, res) => {
-    const { q, category, subcategories, features } = req.query;
-    const featuresArray = features
-      .toLowerCase()
-      .split(',')
-      .filter(feature => feature.length > 0);
-    let subcategoriesArr = null;
-    if (subcategories) {
-      subcategoriesArr = subcategories.toLowerCase().split(',');
+    const { q, subcategories, features } = req.query;
+    let { category } = req.query;
+    const featuresArray = processArrayParameterAndNormalize(features, ',', false);
+    if (category) {
+      category = category.toLowerCase();
     }
+    const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
+
     try {
       const outputFeatures = await searchController.queryFeaturesByProducts(
         q.toLowerCase(),
-        category.toLowerCase(),
+        category,
         subcategoriesArr,
         featuresArray
       );
@@ -80,6 +82,18 @@ router.get(
     }
   }
 );
+
+function processArrayParameterAndNormalize(parameter, delimiter, canBeNull) {
+  if (parameter !== undefined && parameter !== null) {
+    parameter = parameter
+      .toLowerCase()
+      .split(delimiter)
+      .filter(feature => feature.length > 0);
+  } else if (!canBeNull) {
+    throw new Error('Received a value as null that should not be null');
+  }
+  return parameter;
+}
 
 function ensureParameterInRequest(parameterName, desiredType) {
   return (req, res, next) => {

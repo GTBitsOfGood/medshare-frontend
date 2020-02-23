@@ -69,9 +69,9 @@ function generateBaseProductFilter(productFilterString, filterCategory, filterSu
     }
   };
   if (filterCategory) {
-    baseFilter.category = { $eq: filterCategory };
+    baseFilter.category = { $eq: filterCategory.toLowerCase() };
   }
-  if (filterSubCategories) {
+  if (filterSubCategories && filterSubCategories.length > 0) {
     baseFilter.subcategory = { $in: filterSubCategories };
   }
   return baseFilter;
