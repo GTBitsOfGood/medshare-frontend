@@ -40,11 +40,11 @@ async function processCsvResultObjects(csvResultObjects, mapping) {
   const validCsvObjects = csvResultObjects
     .map(csvObject => csvObjectToProductObject(csvObject, mapping))
     .filter(validateProductObject);
-
   const productPromises = [];
   for (let count = 0; count < validCsvObjects.length; count += 1) {
     if ((count + 1) % PRINT_UPDATE_MESSAGE_EVERY === 0) {
-      console.log(`Inserted ${PRINT_UPDATE_MESSAGE_EVERY} objects into database`);
+      const setNumber = parseInt((count + 1) / PRINT_UPDATE_MESSAGE_EVERY, 10);
+      console.log(`${setNumber}. Inserted ${PRINT_UPDATE_MESSAGE_EVERY} objects into database`);
     }
     const productPromise = processProductObjectAndInsertIntoDB(validCsvObjects[count]);
     // eslint-disable-next-line no-await-in-loop
@@ -57,7 +57,7 @@ async function processCsvResultObjects(csvResultObjects, mapping) {
 function csvObjectToProductObject(csvObject, mapping) {
   const productObject = {};
   Object.entries(mapping).forEach(([csvKey, productKey]) => {
-    productObject[productKey] = csvObject[csvKey];
+    productObject[productKey] = csvObject[csvKey].toLowerCase();
   });
   return productObject;
 }
@@ -122,7 +122,7 @@ function groupAndExtractMetadata(featuresListsDict) {
 
 function groupFeatures(source, featureList, featureMap) {
   if (featureList.length > 0) {
-    featureList.reduce((accumulator, feature) => {
+    featureList.forEach(feature => {
       const { featureText, startIndex } = feature;
       if (featureMap[featureText] == null) {
         featureMap[featureText] = {
@@ -132,7 +132,6 @@ function groupFeatures(source, featureList, featureMap) {
         };
       }
       featureMap[featureText][source].push(startIndex);
-      return featureMap;
     });
   }
 }
