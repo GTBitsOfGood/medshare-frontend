@@ -4,24 +4,28 @@ import PropTypes from 'prop-types';
 import { Tag } from '@blueprintjs/core';
 
 const Div = styled.div`
-  display: block;
-  background-color: #4caf50;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #669eff;
   border: none;
   border-radius: 5px;
   color: white;
-  padding: 16px 32px;
-  text-decoration: none;
-  margin: 4px 2px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
   cursor: pointer;
 `;
+const TagContainer = styled.div``;
 
 const Product = props => {
   const { name, category, subcategory } = props;
   return (
     <Div>
-      <span style={{ display: 'inline-block', width: '33%' }}>{name}</span>
-      <Tag style={{ display: 'inline-block', width: '33%' }}>{category}</Tag>
-      <Tag style={{ display: 'inline-block', width: '33%' }}>{subcategory}</Tag>
+      <span>{name}</span>
+      <TagContainer>
+        <Tag style={{ marginRight: '0.25rem', backgroundColor: '#A82255' }}>{category}</Tag>
+        <Tag style={{ backgroundColor: '#1D7324' }}>{subcategory}</Tag>
+      </TagContainer>
     </Div>
   );
 };
