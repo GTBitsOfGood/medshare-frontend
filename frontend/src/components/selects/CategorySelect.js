@@ -20,7 +20,7 @@ const itemRenderer = (category, { index, handleClick, modifiers }) => {
   );
 };
 
-const CategorySelect = ({ handleSelect, category }) => {
+const CategorySelect = ({ onSelect, category }) => {
   return (
     <SelectContainer>
       <Select
@@ -29,7 +29,7 @@ const CategorySelect = ({ handleSelect, category }) => {
         popoverProps={{ minimal: true }}
         items={categories}
         itemRenderer={itemRenderer}
-        onItemSelect={handleSelect}
+        onItemSelect={onSelect}
       >
         <Button text={category || 'Category'} rightIcon="caret-down" />
       </Select>
@@ -38,7 +38,7 @@ const CategorySelect = ({ handleSelect, category }) => {
 };
 CategorySelect.propTypes = {
   category: PropTypes.string.isRequired,
-  handleSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired
 };
 
 export default CategorySelect;

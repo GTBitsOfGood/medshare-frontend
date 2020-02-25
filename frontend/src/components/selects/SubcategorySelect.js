@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, MenuItem } from '@blueprintjs/core';
 import { MultiSelect } from '@blueprintjs/select';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const MultiSelectWrapper = styled.div`
   flex-basis: 100px;
@@ -17,31 +18,7 @@ const itemPredicate = (query, name) => {
   return normalizedName.indexOf(normalizedQuery) >= 0;
 };
 
-const useItems = () => {
-  const [selectedItems, setSelectedItems] = useState([]);
-
-  const isItemSelected = item => {
-    return selectedItems.indexOf(item) >= 0;
-  };
-  const selectItem = item => {
-    setSelectedItems(selectedItems.concat(item));
-  };
-  const removeItemByIdx = idxToRemove => {
-    setSelectedItems(selectedItems.filter((item, idx) => idx !== idxToRemove));
-  };
-  const handleItemSelect = item => {
-    if (!isItemSelected(item)) {
-      selectItem(item);
-    } else {
-      removeItemByIdx(selectedItems.indexOf(item));
-    }
-  };
-  const clearItems = () => {
-    setSelectedItems([]);
-  };
-  const handleItemRemove = (_, idx) => {
-    removeItemByIdx(idx);
-  };
+const SubcategorySelect = ({ selectedItems, onRemoveByIdx, onSelect, onClear, checkIsSelected }) => {
   const renderItems = (item, { handleClick, modifiers }) => {
     if (!modifiers.matchesPredicate) {
       return null;
@@ -49,7 +26,7 @@ const useItems = () => {
     return (
       <MenuItem
         key={item}
-        icon={isItemSelected(item) ? 'tick' : 'blank'}
+        icon={checkIsSelected(item) ? 'tick' : 'blank'}
         onClick={handleClick}
         text={item}
         active={modifiers.active}
@@ -57,19 +34,10 @@ const useItems = () => {
     );
   };
 
-  return {
-    selectedItems,
-    handleItemSelect,
-    handleItemRemove,
-    clearItems,
-    renderItems
+  const clearButton = selectedItems.length > 0 ? <Button minimal icon="cross" onClick={onClear} /> : undefined;
+  const handleRemove = (_, idx) => {
+    onRemoveByIdx(idx);
   };
-};
-
-const SubcategorySelect = () => {
-  const { selectedItems, handleItemSelect, clearItems, handleItemRemove, renderItems } = useItems();
-
-  const clearButton = selectedItems.length > 0 ? <Button minimal icon="cross" onClick={clearItems} /> : undefined;
 
   return (
     <MultiSelectWrapper>
@@ -80,15 +48,22 @@ const SubcategorySelect = () => {
         items={subcategories}
         itemRenderer={renderItems}
         itemPredicate={itemPredicate}
-        onItemSelect={handleItemSelect}
+        onItemSelect={onSelect}
         noResults={<MenuItem disabled text="No results." />}
         tagRenderer={renderTag}
-        tagInputProps={{ rightElement: clearButton, onRemove: handleItemRemove }}
+        tagInputProps={{ rightElement: clearButton, onRemove: handleRemove }}
         selectedItems={selectedItems}
         placeholder="Subcategories.."
       />
     </MultiSelectWrapper>
   );
+};
+SubcategorySelect.propTypes = {
+  selectedItems: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onClear: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onRemoveByIdx: PropTypes.func.isRequired,
+  checkIsSelected: PropTypes.func.isRequired
 };
 
 export default SubcategorySelect;
