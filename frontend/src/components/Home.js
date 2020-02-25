@@ -1,51 +1,34 @@
 import React from 'react';
-import ProductList from './ProductList';
 
-const test = [
-  {
-    _id: '5e49c6e0f454878ce41bfa5c',
-    features: [],
-    name: 'hand',
-    category: 'Greasy',
-    subcategory: 'Huge',
-    productId: '783465',
-    __v: 0
-  },
-  {
-    _id: '5e49c6e0f454878ce41bfa5d',
-    features: [],
-    name: 'hand',
-    category: 'Greasy',
-    subcategory: 'Huge',
-    productId: '783465',
-    __v: 0
-  },
-  {
-    _id: '5e49c6e1f454878ce41bfa5e',
-    features: [],
-    name: 'hand',
-    category: 'Greasy',
-    subcategory: 'Huge',
-    productId: '783465',
-    __v: 0
-  },
-  {
-    _id: '5e49c6e1f454878ce41bfa5f',
-    features: [],
-    name: 'hand',
-    category: 'Greasy',
-    subcategory: 'Huge',
-    productId: '783465',
-    __v: 0
-  }
-];
+import { Button, MenuItem } from "@blueprintjs/core";
+import { MultiSelect } from "@blueprintjs/select";
+
+const subcategories = ['Gloves', 'Sterile', 'Isolation']; //inbetween <> there should be the type of the subcategories
+const renderTag = (subcategory) => subcategory;
+
+const ItemRenderer = (subcategory, {handleClick}) => {
+  return <MenuItem key={subcategory} onClick ={handleClick} text={subcategory} />;
+};
+
+
+
 class Home extends React.Component {
   render() {
     return (
-      <div>
-        <ProductList searchResult={test} />
-      </div>
+      <>
+        <h1>Home</h1>
+        <MultiSelect
+          items = {subcategories}
+          itemRenderer = {ItemRenderer}
+          onItemSelect = {this.handleClick}
+          tagRenderer = {renderTag}
+        >
+          <Button text={subcategories} rightIcon="double-caret-vertical" />
+        </MultiSelect>
+      </>
     );
   }
 }
+
 export default Home;
+
