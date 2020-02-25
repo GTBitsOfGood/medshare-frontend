@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Button, MenuItem } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
+import styled from 'styled-components';
+
+const SelectContainer = styled.div`
+  width: 170px;
+`;
 
 const categories = ['Medical Equipment', 'World Vision', 'Bio Med', 'Kendall'];
 
@@ -23,15 +28,18 @@ const CategorySelect = () => {
   };
 
   return (
-    <Select
-      filterable={false}
-      popoverProps={{ minimal: true }}
-      items={categories}
-      itemRenderer={itemRenderer}
-      onItemSelect={handleSelect}
-    >
-      <Button text={category || 'Select Category'} rightIcon="caret-down" />
-    </Select>
+    <SelectContainer>
+      <Select
+        fill
+        filterable={false}
+        popoverProps={{ minimal: true }}
+        items={categories}
+        itemRenderer={itemRenderer}
+        onItemSelect={handleSelect}
+      >
+        <Button text={category || 'Select Category'} rightIcon="caret-down" />
+      </Select>
+    </SelectContainer>
   );
 };
 
