@@ -1,13 +1,7 @@
 import React from 'react';
-import { Button, MenuItem } from '@blueprintjs/core';
-import { Select } from '@blueprintjs/select';
+
 import ProductList from './ProductList';
-
-const categories = ['Medical Equipment', 'World Vision', 'Bio Med', 'Kendall'];
-
-const ItemRenderer = (category, { handleClick }) => {
-  return <MenuItem key={category} onClick={handleClick} text={category} />;
-};
+import CategorySelect from './selects/CategorySelect';
 
 const test = [
   {
@@ -47,16 +41,14 @@ const test = [
     __v: 0
   }
 ];
-class Home extends React.Component {
-  render() {
-    return (
-      <div>
-        <Select items={categories} itemRenderer={ItemRenderer} onItemSelect={this.handleClick}>
-          <Button text={categories} rightIcon="double-caret-vertical" />
-        </Select>
-        <ProductList searchResult={test} />
-      </div>
-    );
-  }
-}
-export default Home;
+
+const RootPage = () => {
+  return (
+    <div>
+      <CategorySelect />
+      <ProductList searchResult={test} />
+    </div>
+  );
+};
+
+export default RootPage;
