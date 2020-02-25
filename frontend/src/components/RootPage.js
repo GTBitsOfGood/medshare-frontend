@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ProductList from './ProductList';
-import CategorySelect from './selects/CategorySelect';
-import SubcategorySelect from './selects/SubcategorySelect';
+import QueryComponents from './QueryComponents';
 import { deviceSize } from '../theme';
+import CategoryContainer from '../containers/categoryContainer';
+import FeaturesContainer from '../containers/featuresContainer';
+import SubcategoriesContainer from '../containers/subcategoriesContainer';
 
-const Container = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,13 +18,6 @@ const Container = styled.div`
 
   @media ${deviceSize.laptop} {
   }
-`;
-
-const SelectContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-evenly;
 `;
 
 const test = [
@@ -66,13 +61,16 @@ const test = [
 
 const RootPage = () => {
   return (
-    <Container>
-      <SelectContainer>
-        <CategorySelect />
-        <SubcategorySelect />
-      </SelectContainer>
-      <ProductList searchResult={test} />
-    </Container>
+    <CategoryContainer.Provider>
+      <SubcategoriesContainer.Provider>
+        <FeaturesContainer.Provider>
+          <Wrapper>
+            <QueryComponents />
+            <ProductList searchResult={test} />
+          </Wrapper>
+        </FeaturesContainer.Provider>
+      </SubcategoriesContainer.Provider>
+    </CategoryContainer.Provider>
   );
 };
 

@@ -4,7 +4,8 @@ import { MultiSelect } from '@blueprintjs/select';
 import styled from 'styled-components';
 
 const MultiSelectWrapper = styled.div`
-  width: 250px;
+  flex-basis: 100px;
+  flex-grow: 1;
 `;
 
 const subcategories = ['Gloves', 'Sterile', 'Isolation'];
@@ -84,7 +85,7 @@ const SubcategorySelect = () => {
         tagRenderer={renderTag}
         tagInputProps={{ rightElement: clearButton, onRemove: handleItemRemove }}
         selectedItems={selectedItems}
-        placeholder="Choose Subcategories"
+        placeholder="Subcategories.."
       />
     </MultiSelectWrapper>
   );

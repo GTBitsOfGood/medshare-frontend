@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, MenuItem } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-const SelectContainer = styled.div`
-  width: 170px;
-`;
+const SelectContainer = styled.div``;
 
 const categories = ['Medical Equipment', 'World Vision', 'Bio Med', 'Kendall'];
 
@@ -21,12 +20,7 @@ const itemRenderer = (category, { index, handleClick, modifiers }) => {
   );
 };
 
-const CategorySelect = () => {
-  const [category, setCategory] = useState(null);
-  const handleSelect = selectedCategory => {
-    setCategory(selectedCategory);
-  };
-
+const CategorySelect = ({ handleSelect, category }) => {
   return (
     <SelectContainer>
       <Select
@@ -37,10 +31,14 @@ const CategorySelect = () => {
         itemRenderer={itemRenderer}
         onItemSelect={handleSelect}
       >
-        <Button text={category || 'Select Category'} rightIcon="caret-down" />
+        <Button text={category || 'Category'} rightIcon="caret-down" />
       </Select>
     </SelectContainer>
   );
+};
+CategorySelect.propTypes = {
+  category: PropTypes.string.isRequired,
+  handleSelect: PropTypes.func.isRequired
 };
 
 export default CategorySelect;
