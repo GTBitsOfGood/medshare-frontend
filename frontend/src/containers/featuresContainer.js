@@ -2,12 +2,16 @@ import { useState } from 'react';
 import { createContainer } from 'unstated-next';
 
 const useFeaturesContainer = () => {
+  const [query, setQuery] = useState('');
   const [selectedFeatures] = useState([]);
-  const [featureResults] = useState([]);
+  const [featureResults, setFeatureResults] = useState([]);
 
   return {
+    query,
+    setQuery,
     selectedFeatures,
-    featureResults
+    featureResults,
+    setFeatureResults
   };
 };
 

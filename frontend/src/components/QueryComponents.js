@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import CategorySelect from './selects/CategorySelect';
 import CategoryContainer from '../containers/categoryContainer';
@@ -6,6 +6,8 @@ import SubcategorySelect from './selects/SubcategorySelect';
 import FeatureSelect from './selects/FeatureSelect';
 import FeaturesContainer from '../containers/featuresContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
+import { getAutocompleteResults } from '../httpApi';
+import { useDebounce } from '../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,9 +20,30 @@ const CategoryWrapper = styled.div`
   flex-grow: 1;
 `;
 
+const useAutocomplete = () => {
+  const { category } = CategoryContainer.useContainer();
+  const { query, selectedFeatures, setFeatureResults } = FeaturesContainer.useContainer();
+  const { selectedSubcats } = SubcategoriesContainer.useContainer();
+
+  const debouncedQuery = useDebounce(query, 200); // debounce 200ms
+
+  useEffect(() => {
+    const filterFeatureIds = selectedFeatures.map(feature => feature._id).join(',');
+    getAutocompleteResults(query, filterFeatureIds, category, selectedSubcats.join(','))
+      .then(results => {
+        const filteredFeatures = results.data;
+        console.log(filteredFeatures);
+        setFeatureResults(filteredFeatures);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [debouncedQuery, selectedFeatures]); // eslint-disable-line
+};
+
 const QueryComponents = () => {
   const { category, setCategory } = CategoryContainer.useContainer();
-  const { selectedFeatures, featureResults } = FeaturesContainer.useContainer();
+  const { query, setQuery, selectedFeatures, featureResults } = FeaturesContainer.useContainer();
   const {
     selectedSubcats,
     isSubcatSelected,
@@ -29,9 +52,16 @@ const QueryComponents = () => {
     removeSubcatByIdx
   } = SubcategoriesContainer.useContainer();
 
+  useAutocomplete();
+
   return (
     <Wrapper>
-      <FeatureSelect selectedFeatures={selectedFeatures} featureResults={featureResults} />
+      <FeatureSelect
+        query={query}
+        onQueryChange={setQuery}
+        selectedFeatures={selectedFeatures}
+        featureResults={featureResults}
+      />
       <CategoryWrapper>
         <CategorySelect category={category} onSelect={setCategory} />
         <SubcategorySelect
