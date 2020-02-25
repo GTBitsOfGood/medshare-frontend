@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
+import CategoryContainer from '../containers/categoryContainer';
+import SubcategoriesContainer from '../containers/subcategoriesContainer';
+import FeaturesContainer from '../containers/featuresContainer';
+import { getProductResults } from '../httpApi';
+import { useDebounce } from '../utils';
 import Product from './Product';
 
 const ItemList = styled.div`
@@ -10,11 +15,33 @@ const ItemList = styled.div`
   margin-top: 2.5rem;
 `;
 
-const ProductList = props => {
-  const { searchResult } = props;
+const useProductsQuery = () => {
+  const [products, setProducts] = useState([]);
+  const { category } = CategoryContainer.useContainer();
+  const { selectedSubcats } = SubcategoriesContainer.useContainer();
+  const { selectedFeatures, query } = FeaturesContainer.useContainer();
+
+  const debouncedQuery = useDebounce(query, 400);
+
+  useEffect(() => {
+    const filteredFeatureIds = selectedFeatures.map(feature => feature._id).join(',');
+
+    getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats.join(','))
+      .then(results => {
+        setProducts(results.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [debouncedQuery, selectedFeatures, category, selectedSubcats]);
+  return products;
+};
+
+const ProductList = () => {
+  const products = useProductsQuery();
   return (
     <ItemList>
-      {searchResult.map(product => {
+      {products.map(product => {
         return (
           <Product
             key={product._id}
@@ -26,20 +53,6 @@ const ProductList = props => {
       })}
     </ItemList>
   );
-};
-
-ProductList.propTypes = {
-  searchResult: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      category: PropTypes.string.isRequired,
-      subcategory: PropTypes.string.isRequired
-    })
-  )
-};
-ProductList.defaultProps = {
-  searchResult: []
 };
 
 export default ProductList;
