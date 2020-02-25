@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Tag } from '@blueprintjs/core';
 
 const Div = styled.div`
   display: block;
@@ -18,9 +19,9 @@ const Product = props => {
   const { name, category, subcategory } = props;
   return (
     <Div>
-      <span>{name}</span>
-      <span>{category}</span>
-      <span>{subcategory}</span>
+      <span style={{ display: 'inline-block', width: '33%' }}>{name}</span>
+      <Tag style={{ display: 'inline-block', width: '33%' }}>{category}</Tag>
+      <Tag style={{ display: 'inline-block', width: '33%' }}>{subcategory}</Tag>
     </Div>
   );
 };
