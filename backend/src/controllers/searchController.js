@@ -6,14 +6,14 @@ const searchController = {};
 const PAGE_SIZE = 15;
 
 searchController.queryFeaturesByProducts = async (
-  productNameFilter,
+  nameFilter,
   filterCategory,
   filterSubcategories,
   filterFeatureIds
 ) => {
   const filterFeatureMongooseIds = filterFeatureIds.map(ObjectId);
   const filter = generateProductFilterWithRequiredFeatures(
-    productNameFilter,
+    nameFilter,
     filterCategory,
     filterSubcategories,
     filterFeatureMongooseIds
@@ -21,6 +21,11 @@ searchController.queryFeaturesByProducts = async (
   const featureInQueryFilter = {
     productFeature: {
       $nin: filterFeatureMongooseIds
+    }
+  };
+  const featureNameFilter = {
+    name: {
+      $regex: new RegExp(nameFilter, 'i')
     }
   };
   return Product.aggregate()
@@ -32,15 +37,21 @@ searchController.queryFeaturesByProducts = async (
     .lookup({ from: 'productfeatures', localField: '_id', foreignField: '_id', as: 'productFeature' })
     .unwind('productFeature')
     .replaceRoot('productFeature')
+    .match(featureNameFilter)
+    .sort({ count: -1 })
     .limit(PAGE_SIZE);
 };
 
-searchController.queryProducts = async (productNameFilters, filterCategory, filterSubcategories) => {
-  const filters = productNameFilters.map(filterString =>
-    generateBaseProductFilter(filterString, filterCategory, filterSubcategories)
+searchController.queryProducts = async (productNameFilter, filterCategory, filterSubcategories, filterFeatureIds) => {
+  const filterFeatureMongooseIds = filterFeatureIds.map(ObjectId);
+  const filter = generateProductFilterWithRequiredFeatures(
+    productNameFilter,
+    filterCategory,
+    filterSubcategories,
+    filterFeatureMongooseIds
   );
   return Product.find()
-    .or(filters)
+    .or(filter)
     .limit(PAGE_SIZE);
 };
 

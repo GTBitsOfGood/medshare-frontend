@@ -43,7 +43,16 @@ const useAutocomplete = () => {
 
 const QueryComponents = () => {
   const { category, setCategory } = CategoryContainer.useContainer();
-  const { query, setQuery, selectedFeatures, featureResults } = FeaturesContainer.useContainer();
+  const {
+    query,
+    setQuery,
+    selectedFeatures,
+    featureResults,
+    isFeatureSelected,
+    removeFeature,
+    clearFeatures,
+    handleFeatureSelect
+  } = FeaturesContainer.useContainer();
   const {
     selectedSubcats,
     isSubcatSelected,
@@ -61,6 +70,10 @@ const QueryComponents = () => {
         onQueryChange={setQuery}
         selectedFeatures={selectedFeatures}
         featureResults={featureResults}
+        onRemove={removeFeature}
+        onClear={clearFeatures}
+        onSelect={handleFeatureSelect}
+        checkIsFeatureSelected={isFeatureSelected}
       />
       <CategoryWrapper>
         <CategorySelect category={category} onSelect={setCategory} />

@@ -10,24 +10,27 @@ const searchController = require('../controllers/searchController');
 
   Args:
     q (str): query key word (required)
+    features (str): comma-separated list of MongoObjectIDs
     category (str): query category
-    subcategories (str): comma-separate list of subcategories
+    subcategories (str): comma-separated list of subcategories
 
   Returns:
     array of all matching products
  */
-router.get('/', ensureParameterInRequest('q', 'string'), async (req, res) => {
-  const { q, subcategories } = req.query;
-  let { category } = req.query;
+router.get('/', ensureParameterInRequest('q', 'string'), ensureParameterInRequest('q', 'string'), async (req, res) => {
+  const { q, subcategories, category, features } = req.query;
 
   const queries = processArrayParameterAndNormalize(q, ' ', false);
+  const featuresArray = processArrayParameterAndNormalize(features, ',', false);
+  let normalizedCategory = category;
   if (category) {
-    category = category.toLowerCase();
+    normalizedCategory = category.toLowerCase();
   }
+
   const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
 
   try {
-    const products = await searchController.queryProducts(queries, category, subcategoriesArr);
+    const products = await searchController.queryProducts(queries, normalizedCategory, subcategoriesArr, featuresArray);
     return res.send(products);
   } catch (err) {
     console.log(err);
