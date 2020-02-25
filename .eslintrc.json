@@ -5,12 +5,7 @@
       "jsx": true
     }
   },
-  "extends": [
-    "airbnb",
-    "plugin:prettier/recommended",
-    "prettier/react",
-    "airbnb/hooks"
-  ],
+  "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react", "airbnb/hooks"],
   "env": {
     "browser": true,
     "commonjs": true,
@@ -36,6 +31,7 @@
         "ignoreRegExpLiterals": true
       }
     ],
+    "no-underscore-dangle": "off",
     "no-use-before-define": "off",
     "no-param-reassign": [
       "warn",

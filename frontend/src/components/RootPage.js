@@ -1,7 +1,19 @@
 import React from 'react';
-
+import styled from 'styled-components';
 import ProductList from './ProductList';
 import CategorySelect from './selects/CategorySelect';
+import { deviceSize } from '../theme';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @media ${deviceSize.laptop} {
+    margin: 2rem 6rem;
+  }
+`;
 
 const test = [
   {
@@ -44,10 +56,10 @@ const test = [
 
 const RootPage = () => {
   return (
-    <div>
+    <Container>
       <CategorySelect />
       <ProductList searchResult={test} />
-    </div>
+    </Container>
   );
 };
 

@@ -6,32 +6,41 @@ import Product from './Product';
 const ItemList = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  margin: 20px auto;
-  width: 60%;
+  max-width: 600px;
+  width: 100%;
+  margin-top: 2.5rem;
 `;
 
 const ProductList = props => {
   const { searchResult } = props;
   return (
-    <div>
-      <ItemList>
-        {Object.keys(searchResult).map(index => {
-          return (
-            <Product
-              name={searchResult[index].name}
-              category={searchResult[index].category}
-              subcategory={searchResult[index].subcategory}
-            />
-          );
-        })}
-      </ItemList>
-    </div>
+    <ItemList>
+      {searchResult.map(product => {
+        return (
+          <Product
+            key={product._id}
+            name={product.name}
+            category={product.category}
+            subcategory={product.subcategory}
+          />
+        );
+      })}
+    </ItemList>
   );
 };
 
 ProductList.propTypes = {
-  searchResult: PropTypes.shape.isRequired
+  searchResult: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      subcategory: PropTypes.string.isRequired
+    })
+  )
+};
+ProductList.defaultProps = {
+  searchResult: []
 };
 
 export default ProductList;
