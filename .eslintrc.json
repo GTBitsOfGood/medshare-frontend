@@ -1,6 +1,6 @@
 {
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 8,
     "ecmaFeatures": {
       "jsx": true
     }
@@ -25,15 +25,22 @@
     "max-len": [
       "warn",
       {
-        "code": 80,
+        "code": 120,
         "tabWidth": 2,
-        "comments": 80,
+        "comments": 120,
         "ignoreComments": false,
         "ignoreTrailingComments": true,
         "ignoreUrls": true,
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true,
         "ignoreRegExpLiterals": true
+      }
+    ],
+    "no-use-before-define": "off",
+    "no-param-reassign": [
+      "warn",
+      {
+        "props": false
       }
     ]
   }

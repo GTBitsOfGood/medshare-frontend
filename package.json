@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint 'frontend/**/*.js' && eslint 'backend/**/*.js'",
-    "format": "prettier --write 'frontend/**/*.{js,css}' && prettier --write 'backend/**/*.js'"
+    "lint": "eslint \"frontend/**/*.js\" && eslint \"backend/**/*.js\"",
+    "format": "prettier --write \"frontend/**/*.{js,css}\" && prettier --write \"backend/**/*.js\""
   },
   "husky": {
     "hooks": {
@@ -15,8 +15,10 @@
   },
   "lint-staged": {
     "*.{js,css,jsx}": [
-      "eslint",
       "prettier --write"
+    ],
+    "*.{js,jsx}": [
+      "eslint"
     ]
   },
   "repository": {
@@ -24,6 +26,7 @@
     "url": "git+https://github.com/GTBitsOfGood/medshare.git"
   },
   "license": "MIT",
+
   "bugs": {
     "url": "https://github.com/GTBitsOfGood/medshare/issues"
   },
@@ -40,9 +43,11 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "husky": "^4.2.1",
     "lint-staged": "^10.0.7",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "shx": "^0.3.2"
   },
   "dependencies": {
+    "papaparse": "^5.1.1",
     "react": "^16.12.0"
   }
 }
