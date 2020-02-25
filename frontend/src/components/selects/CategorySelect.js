@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, MenuItem } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 
 const categories = ['Medical Equipment', 'World Vision', 'Bio Med', 'Kendall'];
 
-const ItemRenderer = (category, { handleClick }) => {
-  return <MenuItem key={category} onClick={handleClick} text={category} />;
+const itemRenderer = (category, { index, handleClick, modifiers }) => {
+  return (
+    <MenuItem
+      key={index + category}
+      onClick={handleClick}
+      text={category}
+      active={modifiers.active}
+      shouldDismissPopover={false}
+    />
+  );
 };
 
 const CategorySelect = () => {
-  const handleClick = () => {};
+  const [category, setCategory] = useState(null);
+  const handleSelect = selectedCategory => {
+    setCategory(selectedCategory);
+  };
 
   return (
-    <Select items={categories} itemRenderer={ItemRenderer} onItemSelect={handleClick}>
-      <Button text={categories} rightIcon="double-caret-vertical" />
+    <Select
+      filterable={false}
+      popoverProps={{ minimal: true }}
+      items={categories}
+      itemRenderer={itemRenderer}
+      onItemSelect={handleSelect}
+    >
+      <Button text={category || 'Select Category'} rightIcon="caret-down" />
     </Select>
   );
 };

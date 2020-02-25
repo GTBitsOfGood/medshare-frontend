@@ -1,17 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, MenuItem } from '@blueprintjs/core';
-import { MultiSelect } from '@blueprintjs/select';
+
 import ProductList from './ProductList';
 import CategorySelect from './selects/CategorySelect';
+import SubcategorySelect from './selects/SubcategorySelect';
 import { deviceSize } from '../theme';
-
-const subcategories = ['Gloves', 'Sterile', 'Isolation'];
-const renderTag = subcategory => subcategory;
-
-const ItemRenderer = (subcategory, { handleClick }) => {
-  return <MenuItem key={subcategory} onClick={handleClick} text={subcategory} />;
-};
 
 const Container = styled.div`
   display: flex;
@@ -22,6 +15,11 @@ const Container = styled.div`
   @media ${deviceSize.laptop} {
     margin: 2rem 6rem;
   }
+`;
+
+const SelectContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 const test = [
@@ -64,14 +62,12 @@ const test = [
 ];
 
 const RootPage = () => {
-  const handleClick = () => {};
-
   return (
     <Container>
-      <CategorySelect />
-      <MultiSelect items={subcategories} itemRenderer={ItemRenderer} onItemSelect={handleClick} tagRenderer={renderTag}>
-        <Button text={subcategories} rightIcon="double-caret-vertical" />
-      </MultiSelect>
+      <SelectContainer>
+        <CategorySelect />
+        <SubcategorySelect />
+      </SelectContainer>
       <ProductList searchResult={test} />
     </Container>
   );
