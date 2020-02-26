@@ -21,8 +21,7 @@ function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPIN
 function parseProductsFromCsv(fileBuffer, mapping) {
   const result = Papa.parse(fileBuffer, {
     header: true,
-    skipEmptyLines: true,
-    preview: 1
+    skipEmptyLines: true
   });
   const requiredFields = Object.keys(mapping);
   if (!checkForExpectedFields(result.meta.fields, requiredFields)) {
