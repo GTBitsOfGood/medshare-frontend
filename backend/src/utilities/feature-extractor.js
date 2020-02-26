@@ -9,6 +9,7 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
   'Sub Category': 'subcategory'
 };
 const FEATURE_REGEX = new RegExp('\\w+', 'g');
+const REMOVE_REGEX = new RegExp('-|_', 'g');
 const FILE_ENCODING = 'utf-8';
 const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
 const PRINT_UPDATE_MESSAGE_EVERY = 50;
@@ -20,7 +21,8 @@ function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPIN
 function parseProductsFromCsv(fileBuffer, mapping) {
   const result = Papa.parse(fileBuffer, {
     header: true,
-    skipEmptyLines: true
+    skipEmptyLines: true,
+    preview: 1
   });
   const requiredFields = Object.keys(mapping);
   if (!checkForExpectedFields(result.meta.fields, requiredFields)) {
@@ -100,16 +102,40 @@ function extractFeaturesListsFromProductObject(productObject) {
 }
 
 function extractFeaturesFromValue(value) {
-  const lowerCaseValue = value.toLowerCase();
+  const { normalizedValue, removeList } = removeSpecialCharactersAndGenerateOffsetList(value.toLowerCase());
   const features = [];
-  let matchResult = FEATURE_REGEX.exec(lowerCaseValue);
+  let matchResult = FEATURE_REGEX.exec(normalizedValue);
   while (matchResult !== null) {
     const startIndex = matchResult.index;
-    const feature = lowerCaseValue.substring(startIndex, FEATURE_REGEX.lastIndex).trim();
-    features.push({ featureText: feature, startIndex });
-    matchResult = FEATURE_REGEX.exec(lowerCaseValue);
+    while (removeList.length > 1 && removeList[1].index <= startIndex) {
+      removeList.shift();
+    }
+    const offsetBecauseOfRemove = removeList[0].offset;
+
+    const feature = normalizedValue.substring(startIndex, FEATURE_REGEX.lastIndex).trim();
+    features.push({ featureText: feature, startIndex: startIndex + offsetBecauseOfRemove });
+    matchResult = FEATURE_REGEX.exec(normalizedValue);
   }
   return features.filter(({ featureText }) => featureText.length > 0);
+}
+
+function removeSpecialCharactersAndGenerateOffsetList(value) {
+  const removeList = [{ index: -1, offset: 0 }];
+  let offset = 0;
+  let matchResult = REMOVE_REGEX.exec(value);
+  while (matchResult !== null) {
+    const removeIndex = matchResult.index;
+
+    value = value.substring(0, removeIndex) + value.substring(removeIndex + 1, value.length).trim();
+    offset += 1;
+    removeList.push({ index: removeIndex, offset });
+    matchResult = REMOVE_REGEX.exec(value);
+  }
+
+  return {
+    normalizedValue: value,
+    removeList
+  };
 }
 
 function groupAndExtractMetadata(featuresListsDict) {
