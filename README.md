@@ -14,7 +14,7 @@ cd ../backend
 npm install
 ```
 
-Afterwards, copy `backend/.env.example` to `.env` and configure the environment variables.
+Afterwards, copy `backend/.env.example` to `backend/.env` and configure the environment variables. Do the same for the `frontend/` folder.
 
 ## Running the Project
 
