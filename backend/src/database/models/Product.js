@@ -17,9 +17,7 @@ const productSchema = new mongoose.Schema({
     {
       _id: { id: false },
       productFeature: { type: ObjectId, ref: 'ProductFeatures' },
-      name: featureDataSchema,
-      category: featureDataSchema,
-      subcategory: featureDataSchema
+      name: featureDataSchema
     }
   ]
 });

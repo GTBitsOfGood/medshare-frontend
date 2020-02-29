@@ -1,6 +1,11 @@
 const fs = require('fs');
 const Papa = require('papaparse');
+const pluralize = require('./pluralize-library');
 const { Product, ProductFeatures } = require('../database/models');
+
+const FILE_ENCODING = 'utf-8';
+const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
+const PRINT_UPDATE_MESSAGE_EVERY = 50;
 
 const DEFAULT_CSV_PRODUCT_MAPPING = {
   ProductRef: 'productId',
@@ -8,11 +13,12 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
   'Category Name': 'category',
   'Sub Category': 'subcategory'
 };
-const FEATURE_REGEX = new RegExp('\\w+', 'g');
+
 const REMOVE_REGEX = new RegExp('-|_', 'g');
-const FILE_ENCODING = 'utf-8';
-const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
-const PRINT_UPDATE_MESSAGE_EVERY = 50;
+const STANDARD_FEATURE_REGEX = new RegExp('\\w+', 'g');
+const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
+const COMMA_REGEX_THRESHOLD = 2;
+
 function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPING) {
   const fileBuffer = fs.readFileSync(filePath, FILE_ENCODING);
   return parseProductsFromCsv(fileBuffer, mapping);
@@ -94,28 +100,21 @@ async function processProductObjectAndInsertIntoDB(productObject) {
 
 function extractFeaturesListsFromProductObject(productObject) {
   return {
-    name: extractFeaturesFromValue(productObject.name),
-    category: extractFeaturesFromValue(productObject.category),
-    subcategory: extractFeaturesFromValue(productObject.subcategory)
+    name: extractFeaturesFromValue(productObject.name)
   };
 }
 
 function extractFeaturesFromValue(value) {
+  /* normalize any special characters/spaces that might effect feature matching.
+   offset map required to ensure "median index" is based off unnormalized string
+   */
   const { normalizedValue, removeList } = removeSpecialCharactersAndGenerateOffsetList(value.toLowerCase());
-  const features = [];
-  let matchResult = FEATURE_REGEX.exec(normalizedValue);
-  while (matchResult !== null) {
-    const startIndex = matchResult.index;
-    while (removeList.length > 1 && removeList[1].index <= startIndex) {
-      removeList.shift();
-    }
-    const offsetBecauseOfRemove = removeList[0].offset;
 
-    const feature = normalizedValue.substring(startIndex, FEATURE_REGEX.lastIndex).trim();
-    features.push({ featureText: feature, startIndex: startIndex + offsetBecauseOfRemove });
-    matchResult = FEATURE_REGEX.exec(normalizedValue);
-  }
-  return features.filter(({ featureText }) => featureText.length > 0);
+  const regex =
+    (normalizedValue.match(COMMA_DELIMITED_REGEX) || []).length >= COMMA_REGEX_THRESHOLD
+      ? COMMA_DELIMITED_REGEX
+      : STANDARD_FEATURE_REGEX;
+  return extractFeaturesByRegex(normalizedValue, regex, removeList).map(normalizeFeatureAfterExtraction);
 }
 
 function removeSpecialCharactersAndGenerateOffsetList(value) {
@@ -137,6 +136,30 @@ function removeSpecialCharactersAndGenerateOffsetList(value) {
   };
 }
 
+function extractFeaturesByRegex(value, regex, offsetList = [{ index: -1, offset: 0 }]) {
+  const features = [];
+  let matchResult = regex.exec(value);
+  while (matchResult !== null) {
+    const startIndex = matchResult.index;
+    while (offsetList.length > 1 && offsetList[1].index <= startIndex) {
+      offsetList.shift();
+    }
+    const offsetBecauseOfRemove = offsetList[0].offset;
+
+    const feature = value.substring(startIndex, regex.lastIndex).trim();
+    features.push({ featureText: feature, startIndex: startIndex + offsetBecauseOfRemove });
+    matchResult = regex.exec(value);
+  }
+  return features.filter(({ featureText }) => featureText.length > 0);
+}
+
+function normalizeFeatureAfterExtraction(feature) {
+  // do any normalization here that wouldn't affect the feature matching regexes (such as removing plurality)
+  const { featureText, startIndex } = feature;
+  const normalizedText = pluralize(featureText, 1);
+  return { featureText: normalizedText, startIndex };
+}
+
 function groupAndExtractMetadata(featuresListsDict) {
   const featuresMap = {};
   Object.entries(featuresListsDict).forEach(([source, featuresFromSource]) => {
@@ -151,9 +174,7 @@ function groupFeatures(source, featureList, featureMap) {
       const { featureText, startIndex } = feature;
       if (featureMap[featureText] == null) {
         featureMap[featureText] = {
-          name: [],
-          category: [],
-          subcategory: []
+          name: []
         };
       }
       featureMap[featureText][source].push(startIndex);
