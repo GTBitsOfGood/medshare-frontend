@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const searchController = require('../controllers/searchController');
+const { pluralize } = require('../utilities');
 
 /*
   GET search based on query
@@ -20,16 +21,15 @@ const searchController = require('../controllers/searchController');
 router.get('/', ensureParameterInRequest('q', 'string'), ensureParameterInRequest('q', 'string'), async (req, res) => {
   const { q, subcategories, category, features } = req.query;
 
-  const queries = processArrayParameterAndNormalize(q, ' ', false);
-  const featuresArray = processArrayParameterAndNormalize(features, ',', false);
-  let normalizedCategory = category;
-  if (category) {
-    normalizedCategory = category.toLowerCase();
-  }
-
-  const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
-
   try {
+    const queries = processArrayParameterAndNormalize(q, ' ', false);
+    const featuresArray = processArrayParameterAndNormalize(features, ',', false);
+    let normalizedCategory = category;
+    if (category) {
+      normalizedCategory = category.toLowerCase();
+    }
+
+    const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
     const products = await searchController.queryProducts(queries, normalizedCategory, subcategoriesArr, featuresArray);
     return res.send(products);
   } catch (err) {
@@ -64,27 +64,33 @@ router.get(
   ensureParameterInRequest('features', 'string'),
   async (req, res) => {
     const { q, subcategories, features } = req.query;
-    let { category } = req.query;
-    const featuresArray = processArrayParameterAndNormalize(features, ',', false);
-    if (category) {
-      category = category.toLowerCase();
-    }
-    const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
-
     try {
-      const outputFeatures = await searchController.queryFeaturesByProducts(
-        q.toLowerCase(),
-        category,
-        subcategoriesArr,
-        featuresArray
+      const featuresArray = processArrayParameterAndNormalize(features, ',', false);
+      const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
+
+      let { category } = req.query;
+      if (category) {
+        category = category.toLowerCase();
+      }
+
+      return res.send(
+        await queryFeaturesByProductsWithRetry(q.toLowerCase(), category, subcategoriesArr, featuresArray)
       );
-      return res.send(outputFeatures);
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
     }
   }
 );
+
+async function queryFeaturesByProductsWithRetry(query, category, subcategoryArr, featuresArray) {
+  let results = await searchController.queryFeaturesByProducts(query, category, subcategoryArr, featuresArray);
+  if (results.length === 0 && pluralize.isPlural(query)) {
+    const singularQuery = pluralize(query, 1);
+    results = await searchController.queryFeaturesByProducts(singularQuery, category, subcategoryArr, featuresArray);
+  }
+  return results;
+}
 
 function processArrayParameterAndNormalize(parameter, delimiter, canBeNull) {
   if (parameter !== undefined && parameter !== null) {
