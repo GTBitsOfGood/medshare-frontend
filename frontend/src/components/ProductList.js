@@ -48,6 +48,7 @@ const ProductList = () => {
             name={product.name}
             category={product.category}
             subcategory={product.subcategory}
+            productid={product.productId}
           />
         );
       })}
