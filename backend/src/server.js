@@ -24,7 +24,7 @@ app.use('/api', apiRoutes);
 
 // Error Handlers
 app.use((req, res, next) => {
-  const err = new Error('Page Not Found');
+  const err = new Error('Page Not Found.');
   err.status = 404;
   next(err);
 });
