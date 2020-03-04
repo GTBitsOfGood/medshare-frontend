@@ -7,6 +7,15 @@ import deselectButton from '../../resources/deselect.png';
 
 const SelectContainer = styled.div``;
 
+const ButtonWithBorder = styled.button`
+  display: block;
+  border-radius: 8px;
+  color: white;
+  background-color: white;
+  cursor: pointer;
+  margin-top: 2px;
+`;
+
 const categories = ['Medical Equipment', 'World Vision', 'Bio Med', 'Kendall'];
 
 const CategorySelect = ({ onSelect, category }) => {
@@ -16,9 +25,9 @@ const CategorySelect = ({ onSelect, category }) => {
   const SelectedItem = () => {
     return (
       <div>
-        <button type="submit" onClick={deselectActive}>
+        <ButtonWithBorder type="submit" onClick={deselectActive}>
           <img alt="deselect button" src={deselectButton} height="15" width="15" />
-        </button>
+        </ButtonWithBorder>
       </div>
     );
   };
