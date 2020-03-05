@@ -5,9 +5,8 @@ import { Tag } from '@blueprintjs/core';
 
 const Div = styled.div`
   display: flex;
-  flex-direction: column;
-  flew-wrap: wrap;
-  justify-content: space-between;
+  flex-flow: column wrap;
+  justify-content: space-around;
   background: #ffffff;
   border: 1px solid #ccc9c9;
   box-sizing: border-box;
@@ -18,7 +17,11 @@ const Div = styled.div`
   margin-bottom: 0.75rem;
   cursor: pointer;
 `;
-const TagContainer = styled.div``;
+
+const TagContainer = styled.div`
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+`;
 
 const Product = props => {
   const { name, category, subcategory, productID } = props;
@@ -33,10 +36,10 @@ const Product = props => {
           {subcategory}
         </Tag>
       </TagContainer>
-      <text>
+      <span>
         <b>SKU:</b>
         {productID}
-      </text>
+      </span>
     </Div>
   );
 };
