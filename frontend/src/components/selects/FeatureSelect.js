@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 const Wrapper = styled.div`
   flex-basis: 250px;
   flex-grow: 2;
+  color: black;
 `;
 
 const tagRenderer = feature => feature.name;
@@ -54,7 +55,7 @@ const FeatureSelect = ({
         tagRenderer={tagRenderer}
         tagInputProps={{ onRemove, rightElement: clearButton }}
         popoverProps={{ minimal: true }}
-        placeholder="Search..."
+        placeholder="Search Features..."
       />
     </Wrapper>
   );
