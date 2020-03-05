@@ -13,8 +13,8 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
   'Sub Category': 'subcategory'
 };
 
-const REMOVE_REGEX = new RegExp('-|_', 'g');
-const STANDARD_FEATURE_REGEX = new RegExp('\\w+', 'g');
+const REMOVE_REGEX = new RegExp('((?<=[^0-9])-(?=[^0-9]))|_', 'g');
+const STANDARD_FEATURE_REGEX = new RegExp('([0-9][0-9"/]*[-/][0-9][0-9"/]*)|(\\w+)', 'g');
 const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
 const COMMA_REGEX_THRESHOLD = 2;
 
