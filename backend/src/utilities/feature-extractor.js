@@ -1,6 +1,5 @@
 const fs = require('fs');
 const Papa = require('papaparse');
-const pluralize = require('./pluralize-library');
 const { Product, ProductFeatures } = require('../database/models');
 
 const FILE_ENCODING = 'utf-8';
@@ -154,9 +153,9 @@ function extractFeaturesByRegex(value, regex, offsetList = [{ index: -1, offset:
 }
 
 function normalizeFeatureAfterExtraction(feature) {
-  // do any normalization here that wouldn't affect the feature matching regexes (such as removing plurality)
+  // currently not used but will probably be used in the future
   const { featureText, startIndex } = feature;
-  const normalizedText = pluralize(featureText, 1);
+  const normalizedText = featureText;
   return { featureText: normalizedText, startIndex };
 }
 

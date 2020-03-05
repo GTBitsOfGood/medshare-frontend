@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const searchController = require('../controllers/searchController');
-const { pluralize } = require('../utilities');
 
 /*
   GET search based on query
@@ -73,24 +72,13 @@ router.get(
         category = category.toLowerCase();
       }
 
-      return res.send(
-        await queryFeaturesByProductsWithRetry(q.toLowerCase(), category, subcategoriesArr, featuresArray)
-      );
+      return res.send(await searchController.queryFeaturesByProducts(q, category, subcategoriesArr, featuresArray));
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
     }
   }
 );
-
-async function queryFeaturesByProductsWithRetry(query, category, subcategoryArr, featuresArray) {
-  let results = await searchController.queryFeaturesByProducts(query, category, subcategoryArr, featuresArray);
-  if (results.length === 0 && pluralize.isPlural(query)) {
-    const singularQuery = pluralize(query, 1);
-    results = await searchController.queryFeaturesByProducts(singularQuery, category, subcategoryArr, featuresArray);
-  }
-  return results;
-}
 
 function processArrayParameterAndNormalize(parameter, delimiter, canBeNull) {
   if (parameter !== undefined && parameter !== null) {
