@@ -13,7 +13,7 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
   'Sub Category': 'subcategory'
 };
 
-const REMOVE_REGEX = new RegExp('((?<=[^0-9])-(?=[^0-9]))|_', 'g');
+const REMOVE_REGEX = new RegExp('( (?=-))|((?<=-) )|((?<=[a-zA-Z])-(?=[a-zA-Z]))|_', 'g');
 const STANDARD_FEATURE_REGEX = new RegExp('([0-9][0-9"/]*[-/][0-9][0-9"/]*)|(\\w+)', 'g');
 const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
 const COMMA_REGEX_THRESHOLD = 2;
@@ -107,56 +107,49 @@ function extractFeaturesFromValue(value) {
   /* normalize any special characters/spaces that might effect feature matching.
    offset map required to ensure "median index" is based off unnormalized string
    */
-  const { normalizedValue, removeList } = removeSpecialCharactersAndGenerateOffsetList(value.toLowerCase());
-
-  const regex =
+  const normalizedValue = removeSpecialCharacterst(value.toLowerCase());
+  const featureRegex =
     (normalizedValue.match(COMMA_DELIMITED_REGEX) || []).length >= COMMA_REGEX_THRESHOLD
       ? COMMA_DELIMITED_REGEX
       : STANDARD_FEATURE_REGEX;
-  return extractFeaturesByRegex(normalizedValue, regex, removeList).map(normalizeFeatureAfterExtraction);
+  const normalizedFeatures = extractFeaturesByRegex(normalizedValue, featureRegex).map(normalizeFeatureAfterExtraction);
+  return calculateStartIndexOfNormalizedFeatures(normalizedFeatures);
 }
 
-function removeSpecialCharactersAndGenerateOffsetList(value) {
-  const removeList = [{ index: -1, offset: 0 }];
-  let offset = 0;
+function removeSpecialCharacterst(value) {
   let matchResult = REMOVE_REGEX.exec(value);
   while (matchResult !== null) {
     const removeIndex = matchResult.index;
-
     value = value.substring(0, removeIndex) + value.substring(removeIndex + 1, value.length).trim();
-    offset += 1;
-    removeList.push({ index: removeIndex, offset });
     matchResult = REMOVE_REGEX.exec(value);
   }
-
-  return {
-    normalizedValue: value,
-    removeList
-  };
+  return value;
 }
 
-function extractFeaturesByRegex(value, regex, offsetList = [{ index: -1, offset: 0 }]) {
+function extractFeaturesByRegex(value, regex) {
   const features = [];
   let matchResult = regex.exec(value);
   while (matchResult !== null) {
     const startIndex = matchResult.index;
-    while (offsetList.length > 1 && offsetList[1].index <= startIndex) {
-      offsetList.shift();
-    }
-    const offsetBecauseOfRemove = offsetList[0].offset;
-
     const feature = value.substring(startIndex, regex.lastIndex).trim();
-    features.push({ featureText: feature, startIndex: startIndex + offsetBecauseOfRemove });
+    features.push(feature);
     matchResult = regex.exec(value);
   }
-  return features.filter(({ featureText }) => featureText.length > 0);
+  return features.filter(feature => feature.length > 0);
 }
 
 function normalizeFeatureAfterExtraction(feature) {
   // currently not used but will probably be used in the future
-  const { featureText, startIndex } = feature;
-  const normalizedText = featureText;
-  return { featureText: normalizedText, startIndex };
+  return feature;
+}
+
+function calculateStartIndexOfNormalizedFeatures(features) {
+  let offset = 0;
+  return features.map(featureText => {
+    const startIndex = offset;
+    offset += featureText.length;
+    return { featureText, startIndex };
+  });
 }
 
 function groupAndExtractMetadata(featuresListsDict) {
