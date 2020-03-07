@@ -2,16 +2,22 @@ const fs = require('fs');
 const Papa = require('papaparse');
 const { Product, ProductFeatures } = require('../database/models');
 
+const FILE_ENCODING = 'utf-8';
+const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
+const PRINT_UPDATE_MESSAGE_EVERY = 50;
+
 const DEFAULT_CSV_PRODUCT_MAPPING = {
   ProductRef: 'productId',
   ProductName: 'name',
   'Category Name': 'category',
   'Sub Category': 'subcategory'
 };
-const FEATURE_REGEX = new RegExp('\\w+', 'g');
-const FILE_ENCODING = 'utf-8';
-const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
-const PRINT_UPDATE_MESSAGE_EVERY = 50;
+
+const REMOVE_REGEX = new RegExp('( (?=-))|((?<=-) )|((?<=[a-zA-Z])-(?=[a-zA-Z]))|_', 'g');
+const STANDARD_FEATURE_REGEX = new RegExp('([0-9][0-9"/]*[-/][0-9][0-9"/]*)|(\\w+)', 'g');
+const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
+const COMMA_REGEX_THRESHOLD = 2;
+
 function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPING) {
   const fileBuffer = fs.readFileSync(filePath, FILE_ENCODING);
   return parseProductsFromCsv(fileBuffer, mapping);
@@ -93,23 +99,57 @@ async function processProductObjectAndInsertIntoDB(productObject) {
 
 function extractFeaturesListsFromProductObject(productObject) {
   return {
-    name: extractFeaturesFromValue(productObject.name),
-    category: extractFeaturesFromValue(productObject.category),
-    subcategory: extractFeaturesFromValue(productObject.subcategory)
+    name: extractFeaturesFromValue(productObject.name)
   };
 }
 
 function extractFeaturesFromValue(value) {
-  const lowerCaseValue = value.toLowerCase();
+  /* normalize any special characters/spaces that might effect feature matching.
+   offset map required to ensure "median index" is based off unnormalized string
+   */
+  const normalizedValue = removeSpecialCharacterst(value.toLowerCase());
+  const featureRegex =
+    (normalizedValue.match(COMMA_DELIMITED_REGEX) || []).length >= COMMA_REGEX_THRESHOLD
+      ? COMMA_DELIMITED_REGEX
+      : STANDARD_FEATURE_REGEX;
+  const normalizedFeatures = extractFeaturesByRegex(normalizedValue, featureRegex).map(normalizeFeatureAfterExtraction);
+  return calculateStartIndexOfNormalizedFeatures(normalizedFeatures);
+}
+
+function removeSpecialCharacterst(value) {
+  let matchResult = REMOVE_REGEX.exec(value);
+  while (matchResult !== null) {
+    const removeIndex = matchResult.index;
+    value = value.substring(0, removeIndex) + value.substring(removeIndex + 1, value.length).trim();
+    matchResult = REMOVE_REGEX.exec(value);
+  }
+  return value;
+}
+
+function extractFeaturesByRegex(value, regex) {
   const features = [];
-  let matchResult = FEATURE_REGEX.exec(lowerCaseValue);
+  let matchResult = regex.exec(value);
   while (matchResult !== null) {
     const startIndex = matchResult.index;
-    const feature = lowerCaseValue.substring(startIndex, FEATURE_REGEX.lastIndex).trim();
-    features.push({ featureText: feature, startIndex });
-    matchResult = FEATURE_REGEX.exec(lowerCaseValue);
+    const feature = value.substring(startIndex, regex.lastIndex).trim();
+    features.push(feature);
+    matchResult = regex.exec(value);
   }
-  return features.filter(({ featureText }) => featureText.length > 0);
+  return features.filter(feature => feature.length > 0);
+}
+
+function normalizeFeatureAfterExtraction(feature) {
+  // currently not used but will probably be used in the future
+  return feature;
+}
+
+function calculateStartIndexOfNormalizedFeatures(features) {
+  let offset = 0;
+  return features.map(featureText => {
+    const startIndex = offset;
+    offset += featureText.length;
+    return { featureText, startIndex };
+  });
 }
 
 function groupAndExtractMetadata(featuresListsDict) {
@@ -126,9 +166,7 @@ function groupFeatures(source, featureList, featureMap) {
       const { featureText, startIndex } = feature;
       if (featureMap[featureText] == null) {
         featureMap[featureText] = {
-          name: [],
-          category: [],
-          subcategory: []
+          name: []
         };
       }
       featureMap[featureText][source].push(startIndex);

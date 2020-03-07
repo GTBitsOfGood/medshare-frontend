@@ -45,7 +45,6 @@
     "prettier": "^1.19.1"
   },
   "dependencies": {
-    "papaparse": "^5.1.1",
     "react": "^16.12.0"
   }
 }

@@ -20,16 +20,15 @@ const searchController = require('../controllers/searchController');
 router.get('/', ensureParameterInRequest('q', 'string'), ensureParameterInRequest('q', 'string'), async (req, res) => {
   const { q, subcategories, category, features } = req.query;
 
-  const queries = processArrayParameterAndNormalize(q, ' ', false);
-  const featuresArray = processArrayParameterAndNormalize(features, ',', false);
-  let normalizedCategory = category;
-  if (category) {
-    normalizedCategory = category.toLowerCase();
-  }
-
-  const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
-
   try {
+    const queries = processArrayParameterAndNormalize(q, ' ', false);
+    const featuresArray = processArrayParameterAndNormalize(features, ',', false);
+    let normalizedCategory = category;
+    if (category) {
+      normalizedCategory = category.toLowerCase();
+    }
+
+    const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
     const products = await searchController.queryProducts(queries, normalizedCategory, subcategoriesArr, featuresArray);
     return res.send(products);
   } catch (err) {
@@ -64,21 +63,16 @@ router.get(
   ensureParameterInRequest('features', 'string'),
   async (req, res) => {
     const { q, subcategories, features } = req.query;
-    let { category } = req.query;
-    const featuresArray = processArrayParameterAndNormalize(features, ',', false);
-    if (category) {
-      category = category.toLowerCase();
-    }
-    const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
-
     try {
-      const outputFeatures = await searchController.queryFeaturesByProducts(
-        q.toLowerCase(),
-        category,
-        subcategoriesArr,
-        featuresArray
-      );
-      return res.send(outputFeatures);
+      const featuresArray = processArrayParameterAndNormalize(features, ',', false);
+      const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
+
+      let { category } = req.query;
+      if (category) {
+        category = category.toLowerCase();
+      }
+
+      return res.send(await searchController.queryFeaturesByProducts(q, category, subcategoriesArr, featuresArray));
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
