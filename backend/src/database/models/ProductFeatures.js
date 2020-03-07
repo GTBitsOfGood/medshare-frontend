@@ -9,6 +9,26 @@ const productFeaturesSchema = new mongoose.Schema({
   count: { type: Number, required: true }
 });
 
+/**
+ * Gets ProductFeatures that have have an id in the input list
+ * @param featureIds - of type MongooseId
+ * @returns {Promise<ProductFeature>}
+ */
+productFeaturesSchema.statics.getFeaturesByIds = async function(featureIds) {
+  return this.find(generateIdsFilter(featureIds));
+};
+
+/**
+ * Generates the filter for getting all the features with the featureIds
+ * @param featureIds - of type MongooseId
+ * @returns {Promise<ProductFeature>}
+ */
+function generateIdsFilter(featureIds) {
+  return {
+    _id: { $in: featureIds }
+  };
+}
+
 productFeaturesSchema.statics.featureFound = async function featureFound(featureLabel, count = 1, recursionDepth = 0) {
   return this.findOneAndUpdate(
     {
