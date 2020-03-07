@@ -5,6 +5,7 @@ const searchController = {};
 
 const PAGE_SIZE = 15;
 const DIFF_FIELD = 'POSITION_DIFF';
+const FREQUENCY_FIELD = 'LOCAL_FREQUENCY';
 
 searchController.queryFeaturesByProducts = async (
   nameFilter,
@@ -126,13 +127,17 @@ function aggregateProductFeaturesFromProducts(productFilter, productFeatureFilte
     .replaceRoot('features')
     .match(productFeatureFilter)
     .addFields({ [DIFF_FIELD]: { $abs: { $subtract: ['$name.medianIndex', targetPosition] } } }) // calculate the diff from the target position
-    .group({ _id: '$productFeature', [DIFF_FIELD]: { $min: '$' + DIFF_FIELD } }) // group matching product features. keep the one with the lowest delta
+    .group({
+      _id: '$productFeature',
+      [DIFF_FIELD]: { $min: '$' + DIFF_FIELD },
+      [FREQUENCY_FIELD]: { $sum: 1 }
+    }) // group matching product features. keep the one with the lowest delta
     .lookup({ from: 'productfeatures', localField: '_id', foreignField: '_id', as: 'productFeature' })
     .unwind('productFeature')
     .replaceRoot({ $mergeObjects: ['$productFeature', '$$ROOT'] }) // merge the root with the productFeature object because we want to keep the DIFF_FIELD (and maybe other calculated fields in the future)
     .project({ productFeature: 0 }) // it's attributes go merged in, remove it
     .match(featureFilter)
-    .sort({ [DIFF_FIELD]: 1, count: -1 }) // sort by position diff
+    .sort({ [DIFF_FIELD]: 1, [FREQUENCY_FIELD]: -1 }) // sort by position diff
     .limit(PAGE_SIZE);
 }
 
