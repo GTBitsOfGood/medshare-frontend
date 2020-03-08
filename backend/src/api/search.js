@@ -17,25 +17,35 @@ const searchController = require('../controllers/searchController');
   Returns:
     array of all matching products
  */
-router.get('/', ensureParameterInRequest('q', 'string'), ensureParameterInRequest('q', 'string'), async (req, res) => {
-  const { q, subcategories, category, features } = req.query;
+router.get(
+  '/',
+  ensureParameterInRequest('q', 'string'),
+  ensureParameterInRequest('features', 'string'),
+  async (req, res) => {
+    const { q, subcategories, category, features } = req.query;
 
-  try {
-    const queries = processArrayParameterAndNormalize(q, ' ', false);
-    const featuresArray = processArrayParameterAndNormalize(features, ',', false);
-    let normalizedCategory = category;
-    if (category) {
-      normalizedCategory = category.toLowerCase();
+    try {
+      const queries = processArrayParameterAndNormalize(q, ' ', false);
+      const featuresArray = processArrayParameterAndNormalize(features, ',', false);
+      let normalizedCategory = category;
+      if (category) {
+        normalizedCategory = category.toLowerCase();
+      }
+
+      const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
+      const products = await searchController.queryProducts(
+        queries,
+        normalizedCategory,
+        subcategoriesArr,
+        featuresArray
+      );
+      return res.send(products);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send(err.message);
     }
-
-    const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
-    const products = await searchController.queryProducts(queries, normalizedCategory, subcategoriesArr, featuresArray);
-    return res.send(products);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send(err.message);
   }
-});
+);
 
 /*
   GET autocomplete endpoint
