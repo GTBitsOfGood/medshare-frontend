@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem 1rem;
+  margin-bottom: 1.5rem;
 `;
 
 const Header = () => {

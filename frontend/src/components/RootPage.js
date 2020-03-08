@@ -8,6 +8,7 @@ import { deviceSize } from '../theme';
 import CategoryContainer from '../containers/categoryContainer';
 import FeaturesContainer from '../containers/featuresContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
+import FeatureList from './FeatureList';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,6 +38,7 @@ const RootPage = () => {
           <FeaturesContainer.Provider>
             <QueryComponents />
             <ProductList />
+            <FeatureList />
           </FeaturesContainer.Provider>
         </SubcategoriesContainer.Provider>
       </CategoryContainer.Provider>
