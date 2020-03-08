@@ -13,25 +13,32 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 600px;
+  max-width: 500px;
   margin: 2rem auto;
 
   @media ${deviceSize.laptop} {
+    max-width: 500px;
+  }
+  @media ${deviceSize.mobileL} {
+    max-width: 350px;
+  }
+  @media ${deviceSize.mobileS} {
+    max-width: 300px;
   }
 `;
 
 const RootPage = () => {
   return (
-    <CategoryContainer.Provider>
-      <SubcategoriesContainer.Provider>
-        <FeaturesContainer.Provider>
-          <Wrapper>
+    <Wrapper>
+      <CategoryContainer.Provider>
+        <SubcategoriesContainer.Provider>
+          <FeaturesContainer.Provider>
             <QueryComponents />
             <ProductList />
-          </Wrapper>
-        </FeaturesContainer.Provider>
-      </SubcategoriesContainer.Provider>
-    </CategoryContainer.Provider>
+          </FeaturesContainer.Provider>
+        </SubcategoriesContainer.Provider>
+      </CategoryContainer.Provider>
+    </Wrapper>
   );
 };
 
