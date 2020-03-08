@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const Header = () => {
   return (
     <Wrapper>
-      <img src={Logo} alt="medshare-logo" width="20%" height="20%" margin-top="1.5rem" />
+      <img src={Logo} alt="medshare-logo" width="75rem" height="75rem" margin-top="1.5rem" />
     </Wrapper>
   );
 };
