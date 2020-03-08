@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Logo from './medshare-logo.png';
+import Logo from '../resources/medshare-logo.png';
 
 const Wrapper = styled.div`
   display: flex;
