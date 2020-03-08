@@ -11,13 +11,15 @@ import { useDebounce } from '../utils';
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
   width: 100%;
 `;
 const CategoryWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-grow: 1;
+  margin-bottom: 0.7rem;
 `;
 
 const useAutocomplete = () => {
@@ -65,16 +67,6 @@ const QueryComponents = () => {
 
   return (
     <Wrapper>
-      <FeatureSelect
-        query={query}
-        onQueryChange={setQuery}
-        selectedFeatures={selectedFeatures}
-        featureResults={featureResults}
-        onRemove={removeFeature}
-        onClear={clearFeatures}
-        onSelect={handleFeatureSelect}
-        checkIsFeatureSelected={isFeatureSelected}
-      />
       <CategoryWrapper>
         <CategorySelect category={category} onSelect={setCategory} />
         <SubcategorySelect
@@ -85,6 +77,16 @@ const QueryComponents = () => {
           onRemoveByIdx={removeSubcatByIdx}
         />
       </CategoryWrapper>
+      <FeatureSelect
+        query={query}
+        onQueryChange={setQuery}
+        selectedFeatures={selectedFeatures}
+        featureResults={featureResults}
+        onRemove={removeFeature}
+        onClear={clearFeatures}
+        onSelect={handleFeatureSelect}
+        checkIsFeatureSelected={isFeatureSelected}
+      />
     </Wrapper>
   );
 };

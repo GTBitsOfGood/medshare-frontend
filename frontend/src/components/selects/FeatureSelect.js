@@ -5,9 +5,13 @@ import { MultiSelect } from '@blueprintjs/select';
 import PropTypes from 'prop-types';
 
 const Wrapper = styled.div`
-  flex-basis: 250px;
+  width: 100%;
   flex-grow: 2;
   color: black;
+
+  .bp3-input {
+    box-shadow: 0 0 0 0 #6396b3, 0 0 0 0 #6396b3, inset 0 0 0 1px #6396b3, inset 0 1px 1px #6396b3;
+  }
 `;
 
 const tagRenderer = feature => feature.name;
