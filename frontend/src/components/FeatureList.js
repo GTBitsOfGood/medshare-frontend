@@ -7,6 +7,7 @@ import Feature from './Feature';
 const ItemList = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 1rem;
 `;
 
 const TagContainer = styled.div`
@@ -33,7 +34,7 @@ const FeatureList = () => {
   const features = useFrequentFeatures();
   return (
     <ItemList>
-      <p style={{ color: '#6396B3' }}>Frequent Filters </p>
+      <p style={{ color: '#A9A7A7' }}>Frequent Filters </p>
       <TagContainer>
         {features.map(feature => {
           return <Feature name={feature.name} />;

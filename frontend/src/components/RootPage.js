@@ -37,8 +37,8 @@ const RootPage = () => {
         <SubcategoriesContainer.Provider>
           <FeaturesContainer.Provider>
             <QueryComponents />
-            <ProductList />
             <FeatureList />
+            <ProductList />
           </FeaturesContainer.Provider>
         </SubcategoriesContainer.Provider>
       </CategoryContainer.Provider>
