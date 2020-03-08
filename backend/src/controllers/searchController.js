@@ -47,9 +47,30 @@ searchController.queryProducts = async (productNameFilter, filterCategory, filte
     filterSubcategories,
     filterFeatureMongooseIds
   );
-  return Product.find()
-    .or(filter)
-    .limit(PAGE_SIZE);
+  // return Product.find()
+  //   .or(filter)
+  //   .limit(PAGE_SIZE);
+  return Product.aggregate().facet({
+    subcategories: [
+      { $match: filter },
+      {
+        $group: {
+          _id: null,
+          name: { $addToSet: '$subcategory' }
+        }
+      },
+      {
+        $unwind: '$name'
+      }
+    ],
+    products: [{ $match: filter }, { $limit: PAGE_SIZE }]
+  });
+  // group({
+  //   _id: null,
+  //   subcategories: { $addToSet: '$subcategory' }
+  // })
+
+  // .limit(PAGE_SIZE);
 };
 
 /**

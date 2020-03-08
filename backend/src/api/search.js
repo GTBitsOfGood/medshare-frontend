@@ -39,7 +39,13 @@ router.get(
         subcategoriesArr,
         featuresArray
       );
-      return res.send(products);
+      let matchedProducts = [];
+      let matchedSubcategories = [];
+      if (products.length > 0) {
+        matchedProducts = products[0].products;
+        matchedSubcategories = products[0].subcategories;
+      }
+      return res.json({ products: matchedProducts, subcategories: matchedSubcategories });
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
