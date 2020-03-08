@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Header from './Header';
 import ProductList from './ProductList';
 import QueryComponents from './QueryComponents';
 import { deviceSize } from '../theme';
@@ -22,16 +23,19 @@ const Wrapper = styled.div`
 
 const RootPage = () => {
   return (
-    <CategoryContainer.Provider>
-      <SubcategoriesContainer.Provider>
-        <FeaturesContainer.Provider>
-          <Wrapper>
-            <QueryComponents />
-            <ProductList />
-          </Wrapper>
-        </FeaturesContainer.Provider>
-      </SubcategoriesContainer.Provider>
-    </CategoryContainer.Provider>
+    <>
+      <Header />
+      <CategoryContainer.Provider>
+        <SubcategoriesContainer.Provider>
+          <FeaturesContainer.Provider>
+            <Wrapper>
+              <QueryComponents />
+              <ProductList />
+            </Wrapper>
+          </FeaturesContainer.Provider>
+        </SubcategoriesContainer.Provider>
+      </CategoryContainer.Provider>
+    </>
   );
 };
 
