@@ -10,7 +10,7 @@ const breakpoints = {
 };
 
 export const deviceSize = {
-  mobileS: `(min-width: ${breakpoints.mobileS})`,
-  mobileL: `(min-width: ${breakpoints.mobileL}`,
-  laptop: `(min-width: ${breakpoints.laptop})`
+  mobileS: `(max-width: ${breakpoints.mobileS})`,
+  mobileL: `(max-width: ${breakpoints.mobileL})`,
+  laptop: `(max-width: ${breakpoints.laptop})`
 };

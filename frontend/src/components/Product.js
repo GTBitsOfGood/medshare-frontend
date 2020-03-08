@@ -3,10 +3,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Tag } from '@blueprintjs/core';
 
-const Div = styled.div`
+const OuterWrap = styled.div`
   display: flex;
-  flex-flow: column wrap;
-  justify-content: space-around;
+  flex-direction: column;
   background: #ffffff;
   border: 1px solid #ccc9c9;
   box-sizing: border-box;
@@ -19,28 +18,39 @@ const Div = styled.div`
 `;
 
 const TagContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   margin-top: 0.3rem;
   margin-bottom: 0.3rem;
+  justify-content: flex-end;
+`;
+
+const InnerWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Product = props => {
   const { name, category, subcategory, productID } = props;
   return (
-    <Div>
+    <OuterWrap>
       <span>{name}</span>
-      <TagContainer>
-        <Tag round style={{ marginRight: '0.25rem', background: '##6396b3' }}>
-          {category}
-        </Tag>
-        <Tag round style={{ backgroundColor: '#D6A636' }}>
-          {subcategory}
-        </Tag>
-      </TagContainer>
-      <span>
-        <b>SKU:</b>
-        {productID}
-      </span>
-    </Div>
+      <InnerWrap>
+        <span>
+          <b>SKU: </b> {productID}
+        </span>
+        <TagContainer>
+          <Tag round style={{ marginRight: '0.25rem', background: '##6396b3' }}>
+            {category}
+          </Tag>
+          <Tag round style={{ marginTop: '0.15rem', backgroundColor: '#D6A636' }}>
+            {subcategory}
+          </Tag>
+        </TagContainer>
+      </InnerWrap>
+    </OuterWrap>
   );
 };
 
