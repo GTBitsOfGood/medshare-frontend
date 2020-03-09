@@ -14,7 +14,7 @@ const Feature = props => {
   const { name } = props;
   return (
     <Wrap>
-      <Tag large round style={{ marginRight: '0.10rem', background: '##6396b3' }}>
+      <Tag large round style={{ marginRight: '0.10rem', background: '#6396b3' }}>
         {name}
       </Tag>
     </Wrap>
