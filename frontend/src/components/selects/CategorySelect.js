@@ -3,17 +3,13 @@ import { Menu, Button, MenuItem } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import deselectButton from '../../resources/deselect.png';
 
 const SelectContainer = styled.div``;
-
-const ButtonWithBorder = styled.button`
-  display: block;
+const ButtonWithBorder = styled(Button)`
   border-radius: 8px;
   color: white;
   background-color: white;
   cursor: pointer;
-  margin-top: 2px;
 `;
 
 const categories = ['Medical Equipment', 'World Vision', 'Bio Med', 'Kendall'];
@@ -25,9 +21,7 @@ const CategorySelect = ({ onSelect, category }) => {
   const SelectedItem = () => {
     return (
       <div>
-        <ButtonWithBorder type="submit" onClick={deselectActive}>
-          <img alt="deselect button" src={deselectButton} height="15" width="15" />
-        </ButtonWithBorder>
+        <ButtonWithBorder small icon="cross" type="submit" onClick={deselectActive} intent="danger" />
       </div>
     );
   };
