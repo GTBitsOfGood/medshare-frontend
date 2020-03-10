@@ -33,18 +33,15 @@ const CategorySelect = ({ onSelect, category }) => {
   };
 
   const itemListRenderer = ({ items, itemsParentRef, renderItem, activeItem }) => {
-    const renderedItems = items.map(renderItem).filter(item => item.props.text !== activeItem);
-    return (
-      <Menu ulRef={itemsParentRef}>
-        <MenuItem
-          key={activeItem}
-          text={activeItem}
-          labelElement={activeItem === '' ? null : <SelectedItem />}
-          shouldDismissPopover={false}
-        />
-        {renderedItems}
-      </Menu>
-    );
+    const renderedItems = items.map(item => {
+      if (item === activeItem) {
+        return (
+          <MenuItem key={activeItem} text={activeItem} labelElement={<SelectedItem />} shouldDismissPopover={false} />
+        );
+      }
+      return renderItem(item);
+    });
+    return <Menu ulRef={itemsParentRef}>{renderedItems}</Menu>;
   };
 
   itemListRenderer.propTypes = {
