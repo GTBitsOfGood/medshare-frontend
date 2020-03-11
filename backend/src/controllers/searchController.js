@@ -72,7 +72,7 @@ function generateProductFilterWithRequiredFeatures(
 
 function generateBaseProductFilter(productFilterString, filterCategory, filterSubCategories) {
   const baseFilter = {
-    name: {
+    searchableName: {
       $regex: new RegExp(productFilterString, 'i')
     }
   };
@@ -126,7 +126,15 @@ function aggregateProductFeaturesFromProducts(productFilter, productFeatureFilte
     .unwind('features')
     .replaceRoot('features')
     .match(productFeatureFilter)
-    .addFields({ [DIFF_FIELD]: { $abs: { $subtract: ['$name.medianIndex', targetPosition] } } }) // calculate the diff from the target position
+    .addFields({
+      [DIFF_FIELD]: {
+        $cond: {
+          if: { $gte: ['$name.medianIndex', 0] },
+          then: { $abs: { $subtract: ['$name.medianIndex', targetPosition] } },
+          else: 100000
+        }
+      }
+    }) // calculate the diff from the target position
     .group({
       _id: '$productFeature',
       [DIFF_FIELD]: { $min: '$' + DIFF_FIELD },

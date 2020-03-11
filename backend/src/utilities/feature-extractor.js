@@ -93,13 +93,22 @@ async function processProductObjectAndInsertIntoDB(productObject) {
     feature.productFeature = featureId;
     return feature;
   });
+  productObject.searchableName = generateSearchableName(productObject.name, features);
   productObject.features = await Promise.all(featuresPromises);
   return Product.insertProduct(productObject);
 }
 
 function extractFeaturesListsFromProductObject(productObject) {
   return {
+    productId: [generateIdFeature(productObject)],
     name: extractFeaturesFromValue(productObject.name)
+  };
+}
+
+function generateIdFeature(productObject) {
+  return {
+    featureText: `#${productObject.productId}`,
+    medianIndex: 0
   };
 }
 
@@ -166,7 +175,8 @@ function groupFeatures(source, featureList, featureMap) {
       const { featureText, startIndex } = feature;
       if (featureMap[featureText] == null) {
         featureMap[featureText] = {
-          name: []
+          name: [],
+          productId: []
         };
       }
       featureMap[featureText][source].push(startIndex);
@@ -190,6 +200,18 @@ async function insertFeatureIntoDatabase(feature) {
   const dbObject = await ProductFeatures.featureFound(feature.featureLabel, feature[feature.name.count]);
   // eslint-disable-next-line no-underscore-dangle
   return dbObject._id;
+}
+
+/**
+ * Generates the string searched when matching products against a string. Features are added to the string because
+ * it's possible they have been normalized--the user could be searching by the noormalized version or the unormalized version
+ * @param productName
+ * @param featuresInProductName
+ * @returns {string}
+ */
+function generateSearchableName(productName, searchableFeatures) {
+  const searchableFeaturesString = searchableFeatures.map(feature => feature.featureLabel).join(' ');
+  return productName + ' ' + searchableFeaturesString;
 }
 
 module.exports = {

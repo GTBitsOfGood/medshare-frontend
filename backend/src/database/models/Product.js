@@ -10,6 +10,7 @@ const featureDataSchema = {
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  searchableName: { type: String, required: true },
   category: { type: String, required: true },
   subcategory: { type: String, required: true },
   productId: { type: String, required: true, unique: true },
@@ -17,12 +18,13 @@ const productSchema = new mongoose.Schema({
     {
       _id: { id: false },
       productFeature: { type: ObjectId, ref: 'ProductFeatures' },
-      name: featureDataSchema
+      name: featureDataSchema,
+      productId: featureDataSchema
     }
   ]
 });
 
-productSchema.statics.insertProduct = async function featureFound(product) {
+productSchema.statics.insertProduct = async function insertProduct(product) {
   return this.findOneAndUpdate(
     {
       productId: product.productId
