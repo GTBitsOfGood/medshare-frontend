@@ -9,7 +9,7 @@ const searchController = require('../controllers/searchController');
   are searched if they are not provided as search params.
 
   Args:
-    q (str): query key word (required)
+    q (str): query key word (required) (product names must be separated by spaces)
     features (str): comma-separated list of MongoObjectIDs
     category (str): query category
     subcategories (str): comma-separated list of subcategories
