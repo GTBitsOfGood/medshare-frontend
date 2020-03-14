@@ -1,6 +1,5 @@
-const { parseProductsFromCsvPath, processProductObjectAndInsertIntoDB } = require('./feature-extractor');
+const { parseProductsFromCsvPath } = require('./feature-extraction/csv-feature-extractor');
 
 module.exports = {
-  parseProductsFromCsvPath,
-  processProductObjectAndInsertIntoDB
+  parseProductsFromCsvPath
 };
