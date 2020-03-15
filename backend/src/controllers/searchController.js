@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongoose').Types;
 const { Product, ProductFeatures } = require('../database/models');
 
 const searchController = {};
@@ -11,9 +10,8 @@ searchController.queryFeaturesByProducts = async (
   nameFilter,
   filterCategory,
   filterSubcategories,
-  filterFeatureIds
+  filterFeatureMongooseIds
 ) => {
-  const filterFeatureMongooseIds = filterFeatureIds.map(ObjectId);
   const inputFeatures = await ProductFeatures.getFeaturesByIds(filterFeatureMongooseIds);
   const targetFeaturePosition = getTotalLengthOfFeatures(inputFeatures);
   const filter = generateProductFilterWithRequiredFeatures(
@@ -40,16 +38,13 @@ function getTotalLengthOfFeatures(features) {
 }
 
 searchController.queryProducts = async (productNameFilter, filterCategory, filterSubcategories, filterFeatureIds) => {
-  const filterFeatureMongooseIds = filterFeatureIds.map(ObjectId);
   const filter = generateProductFilterWithRequiredFeatures(
     productNameFilter,
     filterCategory,
     filterSubcategories,
-    filterFeatureMongooseIds
+    filterFeatureIds
   );
-  return Product.find()
-    .or(filter)
-    .limit(PAGE_SIZE);
+  return Product.find(filter).limit(PAGE_SIZE);
 };
 
 /**
@@ -77,7 +72,7 @@ function generateBaseProductFilter(productFilterString, filterCategory, filterSu
     }
   };
   if (filterCategory) {
-    baseFilter.category = { $eq: filterCategory.toLowerCase() };
+    baseFilter.category = { $eq: filterCategory };
   }
   if (filterSubCategories && filterSubCategories.length > 0) {
     baseFilter.subcategory = { $in: filterSubCategories };

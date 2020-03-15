@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const { query, validationResult } = require('express-validator');
+const { ObjectId } = require('mongoose').Types;
 const searchController = require('../controllers/searchController');
 
 /*
@@ -19,27 +21,26 @@ const searchController = require('../controllers/searchController');
  */
 router.get(
   '/',
-  ensureParameterInRequest('q', 'string'),
-  ensureParameterInRequest('features', 'string'),
+  [
+    query('q')
+      .exists()
+      .bail()
+      .customSanitizer(toLowerCaseSanitizer),
+    query('subcategories')
+      .toArray()
+      .customSanitizer(arrayToLowerCaseSanitizer),
+    query('features')
+      .toArray()
+      .customSanitizer(arrayToMongoIdsSanitizer),
+    query('category')
+      .optional()
+      .customSanitizer(toLowerCaseSanitizer),
+    errorOnBadValidation
+  ],
   async (req, res) => {
     const { q, subcategories, category, features } = req.query;
-
     try {
-      const queries = processArrayParameterAndNormalize(q, ' ', false);
-      const featuresArray = processArrayParameterAndNormalize(features, ',', false);
-      let normalizedCategory = category;
-      if (category) {
-        normalizedCategory = category.toLowerCase();
-      }
-
-      const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
-      const products = await searchController.queryProducts(
-        queries,
-        normalizedCategory,
-        subcategoriesArr,
-        featuresArray
-      );
-      return res.send(products);
+      return res.send(await searchController.queryProducts(q, category, subcategories, features));
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
@@ -69,49 +70,55 @@ router.get(
  */
 router.get(
   '/autocomplete',
-  ensureParameterInRequest('q', 'string'),
-  ensureParameterInRequest('features', 'string'),
+  [
+    query('q')
+      .exists()
+      .bail()
+      .customSanitizer(toLowerCaseSanitizer),
+    query('subcategories')
+      .toArray()
+      .customSanitizer(arrayToLowerCaseSanitizer),
+    query('features')
+      .toArray()
+      .customSanitizer(arrayToMongoIdsSanitizer),
+    query('category')
+      .optional()
+      .customSanitizer(toLowerCaseSanitizer),
+    errorOnBadValidation
+  ],
   async (req, res) => {
-    const { q, subcategories, features } = req.query;
+    const { q, category, subcategories, features } = req.query;
     try {
-      const featuresArray = processArrayParameterAndNormalize(features, ',', false);
-      const subcategoriesArr = processArrayParameterAndNormalize(subcategories, ',', true);
-
-      let { category } = req.query;
-      if (category) {
-        category = category.toLowerCase();
-      }
-
-      return res.send(await searchController.queryFeaturesByProducts(q, category, subcategoriesArr, featuresArray));
+      res.send(await searchController.queryFeaturesByProducts(q, category, subcategories, features));
     } catch (err) {
       console.log(err);
-      return res.status(500).send(err.message);
+      res.status(500).send(err.message);
     }
   }
 );
 
-function processArrayParameterAndNormalize(parameter, delimiter, canBeNull) {
-  if (parameter !== undefined && parameter !== null) {
-    parameter = parameter
-      .toLowerCase()
-      .split(delimiter)
-      .filter(feature => feature.length > 0);
-  } else if (!canBeNull) {
-    throw new Error('Received a value as null that should not be null');
+function errorOnBadValidation(req, res, next) {
+  if (!validationResult(req).isEmpty()) {
+    res.status(500).send(validationResult(req));
+  } else {
+    next();
   }
-  return parameter;
 }
 
-function ensureParameterInRequest(parameterName, desiredType) {
-  return (req, res, next) => {
-    const value = req.query[parameterName];
-    // eslint-disable-next-line valid-typeof
-    if (value === null || typeof value !== desiredType) {
-      console.log('error when parsing parameters from req');
-      res.status(400).send(`${parameterName} must be a query param and be of type ${desiredType}!`);
-    } else {
-      next();
-    }
-  };
+function arrayToLowerCaseSanitizer(values) {
+  return values.map(toLowerCaseSanitizer);
 }
+
+function toLowerCaseSanitizer(value) {
+  return value.toLowerCase();
+}
+
+function arrayToMongoIdsSanitizer(array) {
+  try {
+    return array.map(ObjectId);
+  } catch (error) {
+    throw new Error('Could not parse mongoose id: ' + error);
+  }
+}
+
 module.exports = router;
