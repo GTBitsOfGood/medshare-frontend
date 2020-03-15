@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongoose').Types;
 const { Product, ProductFeatures } = require('../database/models');
 
 const searchController = {};
@@ -21,9 +20,8 @@ searchController.queryFeaturesByProducts = async (
   nameFilter,
   filterCategory,
   filterSubcategories,
-  filterFeatureIds
+  filterFeatureMongooseIds
 ) => {
-  const filterFeatureMongooseIds = filterFeatureIds.map(ObjectId);
   const inputFeatures = await ProductFeatures.getFeaturesByIds(filterFeatureMongooseIds);
   const targetFeaturePosition = getTotalLengthOfFeatures(inputFeatures);
   const filter = generateProductFilterWithRequiredFeatures(
@@ -56,20 +54,20 @@ function getTotalLengthOfFeatures(features) {
 
 /**
  * Queries Product documents and returns the matching Product documents
- * @param productNames (array)  - must be within the product's "searchableName" (array) [OR'ED]
+ * @param productName  - must be within the product's "searchableName"
  * @param filterCategory (can be null) - the category the product must be in
  * @param filterSubcategories (array) (can be null) - the product's subcategories must fall under one of these subcategories [OR'ED]
- * @param filterFeatureIds (array) - the required feature's the product must have. If empty array, then no required features [AND'ed]
+ * @param filterFeatureIds (array of Mongoose ObjectId's) - the required feature's the product must have. If empty array, then no required features [AND'ed]
  * @returns {Promise<*>}
  */
-searchController.queryProducts = async (productNames, filterCategory, filterSubcategories, filterFeatureIds) => {
-  const filterFeatureMongooseIds = filterFeatureIds.map(ObjectId);
-  const filters = productNames.map(name =>
-    generateProductFilterWithRequiredFeatures(name, filterCategory, filterSubcategories, filterFeatureMongooseIds)
+searchController.queryProducts = async (productName, filterCategory, filterSubcategories, filterFeatureIds) => {
+  const filter = generateProductFilterWithRequiredFeatures(
+    productName,
+    productName,
+    filterSubcategories,
+    filterFeatureIds
   );
-  return Product.find()
-    .or(filters)
-    .limit(PAGE_SIZE);
+  return Product.find(filter).limit(PAGE_SIZE);
 };
 
 /**
@@ -104,7 +102,7 @@ function generateBaseProductFilter(productFilterString, filterCategory, filterSu
     }
   };
   if (filterCategory) {
-    baseFilter.category = { $eq: filterCategory.toLowerCase() };
+    baseFilter.category = { $eq: filterCategory };
   }
   if (filterSubCategories && filterSubCategories.length > 0) {
     baseFilter.subcategory = { $in: filterSubCategories };
