@@ -30,8 +30,8 @@ const useAutocomplete = () => {
   const debouncedQuery = useDebounce(query, 200); // debounce 200ms
 
   useEffect(() => {
-    const filterFeatureIds = selectedFeatures.map(feature => feature._id).join(',');
-    getAutocompleteResults(query, filterFeatureIds, category, selectedSubcats.join(','))
+    const filterFeatureIds = selectedFeatures.map(feature => feature._id);
+    getAutocompleteResults(query, filterFeatureIds, category, selectedSubcats)
       .then(results => {
         const filteredFeatures = results.data;
         console.log(filteredFeatures);
