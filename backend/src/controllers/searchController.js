@@ -63,7 +63,7 @@ function getTotalLengthOfFeatures(features) {
 searchController.queryProducts = async (productName, filterCategory, filterSubcategories, filterFeatureIds) => {
   const filter = generateProductFilterWithRequiredFeatures(
     productName,
-    productName,
+    filterCategory,
     filterSubcategories,
     filterFeatureIds
   );
