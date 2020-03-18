@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, MenuItem } from '@blueprintjs/core';
+import { Button, MenuItem, Menu } from '@blueprintjs/core';
 import { MultiSelect } from '@blueprintjs/select';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -84,6 +84,19 @@ const itemPredicate = (query, name) => {
   return normalizedName.indexOf(normalizedQuery) >= 0;
 };
 
+const itemListRenderer = ({ renderItem, items, itemsParentRef }) => {
+  return (
+    <Menu large ulRef={itemsParentRef}>
+      {items.map(renderItem)}
+    </Menu>
+  );
+};
+itemListRenderer.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.string).isRequired,
+  itemsParentRef: PropTypes.element.isRequired,
+  renderItem: PropTypes.func.isRequired
+};
+
 const SubcategorySelect = ({ selectedItems, onRemoveByIdx, onSelect, onClear, checkIsSelected }) => {
   const renderItems = (item, { handleClick, modifiers }) => {
     if (!modifiers.matchesPredicate) {
@@ -112,12 +125,13 @@ const SubcategorySelect = ({ selectedItems, onRemoveByIdx, onSelect, onClear, ch
         resetOnSelect
         popoverProps={{ minimal: true }}
         items={subcategories}
+        itemListRenderer={itemListRenderer}
         itemRenderer={renderItems}
         itemPredicate={itemPredicate}
         onItemSelect={onSelect}
         noResults={<MenuItem disabled text="No results." />}
         tagRenderer={renderTag}
-        tagInputProps={{ rightElement: clearButton, onRemove: handleRemove }}
+        tagInputProps={{ rightElement: clearButton, onRemove: handleRemove, large: true }}
         selectedItems={selectedItems}
         placeholder="Subcategories.."
       />

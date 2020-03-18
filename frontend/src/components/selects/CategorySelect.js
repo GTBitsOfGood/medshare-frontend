@@ -28,7 +28,11 @@ const CategorySelect = ({ onSelect, category }) => {
       }
       return renderItem(item);
     });
-    return <Menu ulRef={itemsParentRef}>{renderedItems}</Menu>;
+    return (
+      <Menu large ulRef={itemsParentRef}>
+        {renderedItems}
+      </Menu>
+    );
   };
 
   itemListRenderer.propTypes = {
@@ -54,6 +58,7 @@ const CategorySelect = ({ onSelect, category }) => {
       <Select
         fill
         filterable={false}
+        inputProps={{ large: true }}
         popoverProps={{ minimal: true }}
         items={categories}
         itemListRenderer={itemListRenderer}
@@ -61,7 +66,7 @@ const CategorySelect = ({ onSelect, category }) => {
         onItemSelect={onSelect}
         activeItem={category}
       >
-        <Button text={category || 'Category'} rightIcon="caret-down" />
+        <Button large text={category || 'Category'} rightIcon="caret-down" />
       </Select>
     </SelectContainer>
   );
