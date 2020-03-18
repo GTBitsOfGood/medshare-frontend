@@ -5,12 +5,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const SelectContainer = styled.div``;
-const ButtonWithBorder = styled(Button)`
-  border-radius: 8px;
-  color: white;
-  background-color: white;
-  cursor: pointer;
-`;
 
 const categories = ['Medical Equipment', 'World Vision', 'Bio Med', 'Kendall'];
 
@@ -18,19 +12,18 @@ const CategorySelect = ({ onSelect, category }) => {
   const deselectActive = () => {
     onSelect('');
   };
-  const SelectedItem = () => {
-    return (
-      <div>
-        <ButtonWithBorder small icon="cross" type="submit" onClick={deselectActive} intent="danger" />
-      </div>
-    );
-  };
 
   const itemListRenderer = ({ items, itemsParentRef, renderItem, activeItem }) => {
     const renderedItems = items.map(item => {
       if (item === activeItem) {
         return (
-          <MenuItem key={activeItem} text={activeItem} labelElement={<SelectedItem />} shouldDismissPopover={false} />
+          <MenuItem
+            active
+            key={activeItem}
+            text={activeItem}
+            labelElement={<Button small icon="cross" type="submit" onClick={deselectActive} intent="danger" />}
+            shouldDismissPopover={false}
+          />
         );
       }
       return renderItem(item);
@@ -39,7 +32,7 @@ const CategorySelect = ({ onSelect, category }) => {
   };
 
   itemListRenderer.propTypes = {
-    items: PropTypes.shape.isRequired,
+    items: PropTypes.arrayOf(PropTypes.string).isRequired,
     itemsParentRef: PropTypes.func.isRequired,
     renderItem: PropTypes.func.isRequired,
     activeItem: PropTypes.string.isRequired
