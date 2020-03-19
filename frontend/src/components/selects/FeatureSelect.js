@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { MenuItem, Button } from '@blueprintjs/core';
+import { MenuItem, Button, Menu } from '@blueprintjs/core';
 import { MultiSelect } from '@blueprintjs/select';
 import PropTypes from 'prop-types';
 
@@ -19,6 +19,19 @@ const itemPredicate = (query, feature) => {
   const normalizedQuery = query.toLowerCase();
   const normalizedName = feature.name.toLowerCase();
   return normalizedName.indexOf(normalizedQuery) >= 0;
+};
+
+const itemListRenderer = ({ renderItem, items, itemsParentRef }) => {
+  return (
+    <Menu large ulRef={itemsParentRef}>
+      {items.map(renderItem)}
+    </Menu>
+  );
+};
+itemListRenderer.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.string).isRequired,
+  itemsParentRef: PropTypes.element.isRequired,
+  renderItem: PropTypes.func.isRequired
 };
 
 const FeatureSelect = ({
@@ -54,10 +67,11 @@ const FeatureSelect = ({
         onQueryChange={onQueryChange}
         selectedItems={selectedFeatures}
         items={featureResults}
+        itemListRenderer={itemListRenderer}
         itemRenderer={renderFeature}
         itemPredicate={itemPredicate}
         tagRenderer={tagRenderer}
-        tagInputProps={{ onRemove, rightElement: clearButton }}
+        tagInputProps={{ onRemove, rightElement: clearButton, large: true }}
         popoverProps={{ minimal: true }}
         placeholder="Search Features..."
       />
