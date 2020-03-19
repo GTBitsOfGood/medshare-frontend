@@ -1,13 +1,22 @@
 const { Product, ProductFeatures } = require('../../database/models');
+const Feature = require('./feature');
 
 const REMOVE_REGEX = new RegExp('( (?=-))|((?<=-) )|((?<=[a-zA-Z])-(?=[a-zA-Z]))|_', 'g');
 const STANDARD_FEATURE_REGEX = new RegExp('([0-9][0-9"/]*[-/][0-9][0-9"/]*)|(\\w+)', 'g');
 const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
+
 const COMMA_REGEX_THRESHOLD = 2;
 
-async function processProductObjectAndInsertIntoDB(productObject) {
-  const featuresListsDict = extractFeaturesListsFromProductObject(productObject);
-  const features = groupAndExtractMetadata(featuresListsDict);
+async function processProductObjectAndInsertIntoDB(rawProductObject) {
+  const features = await getProductFeatures(rawProductObject);
+  return Product.insertProductWithFeatures(rawProductObject, features);
+}
+
+async function getProductFeatures(rawProductObject) {
+  const features = groupFeaturesByValue(
+    generateIdFeatures(rawProductObject),
+    generateNameFeatures(rawProductObject.name)
+  );
   const featuresPromises = features.map(async feature => {
     const featureId = await insertFeatureIntoDatabase(feature);
     // reference the feature id, not the name in the database
@@ -15,39 +24,29 @@ async function processProductObjectAndInsertIntoDB(productObject) {
     feature.productFeature = featureId;
     return feature;
   });
-  productObject.searchableName = generateSearchableName(productObject.name, features);
-  productObject.features = await Promise.all(featuresPromises);
-  return Product.insertProduct(productObject);
+  return Promise.all(featuresPromises);
 }
 
-function extractFeaturesListsFromProductObject(productObject) {
-  return {
-    productId: [generateIdFeature(productObject)],
-    name: extractFeaturesFromValue(productObject.name)
-  };
+function generateIdFeatures(productObject) {
+  return [new Feature(`#${productObject.productId}`, [0])];
 }
 
-function generateIdFeature(productObject) {
-  return {
-    featureText: `#${productObject.productId}`,
-    medianIndex: 0
-  };
-}
-
-function extractFeaturesFromValue(value) {
+function generateNameFeatures(value) {
   /* normalize any special characters/spaces that might effect feature matching.
    offset map required to ensure "median index" is based off unnormalized string
    */
-  const normalizedValue = removeSpecialCharacterst(value.toLowerCase());
+  const normalizedValue = removeSpecialCharacters(value.toLowerCase());
   const featureRegex =
     (normalizedValue.match(COMMA_DELIMITED_REGEX) || []).length >= COMMA_REGEX_THRESHOLD
       ? COMMA_DELIMITED_REGEX
       : STANDARD_FEATURE_REGEX;
-  const normalizedFeatures = extractFeaturesByRegex(normalizedValue, featureRegex).map(normalizeFeatureAfterExtraction);
-  return calculateStartIndexOfNormalizedFeatures(normalizedFeatures);
+  const normalizedFeatureStrings = extractFeatureStringsByRegex(normalizedValue, featureRegex).map(
+    normalizeFeatureAfterExtraction
+  );
+  return getFeaturesFromFeatureStrings(normalizedFeatureStrings);
 }
 
-function removeSpecialCharacterst(value) {
+function removeSpecialCharacters(value) {
   let matchResult = REMOVE_REGEX.exec(value);
   while (matchResult !== null) {
     const removeIndex = matchResult.index;
@@ -57,7 +56,7 @@ function removeSpecialCharacterst(value) {
   return value;
 }
 
-function extractFeaturesByRegex(value, regex) {
+function extractFeatureStringsByRegex(value, regex) {
   const features = [];
   let matchResult = regex.exec(value);
   while (matchResult !== null) {
@@ -74,67 +73,64 @@ function normalizeFeatureAfterExtraction(feature) {
   return feature;
 }
 
-function calculateStartIndexOfNormalizedFeatures(features) {
+function getFeaturesFromFeatureStrings(featureStrings) {
+  const featurePositionsMap = getFeaturePositionsMap(featureStrings);
+  return generateFeaturesFromFeaturesPositionMap(featurePositionsMap);
+}
+
+function getFeaturePositionsMap(featureStrings) {
+  const locationsByFeatureTextMap = {};
   let offset = 0;
-  return features.map(featureText => {
-    const startIndex = offset;
+  featureStrings.forEach(featureText => {
+    if (locationsByFeatureTextMap[featureText] == null) {
+      locationsByFeatureTextMap[featureText] = [];
+    }
+    locationsByFeatureTextMap[featureText].push(offset);
     offset += featureText.length;
-    return { featureText, startIndex };
+  });
+
+  return locationsByFeatureTextMap;
+}
+
+function generateFeaturesFromFeaturesPositionMap(featurePositionsMap) {
+  return Object.keys(featurePositionsMap).map(featureText => {
+    const positions = featurePositionsMap[featureText];
+    return new Feature(featureText, positions);
   });
 }
 
-function groupAndExtractMetadata(featuresListsDict) {
-  const featuresMap = {};
-  Object.entries(featuresListsDict).forEach(([source, featuresFromSource]) => {
-    groupFeatures(source, featuresFromSource, featuresMap);
-  });
-  return Object.entries(featuresMap).map(([featureText, featureDict]) => buildFeatureObject(featureText, featureDict));
-}
+function groupFeaturesByValue(productIdFeatures, nameFeatures) {
+  const productIdFeaturesMap = featuresByValue(productIdFeatures);
+  const nameFeaturesMap = featuresByValue(nameFeatures);
+  const featureValues = [...new Set([...productIdFeaturesMap.keys(), ...nameFeaturesMap.keys()])];
 
-function groupFeatures(source, featureList, featureMap) {
-  if (featureList.length > 0) {
-    featureList.forEach(feature => {
-      const { featureText, startIndex } = feature;
-      if (featureMap[featureText] == null) {
-        featureMap[featureText] = {
-          name: [],
-          productId: []
-        };
-      }
-      featureMap[featureText][source].push(startIndex);
-    });
-  }
-}
-
-function buildFeatureObject(featureText, featureDict) {
-  const outputFeatureObject = { featureLabel: featureText };
-  Object.entries(featureDict).forEach(([source, positions]) => {
-    positions.sort();
-    outputFeatureObject[source] = {
-      count: positions.length,
-      medianIndex: positions.length === 0 ? -1 : positions[Math.floor(positions.length / 2)]
+  return featureValues.map(featureText => {
+    return {
+      featureLabel: featureText,
+      name: getFeatureOrUseDefault(nameFeaturesMap, featureText),
+      productId: getFeatureOrUseDefault(productIdFeaturesMap, featureText)
     };
   });
-  return outputFeatureObject;
+}
+
+function featuresByValue(features) {
+  return new Map(features.map(feature => [feature.featureText, feature]));
+}
+
+function getFeatureOrUseDefault(featureMap, featureText) {
+  const output = { count: 0, medianIndex: -1 };
+  if (featureMap.has(featureText)) {
+    const feature = featureMap.get(featureText);
+    output.count = feature.count;
+    output.medianIndex = feature.medianPosition;
+  }
+  return output;
 }
 
 async function insertFeatureIntoDatabase(feature) {
   const dbObject = await ProductFeatures.featureFound(feature.featureLabel, feature[feature.name.count]);
   // eslint-disable-next-line no-underscore-dangle
   return dbObject._id;
-}
-
-/**
- * Generates the string searched when matching products against a string. Features are added to the string because
- * it's possible they have been normalized--the user could be searching by the noormalized version or the unormalized
- * version
- * @param productName
- * @param featuresInProductName
- * @returns {string}
- */
-function generateSearchableName(productName, searchableFeatures) {
-  const searchableFeaturesString = searchableFeatures.map(feature => feature.featureLabel).join(' ');
-  return productName + ' ' + searchableFeaturesString;
 }
 
 module.exports = {
