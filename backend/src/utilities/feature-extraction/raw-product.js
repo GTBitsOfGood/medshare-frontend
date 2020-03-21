@@ -32,6 +32,15 @@ class RawProduct {
   validateProductObject() {
     return this.name && this.productId && this.category && this.subcategory;
   }
+
+  normalize() {
+    return new RawProduct(
+      this.name.toLowerCase(),
+      this.productId,
+      this.category.toLowerCase(),
+      this.subcategory.toLowerCase()
+    );
+  }
 }
 
 module.exports = RawProduct;

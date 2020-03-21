@@ -8,20 +8,21 @@ const featureDataSchema = {
   medianIndex: Number
 };
 
+const featureMetaDataSchema = {
+  _id: { id: false },
+  productFeature: { type: ObjectId, ref: 'ProductFeatures' },
+  name: featureDataSchema,
+  productId: featureDataSchema,
+  featureText: { type: String, required: true }
+};
+
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   searchableName: { type: String, required: true },
   category: { type: String, required: true },
   subcategory: { type: String, required: true },
   productId: { type: String, required: true, unique: true },
-  features: [
-    {
-      _id: { id: false },
-      productFeature: { type: ObjectId, ref: 'ProductFeatures' },
-      name: featureDataSchema,
-      productId: featureDataSchema
-    }
-  ]
+  features: [featureMetaDataSchema]
 });
 
 productSchema.statics.insertProductWithFeatures = async function insertProduct(productObject, features) {
@@ -45,7 +46,7 @@ productSchema.statics.insertProductWithFeatures = async function insertProduct(p
  * @returns {string}
  */
 function generateSearchableName(productName, searchableFeatures) {
-  const searchableFeaturesString = searchableFeatures.map(feature => feature.featureLabel).join(' ');
+  const searchableFeaturesString = searchableFeatures.map(feature => feature.featureText).join(' ');
   return productName + ' ' + searchableFeaturesString;
 }
 

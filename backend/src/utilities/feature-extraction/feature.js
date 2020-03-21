@@ -1,14 +1,10 @@
 class Feature {
+  static newEmptyFeature(featureText) {
+    return new Feature(featureText, []);
+  }
+
   get featureText() {
     return this._featureText;
-  }
-
-  get count() {
-    return this.locations.length;
-  }
-
-  get medianPosition() {
-    return this.locations[Math.floor(this.locations.length / 2)];
   }
 
   get locations() {
@@ -18,6 +14,12 @@ class Feature {
   constructor(featureText, locations) {
     this._featureText = featureText;
     this._locations = locations;
+    this.count = this.locations.length;
+    this.medianIndex = this.getMedianIndex();
+  }
+
+  getMedianIndex() {
+    return this.locations > 0 ? this.locations[Math.floor(this.locations.length / 2)] : -1;
   }
 }
 

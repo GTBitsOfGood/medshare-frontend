@@ -8,23 +8,15 @@ const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
 const COMMA_REGEX_THRESHOLD = 2;
 
 async function processProductObjectAndInsertIntoDB(rawProductObject) {
-  const features = await getProductFeatures(rawProductObject);
-  return Product.insertProductWithFeatures(rawProductObject, features);
+  const normalizedProductObject = rawProductObject.normalize();
+  const features = await getProductFeatureMetadatas(normalizedProductObject);
+  return Product.insertProductWithFeatures(normalizedProductObject, features);
 }
 
-async function getProductFeatures(rawProductObject) {
-  const features = groupFeaturesByValue(
-    generateIdFeatures(rawProductObject),
-    generateNameFeatures(rawProductObject.name)
-  );
-  const featuresPromises = features.map(async feature => {
-    const featureId = await insertFeatureIntoDatabase(feature);
-    // reference the feature id, not the name in the database
-    delete feature.featureLabel;
-    feature.productFeature = featureId;
-    return feature;
-  });
-  return Promise.all(featuresPromises);
+async function getProductFeatureMetadatas(rawProductObject) {
+  const productIdFeatures = generateIdFeatures(rawProductObject);
+  const nameFeatures = generateNameFeatures(rawProductObject.name);
+  return insertFeaturesAndGetMetadatasPromise(productIdFeatures, nameFeatures);
 }
 
 function generateIdFeatures(productObject) {
@@ -99,38 +91,50 @@ function generateFeaturesFromFeaturesPositionMap(featurePositionsMap) {
   });
 }
 
-function groupFeaturesByValue(productIdFeatures, nameFeatures) {
-  const productIdFeaturesMap = featuresByValue(productIdFeatures);
-  const nameFeaturesMap = featuresByValue(nameFeatures);
+async function insertFeaturesAndGetMetadatasPromise(productIdFeatures, nameFeatures) {
+  const metadatasWithoutId = getFeatureMetadatas(productIdFeatures, nameFeatures);
+  return Promise.all(metadatasWithoutId.map(insertFeatureFromMetadataAndGetId));
+}
+
+/**
+ * Basically groups features by source. One feature can exist in two sources (name and feature id) and groups them together
+ * under the shared feature name
+ * @param productIdFeatures - the features found in the product id
+ * @param nameFeatures - the features found in the product name
+ * @returns - the feature metadatas (the sources and metadata describing the feature). the feature still hasn't been inserted into the DB
+ */
+function getFeatureMetadatas(productIdFeatures, nameFeatures) {
+  const productIdFeaturesMap = textValueToFeatureMap(productIdFeatures);
+  const nameFeaturesMap = textValueToFeatureMap(nameFeatures);
   const featureValues = [...new Set([...productIdFeaturesMap.keys(), ...nameFeaturesMap.keys()])];
 
   return featureValues.map(featureText => {
     return {
-      featureLabel: featureText,
-      name: getFeatureOrUseDefault(nameFeaturesMap, featureText),
-      productId: getFeatureOrUseDefault(productIdFeaturesMap, featureText)
+      featureText,
+      name: getFeatureOrGetEmpty(nameFeaturesMap, featureText),
+      productId: getFeatureOrGetEmpty(productIdFeaturesMap, featureText)
     };
   });
 }
 
-function featuresByValue(features) {
+function textValueToFeatureMap(features) {
   return new Map(features.map(feature => [feature.featureText, feature]));
 }
 
-function getFeatureOrUseDefault(featureMap, featureText) {
+function getFeatureOrGetEmpty(featureMap, featureText) {
   const output = { count: 0, medianIndex: -1 };
   if (featureMap.has(featureText)) {
     const feature = featureMap.get(featureText);
     output.count = feature.count;
     output.medianIndex = feature.medianPosition;
   }
-  return output;
+  return featureMap.has(featureText) ? featureMap.get(featureText) : Feature.newEmptyFeature(featureText);
 }
 
-async function insertFeatureIntoDatabase(feature) {
-  const dbObject = await ProductFeatures.featureFound(feature.featureLabel, feature[feature.name.count]);
-  // eslint-disable-next-line no-underscore-dangle
-  return dbObject._id;
+async function insertFeatureFromMetadataAndGetId(metadata) {
+  const productFeatureDoc = await ProductFeatures.featureFound(metadata.featureText, metadata.name.count);
+  metadata.productFeature = productFeatureDoc._id;
+  return metadata;
 }
 
 module.exports = {
