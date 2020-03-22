@@ -1,5 +1,6 @@
 const { Product, ProductFeatures } = require('../../database/models');
-const Feature = require('./feature');
+const AttributeFeature = require('./attribute-feature');
+const ProductFeature = require('./product-feature');
 
 const REMOVE_REGEX = new RegExp('( (?=-))|((?<=-) )|((?<=[a-zA-Z])-(?=[a-zA-Z]))|_', 'g');
 const STANDARD_FEATURE_REGEX = new RegExp('([0-9][0-9"/]*[-/][0-9][0-9"/]*)|(\\w+)', 'g');
@@ -9,21 +10,21 @@ const COMMA_REGEX_THRESHOLD = 2;
 
 async function processProductObjectAndInsertIntoDB(rawProductObject) {
   const normalizedProductObject = rawProductObject.normalize();
-  const features = await getProductFeatureMetadatas(normalizedProductObject);
+  const features = await getProductFeatures(normalizedProductObject);
   return Product.insertProductWithFeatures(normalizedProductObject, features);
 }
 
-async function getProductFeatureMetadatas(rawProductObject) {
-  const productIdFeatures = generateIdFeatures(rawProductObject);
-  const nameFeatures = generateNameFeatures(rawProductObject.name);
-  return insertFeaturesAndGetMetadatasPromise(productIdFeatures, nameFeatures);
+async function getProductFeatures(rawProductObject) {
+  const productIdAttributeFeatures = generateIdAttributeFeatures(rawProductObject);
+  const nameAttributeFeatures = generateNameAttributeFeatures(rawProductObject.name);
+  return Promise.all(getProductFeaturesPromises(productIdAttributeFeatures, nameAttributeFeatures));
 }
 
-function generateIdFeatures(productObject) {
-  return [new Feature(`#${productObject.productId}`, [0])];
+function generateIdAttributeFeatures(productObject) {
+  return [new AttributeFeature(`#${productObject.productId}`, [0])];
 }
 
-function generateNameFeatures(value) {
+function generateNameAttributeFeatures(value) {
   /* normalize any special characters/spaces that might effect feature matching.
    offset map required to ensure "median index" is based off unnormalized string
    */
@@ -35,7 +36,7 @@ function generateNameFeatures(value) {
   const normalizedFeatureStrings = extractFeatureStringsByRegex(normalizedValue, featureRegex).map(
     normalizeFeatureAfterExtraction
   );
-  return getFeaturesFromFeatureStrings(normalizedFeatureStrings);
+  return getAttributeFeaturesFromFeatureStrings(normalizedFeatureStrings);
 }
 
 function removeSpecialCharacters(value) {
@@ -65,9 +66,9 @@ function normalizeFeatureAfterExtraction(feature) {
   return feature;
 }
 
-function getFeaturesFromFeatureStrings(featureStrings) {
+function getAttributeFeaturesFromFeatureStrings(featureStrings) {
   const featurePositionsMap = getFeaturePositionsMap(featureStrings);
-  return generateFeaturesFromFeaturesPositionMap(featurePositionsMap);
+  return generateAttributeFeaturesFromFeaturesPositionMap(featurePositionsMap);
 }
 
 function getFeaturePositionsMap(featureStrings) {
@@ -84,36 +85,31 @@ function getFeaturePositionsMap(featureStrings) {
   return locationsByFeatureTextMap;
 }
 
-function generateFeaturesFromFeaturesPositionMap(featurePositionsMap) {
+function generateAttributeFeaturesFromFeaturesPositionMap(featurePositionsMap) {
   return Object.keys(featurePositionsMap).map(featureText => {
     const positions = featurePositionsMap[featureText];
-    return new Feature(featureText, positions);
+    return new AttributeFeature(featureText, positions);
   });
 }
 
-async function insertFeaturesAndGetMetadatasPromise(productIdFeatures, nameFeatures) {
-  const metadatasWithoutId = getFeatureMetadatas(productIdFeatures, nameFeatures);
-  return Promise.all(metadatasWithoutId.map(insertFeatureFromMetadataAndGetId));
-}
-
 /**
- * Basically groups features by source. One feature can exist in two sources (name and feature id) and groups them together
+ * Basically groups features by source. One feature can exist in two sources (name and feature id) and groups
+ * them together
  * under the shared feature name
  * @param productIdFeatures - the features found in the product id
  * @param nameFeatures - the features found in the product name
- * @returns - the feature metadatas (the sources and metadata describing the feature). the feature still hasn't been inserted into the DB
+ * @returns Promise<ProductFeature>[] (the sources and metadata describing the feature).
+ * we still don't have the feature id in the DB
  */
-function getFeatureMetadatas(productIdFeatures, nameFeatures) {
+function getProductFeaturesPromises(productIdFeatures, nameFeatures) {
   const productIdFeaturesMap = textValueToFeatureMap(productIdFeatures);
   const nameFeaturesMap = textValueToFeatureMap(nameFeatures);
   const featureValues = [...new Set([...productIdFeaturesMap.keys(), ...nameFeaturesMap.keys()])];
 
   return featureValues.map(featureText => {
-    return {
-      featureText,
-      name: getFeatureOrGetEmpty(nameFeaturesMap, featureText),
-      productId: getFeatureOrGetEmpty(productIdFeaturesMap, featureText)
-    };
+    const nameAttributeFeature = getFeatureOrGetEmpty(nameFeaturesMap, featureText);
+    const productIdAttributeFeature = getFeatureOrGetEmpty(productIdFeaturesMap, featureText);
+    return getProductFeaturePromise(nameAttributeFeature, productIdAttributeFeature);
   });
 }
 
@@ -128,13 +124,12 @@ function getFeatureOrGetEmpty(featureMap, featureText) {
     output.count = feature.count;
     output.medianIndex = feature.medianPosition;
   }
-  return featureMap.has(featureText) ? featureMap.get(featureText) : Feature.newEmptyFeature(featureText);
+  return featureMap.has(featureText) ? featureMap.get(featureText) : AttributeFeature.newEmptyFeature(featureText);
 }
 
-async function insertFeatureFromMetadataAndGetId(metadata) {
-  const productFeatureDoc = await ProductFeatures.featureFound(metadata.featureText, metadata.name.count);
-  metadata.productFeature = productFeatureDoc._id;
-  return metadata;
+async function getProductFeaturePromise(nameAttrFeature, productIdAttrFeature) {
+  const featureId = (await ProductFeatures.featureFound(nameAttrFeature.featureText, nameAttrFeature.count))._id;
+  return new ProductFeature(featureId, nameAttrFeature, productIdAttrFeature);
 }
 
 module.exports = {
