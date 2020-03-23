@@ -12,7 +12,7 @@ const DEFAULT_ENCODING = 'utf-8';
 const FILE_FIELD_IN_FORM = 'productFile';
 const PAGE_LIMIT = 10;
 
-const fileUpload = multer({ dest: '/resources/product-uploads' });
+const fileUpload = multer({ dest: 'resources/product-uploads' });
 
 /**
  * GET endpoint that returns the PAGE_LIMIT most frequent features

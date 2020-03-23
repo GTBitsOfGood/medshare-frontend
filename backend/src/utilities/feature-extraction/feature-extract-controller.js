@@ -6,7 +6,7 @@ async function useFeaturesFromFile(filePath, fileType, encoding) {
   if (!fileType.includes('csv')) {
     throw new Error(`Unsupported file type for feature extraction: ${fileType}`);
   }
-  console.log('Delete existing documents: ');
+  console.log('Delete existing documents...');
   await deleteExistingDocuments();
   console.log('Starting parsing...');
   const totalSaved = await parseProductsFromCsv(filePath, encoding);
