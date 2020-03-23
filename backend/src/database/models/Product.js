@@ -50,5 +50,9 @@ function generateSearchableName(productName, searchableFeatures) {
   return productName + ' ' + searchableFeaturesString;
 }
 
+productSchema.statics.deleteAll = async function() {
+  return this.deleteMany({}).then(result => result.deletedCount);
+};
+
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;

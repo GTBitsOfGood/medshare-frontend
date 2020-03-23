@@ -4,7 +4,7 @@ const Papa = require('papaparse');
 const RawProduct = require('./raw-product');
 const { processProductObjectAndInsertIntoDB } = require('./process-product-object');
 
-const FILE_ENCODING = 'utf-8';
+const DEFAULT_FILE_ENCODING = 'utf-8';
 const PRINT_UPDATE_MESSAGE_EVERY = 50;
 
 const DEFAULT_CSV_PRODUCT_MAPPING = {
@@ -14,8 +14,8 @@ const DEFAULT_CSV_PRODUCT_MAPPING = {
   subcategory: 'Sub Category'
 };
 
-function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPING) {
-  const fileBuffer = fs.readFileSync(filePath, FILE_ENCODING);
+function parseProductsFromCsvPath(filePath, encoding = DEFAULT_FILE_ENCODING, mapping = DEFAULT_CSV_PRODUCT_MAPPING) {
+  const fileBuffer = fs.readFileSync(filePath, encoding);
   return parseProductsFromCsv(fileBuffer, mapping);
 }
 

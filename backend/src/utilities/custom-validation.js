@@ -1,6 +1,10 @@
 const { validationResult } = require('express-validator');
 const { ObjectId } = require('mongoose').Types;
 
+function fileUploadedValidator(value, { req }) {
+  return req.file;
+}
+
 function errorOnBadValidation(req, res, next) {
   if (!validationResult(req).isEmpty()) {
     res.status(500).send(validationResult(req));
@@ -29,9 +33,10 @@ function toMongooseIdSanitizer(value) {
 }
 
 module.exports = {
-  errorOnBadValidation,
   arrayToLowerCaseSanitizer,
-  toLowerCaseSanitizer,
   arrayToMongoIdsSanitizer,
+  errorOnBadValidation,
+  fileUploadedValidator,
+  toLowerCaseSanitizer,
   toMongooseIdSanitizer
 };

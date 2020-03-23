@@ -1,7 +1,7 @@
-const { parseProductsFromCsvPath } = require('./feature-extraction/csv-feature-extractor');
+const featureExtractController = require('./feature-extraction/feature-extract-controller');
 const customValidation = require('./custom-validation');
 
 module.exports = {
-  parseProductsFromCsvPath,
-  customValidation
+  customValidation,
+  featureExtractController
 };

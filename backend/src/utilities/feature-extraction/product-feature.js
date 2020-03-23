@@ -15,7 +15,7 @@ class ProductFeature {
   }
 
   constructor(featureId, nameAttributeFeature, productIdAttributeFeature) {
-    this.validateFeatureId(featureId);
+    ProductFeature.validateFeatureId(featureId);
     this.productFeature = featureId; // mongoose feature id. todo: this should be renamed
 
     if (nameAttributeFeature.featureText !== productIdAttributeFeature.featureText) {
