@@ -38,7 +38,7 @@ const FeatureList = () => {
       <p style={{ color: '#A9A7A7' }}>Frequent Filters </p>
       <TagContainer>
         {features.map(feature => {
-          return <Feature name={feature.name} />;
+          return <Feature key={feature._id} name={feature.name} />;
         })}
       </TagContainer>
     </ItemList>
