@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   max-width: 500px;
-  margin: 2rem auto;
+  margin: 0 auto;
 
   @media ${deviceSize.laptop} {
     max-width: 500px;

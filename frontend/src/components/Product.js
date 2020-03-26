@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Tag } from '@blueprintjs/core';
 
 const OuterWrap = styled.div`
+  font-size: 16px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
@@ -20,16 +21,16 @@ const OuterWrap = styled.div`
 const TagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-top: 0.3rem;
-  margin-bottom: 0.3rem;
   justify-content: flex-end;
 `;
 
 const InnerWrap = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 `;
 
 const Product = props => {
@@ -42,10 +43,10 @@ const Product = props => {
           <b>SKU: </b> {productID}
         </span>
         <TagContainer>
-          <Tag round style={{ marginRight: '0.25rem', background: '##6396b3' }}>
+          <Tag large round style={{ marginRight: '0.25rem', background: '##6396b3' }}>
             {category}
           </Tag>
-          <Tag round style={{ marginTop: '0.15rem', backgroundColor: '#D6A636' }}>
+          <Tag large round style={{ marginTop: '0.15rem', backgroundColor: '#D6A636' }}>
             {subcategory}
           </Tag>
         </TagContainer>

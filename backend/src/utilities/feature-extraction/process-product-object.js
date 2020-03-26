@@ -1,87 +1,9 @@
-const fs = require('fs');
-const Papa = require('papaparse');
-const { Product, ProductFeatures } = require('../database/models');
-
-const FILE_ENCODING = 'utf-8';
-const PRODUCT_OBJECT_KEYS = ['productId', 'name', 'category', 'subcategory'];
-const PRINT_UPDATE_MESSAGE_EVERY = 50;
-
-const DEFAULT_CSV_PRODUCT_MAPPING = {
-  ProductRef: 'productId',
-  ProductName: 'name',
-  'Category Name': 'category',
-  'Sub Category': 'subcategory'
-};
+const { Product, ProductFeatures } = require('../../database/models');
 
 const REMOVE_REGEX = new RegExp('( (?=-))|((?<=-) )|((?<=[a-zA-Z])-(?=[a-zA-Z]))|_', 'g');
 const STANDARD_FEATURE_REGEX = new RegExp('([0-9][0-9"/]*[-/][0-9][0-9"/]*)|(\\w+)', 'g');
 const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
 const COMMA_REGEX_THRESHOLD = 2;
-
-function parseProductsFromCsvPath(filePath, mapping = DEFAULT_CSV_PRODUCT_MAPPING) {
-  const fileBuffer = fs.readFileSync(filePath, FILE_ENCODING);
-  return parseProductsFromCsv(fileBuffer, mapping);
-}
-
-function parseProductsFromCsv(fileBuffer, mapping) {
-  const result = Papa.parse(fileBuffer, {
-    header: true,
-    skipEmptyLines: true
-  });
-  const requiredFields = Object.keys(mapping);
-  if (!checkForExpectedFields(result.meta.fields, requiredFields)) {
-    throw new Error(
-      `The CSV was parsed and did not contain the expected ` +
-        `fields. Expected: ${requiredFields}. Found: ${result.fields}`
-    );
-  }
-  return processCsvResultObjects(result.data, mapping);
-}
-
-function checkForExpectedFields(resultFields, expectedFields) {
-  return expectedFields.every(field => resultFields.includes(field));
-}
-
-async function processCsvResultObjects(csvResultObjects, mapping) {
-  const validCsvObjects = csvResultObjects
-    .map(csvObject => csvObjectToProductObject(csvObject, mapping))
-    .filter(validateProductObject);
-  const productPromises = [];
-  for (let count = 0; count < validCsvObjects.length; count += 1) {
-    if ((count + 1) % PRINT_UPDATE_MESSAGE_EVERY === 0) {
-      const setNumber = parseInt((count + 1) / PRINT_UPDATE_MESSAGE_EVERY, 10);
-      console.log(`${setNumber}. Inserted ${PRINT_UPDATE_MESSAGE_EVERY} objects into database`);
-    }
-    const productPromise = processProductObjectAndInsertIntoDB(validCsvObjects[count]);
-    // eslint-disable-next-line no-await-in-loop
-    await productPromise; // temp solution to dupe key issue
-    productPromises.push(productPromise);
-  }
-  return Promise.all(productPromises);
-}
-
-function csvObjectToProductObject(csvObject, mapping) {
-  const productObject = {};
-  Object.entries(mapping).forEach(([csvKey, productKey]) => {
-    productObject[productKey] = csvObject[csvKey].toLowerCase();
-  });
-  return productObject;
-}
-
-function validateProductObject(productObject) {
-  return PRODUCT_OBJECT_KEYS.reduce((accumulator, expectedKey) => {
-    let currentObjectValid = true;
-    if (productObject[expectedKey] === undefined || productObject[expectedKey] instanceof String) {
-      console.log(
-        `WARNING: Missing key ${expectedKey} in ${JSON.stringify(
-          productObject
-        )}. It was filtered out from feature parsing.`
-      );
-      currentObjectValid = false;
-    }
-    return accumulator && currentObjectValid;
-  }, true);
-}
 
 async function processProductObjectAndInsertIntoDB(productObject) {
   const featuresListsDict = extractFeaturesListsFromProductObject(productObject);
@@ -93,13 +15,22 @@ async function processProductObjectAndInsertIntoDB(productObject) {
     feature.productFeature = featureId;
     return feature;
   });
+  productObject.searchableName = generateSearchableName(productObject.name, features);
   productObject.features = await Promise.all(featuresPromises);
   return Product.insertProduct(productObject);
 }
 
 function extractFeaturesListsFromProductObject(productObject) {
   return {
+    productId: [generateIdFeature(productObject)],
     name: extractFeaturesFromValue(productObject.name)
+  };
+}
+
+function generateIdFeature(productObject) {
+  return {
+    featureText: `#${productObject.productId}`,
+    medianIndex: 0
   };
 }
 
@@ -166,7 +97,8 @@ function groupFeatures(source, featureList, featureMap) {
       const { featureText, startIndex } = feature;
       if (featureMap[featureText] == null) {
         featureMap[featureText] = {
-          name: []
+          name: [],
+          productId: []
         };
       }
       featureMap[featureText][source].push(startIndex);
@@ -192,7 +124,19 @@ async function insertFeatureIntoDatabase(feature) {
   return dbObject._id;
 }
 
+/**
+ * Generates the string searched when matching products against a string. Features are added to the string because
+ * it's possible they have been normalized--the user could be searching by the noormalized version or the unormalized
+ * version
+ * @param productName
+ * @param featuresInProductName
+ * @returns {string}
+ */
+function generateSearchableName(productName, searchableFeatures) {
+  const searchableFeaturesString = searchableFeatures.map(feature => feature.featureLabel).join(' ');
+  return productName + ' ' + searchableFeaturesString;
+}
+
 module.exports = {
-  parseProductsFromCsvPath,
   processProductObjectAndInsertIntoDB
 };
