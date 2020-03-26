@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import Header from './Header';
 import ProductList from './ProductList';
@@ -29,20 +30,29 @@ const Wrapper = styled.div`
   }
 `;
 
+const Providers = ({ children }) => {
+  return (
+    <CategoryContainer.Provider>
+      <SubcategoriesContainer.Provider>
+        <FeaturesContainer.Provider>{children}</FeaturesContainer.Provider>
+      </SubcategoriesContainer.Provider>
+    </CategoryContainer.Provider>
+  );
+};
+Providers.propTypes = {
+  children: PropTypes.element.isRequired
+};
+
 const RootPage = () => {
   return (
-    <Wrapper>
-      <Header />
-      <CategoryContainer.Provider>
-        <SubcategoriesContainer.Provider>
-          <FeaturesContainer.Provider>
-            <QueryComponents />
-            <FeatureList />
-            <ProductList />
-          </FeaturesContainer.Provider>
-        </SubcategoriesContainer.Provider>
-      </CategoryContainer.Provider>
-    </Wrapper>
+    <Providers>
+      <Wrapper>
+        <Header />
+        <QueryComponents />
+        <FeatureList />
+        <ProductList />
+      </Wrapper>
+    </Providers>
   );
 };
 
