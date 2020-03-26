@@ -23,3 +23,5 @@ export const getProductResults = (query, features, category, subcategories) =>
       subcategories
     }
   });
+
+export const getFrequentFeatures = () => client.get('/features');
