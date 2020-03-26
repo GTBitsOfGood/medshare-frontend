@@ -11,10 +11,10 @@ const Wrap = styled.div`
 `;
 
 const Feature = props => {
-  const { name } = props;
+  const { name, onClick } = props;
   return (
     <Wrap>
-      <Tag large round style={{ marginRight: '0.10rem', background: '#6396b3' }}>
+      <Tag onClick={onClick} large round style={{ marginRight: '0.10rem', background: '#6396b3' }}>
         {name}
       </Tag>
     </Wrap>
@@ -22,7 +22,8 @@ const Feature = props => {
 };
 
 Feature.propTypes = {
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 export default Feature;

@@ -36,7 +36,7 @@ const useFrequentFeatures = () => {
 const FeatureList = () => {
   const features = useFrequentFeatures();
   const [showFeatures, setShowFeatures] = useState(true);
-  const { selectedFeatures } = FeaturesContainer.useContainer();
+  const { selectedFeatures, handleFeatureSelect } = FeaturesContainer.useContainer();
   useEffect(() => {
     if (selectedFeatures.length > 0) {
       setShowFeatures(false);
@@ -46,13 +46,16 @@ const FeatureList = () => {
   if (!showFeatures) {
     return null;
   }
+  const handleClick = feature => {
+    handleFeatureSelect(feature);
+  };
 
   return (
     <ItemList>
       <p style={{ color: '#A9A7A7' }}>Frequent Features</p>
       <TagContainer>
         {features.map(feature => {
-          return <Feature key={feature._id} name={feature.name} />;
+          return <Feature onClick={() => handleClick(feature)} key={feature._id} name={feature.name} />;
         })}
       </TagContainer>
     </ItemList>
