@@ -10,6 +10,7 @@ const ItemList = styled.div`
   flex-direction: column;
   margin-top: 1rem;
   text-align: left;
+  width: 100%;
 `;
 
 const TagContainer = styled.div`
