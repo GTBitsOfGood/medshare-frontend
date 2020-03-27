@@ -23,10 +23,10 @@ passport.use(
       session: false
     },
     (username, password, done) => {
-      try {
-        User.findOne({
-          username
-        }).then(user => {
+      User.findOne({
+        username
+      })
+        .then(user => {
           if (user != null) {
             return done(null, false, { message: 'Username already taken' });
           }
@@ -36,10 +36,8 @@ passport.use(
             return done(null, userDoc);
           });
           return null;
-        });
-      } catch (err) {
-        done(err);
-      }
+        })
+        .catch(done);
     }
   )
 );
@@ -53,10 +51,10 @@ passport.use(
       session: false
     },
     (username, password, done) => {
-      try {
-        User.findOne({
-          username
-        }).then(user => {
+      User.findOne({
+        username
+      })
+        .then(user => {
           if (user === null) {
             return done(null, false, { message: 'Username not found' });
           }
@@ -67,10 +65,8 @@ passport.use(
             return done(null, user);
           });
           return null;
-        });
-      } catch (err) {
-        done(err);
-      }
+        })
+        .catch(done);
     }
   )
 );
@@ -83,18 +79,16 @@ const opts = {
 passport.use(
   'jwt',
   new JWTstrategy(opts, (jwtPayload, done) => {
-    try {
-      User.findOne({
-        username: jwtPayload.id
-      }).then(user => {
+    User.findOne({
+      username: jwtPayload.id
+    })
+      .then(user => {
         if (user) {
           done(null, user);
         } else {
           done(null, false, { message: 'Incorrect JWT' });
         }
-      });
-    } catch (err) {
-      done(err);
-    }
+      })
+      .catch(done);
   })
 );
