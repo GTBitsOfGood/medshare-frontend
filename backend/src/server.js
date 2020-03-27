@@ -1,40 +1,22 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const session = require('express-session');
 const cors = require('cors');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+require('dotenv').config();
 
 const apiRoutes = require('./routes/api');
 const authRoutes = require('./routes/auth');
 const { databaseConnectUsingEnv } = require('./database');
 
 const app = express();
-require('dotenv').config();
+require('./auth-setup');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(
-  session({
-    secret: process.env.SECRET || 'DEFAULT_SECRET',
-    resave: false,
-    saveUninitialized: false
-  })
-);
 
 // Auth
 app.use(passport.initialize());
-app.use(passport.session());
-
-const User = require('./database/models/User');
-
-// use static authenticate method of model in LocalStrategy
-passport.use(new LocalStrategy(User.authenticate()));
-
-// use static serialize and deserialize of model for passport session support
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 // Add Routes
 app.use('/api', apiRoutes);
