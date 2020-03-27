@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const ProductFeatures = require('../database/models/ProductFeatures');
+const ProductFeatures = require('../../database/models/ProductFeatures');
 
 const PAGE_LIMIT = 10;
 

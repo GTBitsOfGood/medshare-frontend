@@ -5,8 +5,8 @@ const {
   arrayToLowerCaseSanitizer,
   arrayToMongoIdsSanitizer,
   errorOnBadValidation
-} = require('../utilities').customValidation;
-const searchController = require('../controllers/searchController');
+} = require('../../utilities').customValidation;
+const searchController = require('../../controllers/searchController');
 
 /*
   GET search based on query
