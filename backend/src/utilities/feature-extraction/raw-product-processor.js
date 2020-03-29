@@ -1,6 +1,6 @@
 const { Product, ProductFeatures } = require('../../database/models');
-const AttributeFeature = require('./attribute-feature');
-const ProductFeature = require('./product-feature');
+const AttributeFeature = require('./feature-extraction-objects/attribute-feature');
+const ProductFeature = require('./feature-extraction-objects/product-feature');
 
 const REMOVE_REGEX = new RegExp('( (?=-))|((?<=-) )|((?<=[a-zA-Z])-(?=[a-zA-Z]))|_', 'g');
 const STANDARD_FEATURE_REGEX = new RegExp('([0-9][0-9"/]*[-/][0-9][0-9"/]*)|(\\w+)', 'g');
@@ -8,7 +8,7 @@ const COMMA_DELIMITED_REGEX = new RegExp('[^,\\s][^\\,]*[^,\\s]*', 'g');
 
 const COMMA_REGEX_THRESHOLD = 2;
 
-async function processProductObjectAndInsertIntoDB(rawProductObject) {
+async function processRawProductAndInsertIntoDB(rawProductObject) {
   const normalizedProductObject = rawProductObject.normalize();
   const features = await getProductFeatures(normalizedProductObject);
   return Product.insertProductWithFeatures(normalizedProductObject, features);
@@ -133,5 +133,5 @@ async function getProductFeaturePromise(nameAttrFeature, productIdAttrFeature) {
 }
 
 module.exports = {
-  processProductObjectAndInsertIntoDB
+  processRawProductAndInsertIntoDB
 };

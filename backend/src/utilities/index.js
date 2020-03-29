@@ -1,7 +1,7 @@
-const featureExtractController = require('./feature-extraction/feature-extract-controller');
+const featureExtraction = require('./feature-extraction');
 const customValidation = require('./custom-validation');
 
 module.exports = {
   customValidation,
-  featureExtractController
+  featureExtraction
 };

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const extractionJobRoutes = require('./extraction-job');
 const searchRoutes = require('./search');
 const featuresRoutes = require('./features');
 
@@ -9,6 +10,7 @@ router.get('/', (req, res) => {
   });
 });
 
+router.use('/extraction-job', extractionJobRoutes);
 router.use('/search', searchRoutes);
 router.use('/features', featuresRoutes);
 
