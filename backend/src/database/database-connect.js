@@ -5,12 +5,13 @@ function databaseConnectUsingEnv() {
     console.error('ERR: MONGO_URI env variable not found');
     process.exit(1);
   } else {
-    databaseConnect(process.env.MONGO_URI);
+    return databaseConnect(process.env.MONGO_URI);
   }
+  return null;
 }
 
 function databaseConnect(databaseURI) {
-  mongoose
+  return mongoose
     .connect(databaseURI, {
       useCreateIndex: true,
       useNewUrlParser: true,

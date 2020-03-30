@@ -1,26 +1,26 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const session = require('express-session');
 const cors = require('cors');
-const apiRoutes = require('./api');
+const passport = require('passport');
+require('dotenv').config();
+
+const apiRoutes = require('./routes/api');
+const authRoutes = require('./routes/auth');
 const { databaseConnectUsingEnv } = require('./database');
 
 const app = express();
-require('dotenv').config();
+require('./auth-setup');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(
-  session({
-    secret: process.env.SECRET || 'DEFAULT_SECRET',
-    resave: false,
-    saveUninitialized: false
-  })
-);
 
-// Add API routes
+// Auth
+app.use(passport.initialize());
+
+// Add Routes
 app.use('/api', apiRoutes);
+app.use('/auth', authRoutes);
 
 // Error Handlers
 app.use((req, res, next) => {
