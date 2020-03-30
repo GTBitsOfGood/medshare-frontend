@@ -1,6 +1,7 @@
 const { body, param } = require('express-validator');
 const multer = require('multer');
 const path = require('path');
+const process = require('process');
 const router = require('express').Router();
 
 const {
@@ -14,6 +15,7 @@ const {
   ExtractionJobRequest,
   FileMetadata
 } = require('../utilities/feature-extraction/extraction-job');
+const fileController = require('../utilities/file-controller');
 
 const DEFAULT_FILE_ENCODING = 'utf-8';
 const DEFAULT_USER_ID = 'Unknown user';
@@ -22,7 +24,13 @@ const UPLOAD_ROOT = path.join(__dirname, '../../resources/product-uploads'); // 
 
 const fileUpload = multer({ dest: UPLOAD_ROOT });
 
-// TODO: LIVENESS PING, CLEAR FILES IN RESOURCE FOLDER ON EXIT (could also be used to identify stale jobs)
+/**
+ * Register listeners for upload cleanup. Uploaded files should be deleted when the job terminates,
+ * but if the user kills his/her API session early (or there is some issue with the DB), the uploaded file will not be cleaned up in the job.
+ * This is more of a 'double-check' than anything
+ */
+process.on('exit', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
+process.on('SIGINT', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
 
 /**
  * Gets the most recent job (might be active)

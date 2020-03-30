@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const JobStatus = require('../../utilities/feature-extraction/extraction-job/job-status');
 
+const STALE_JOB_THRESHOLD = 10000; // (ms) if a job hasn't pinged in the last 10 seconds, it will be marked as stale
+
 const extractionErrorSchema = {
   errorCategory: { type: String },
   errorMessage: String
@@ -27,6 +29,7 @@ const extractionJobSchema = new mongoose.Schema({
   fileMetadata: fileMetadataSchema,
   jobStatus: { type: String, required: true, default: JobStatus.STARTING },
   extractionResult: extractionResultSchema,
+  lastHealthPing: { type: Date, required: true, default: Date.now() },
   finishedAt: { type: Date }
 });
 
@@ -53,6 +56,12 @@ extractionJobSchema.statics.updateJobStatus = async function(jobId, newJobStatus
   return this.findOneAndUpdate()
     .where({ _id: jobId })
     .set('jobStatus', newJobStatus);
+};
+
+extractionJobSchema.statics.pingAsAlive = async function(jobId) {
+  return this.findOneAndUpdate()
+    .where({ _id: jobId })
+    .set('lastHealthPing', Date.now());
 };
 
 /**
@@ -85,6 +94,30 @@ extractionJobSchema.statics.updateAsJobFinishedSuccessfully = async function(job
     .set('extractionResult', extractionResult)
     .set('finishedAt', Date.now());
 };
+
+/**
+ *
+ * Marks jobs as stale that haven't recently made their heatlh check ping. This essentially
+ * 'cleans' up jobs that were terminated before they reached completion. As a result, "re-opening"
+ * the extraction job lock.
+ *
+ * Currently, this function will be called on 'find' hooks but we might want to change it to a chron job
+ */
+extractionJobSchema.statics.findAndMarkStaleJobs = async function() {
+  const thresholdDate = Date.now() - STALE_JOB_THRESHOLD;
+  return this.updateMany()
+    .where(ACTIVE_STATUS_FILTER)
+    .where({ lastHealthPing: { $lt: thresholdDate } })
+    .set('jobStatus', JobStatus.STALE)
+    .set('finishedAt', Date.now())
+    .set('extractionResult', null);
+};
+extractionJobSchema.pre('find', async function() {
+  await ExtractionJob.findAndMarkStaleJobs();
+});
+extractionJobSchema.pre('findOne', async function() {
+  await ExtractionJob.findAndMarkStaleJobs();
+});
 
 const ExtractionJob = mongoose.model('ExtractionJob', extractionJobSchema);
 

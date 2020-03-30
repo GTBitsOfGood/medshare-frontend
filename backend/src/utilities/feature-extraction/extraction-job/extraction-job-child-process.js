@@ -9,6 +9,8 @@ const { toMongooseIdSanitizer } = require('../../custom-validation');
 // The async code that runs when parsing products. Run indpendently of the node process for the API
 require('dotenv').config();
 
+const LIVENESS_PING_INTERVAL = 2000; // in milliseconds
+
 try {
   databaseConnectUsingEnv();
 
@@ -49,6 +51,7 @@ async function extractFeaturesForJobId(jobId) {
  * @returns {Promise<ExtractionResult>} - Returns extraction result for job request
  */
 async function extractFeaturesForJobRequestAndUpdateDB(jobMongooseId, jobRequest) {
+  startHealthcheckPinging(jobMongooseId); // start pinging the database, telling it that the job is alive
   console.log(`Found job request with id: ${jobMongooseId}`);
   ExtractionJob.updateJobStatus(jobMongooseId, JobStatus.RUNNING);
 
@@ -67,6 +70,20 @@ function processExtractionResult(job, extractionResult) {
   } else {
     processSuccessfulResult(job, extractionResult);
   }
+}
+
+/**
+ * Regularly ping the database to tell it that the job is still alive. If the job has recently pinged the database,
+ * the database will mark the job as stale (and assume the job somehow was cancelled without it's status being updated)
+ *
+ * @param jobId - must be of type MongooseId
+ *
+ * @returns {Promise<void>}
+ */
+async function startHealthcheckPinging(jobId) {
+  setInterval(() => {
+    ExtractionJob.pingAsAlive(jobId);
+  }, LIVENESS_PING_INTERVAL);
 }
 
 async function processErrorResult(job, extractionResult) {
