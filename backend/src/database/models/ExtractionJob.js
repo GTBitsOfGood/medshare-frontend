@@ -25,11 +25,11 @@ const fileMetadataSchema = {
 const extractionJobSchema = new mongoose.Schema({
   requestedBy: { type: String, required: true },
   processId: { type: String, unique: false },
-  requestedAt: { type: Date, required: true, default: Date.now() },
+  requestedAt: { type: Date, required: true, default: Date.now },
   fileMetadata: fileMetadataSchema,
   jobStatus: { type: String, required: true, default: JobStatus.STARTING },
   extractionResult: extractionResultSchema,
-  lastHealthPing: { type: Date, required: true, default: Date.now() },
+  lastHealthPing: { type: Date, required: true, default: Date.now },
   finishedAt: { type: Date }
 });
 
@@ -109,7 +109,6 @@ extractionJobSchema.statics.findAndMarkStaleJobs = async function() {
     .where(ACTIVE_STATUS_FILTER)
     .where({ lastHealthPing: { $lt: thresholdDate } })
     .set('jobStatus', JobStatus.STALE)
-    .set('finishedAt', Date.now())
     .set('extractionResult', null);
 };
 extractionJobSchema.pre('find', async function() {
