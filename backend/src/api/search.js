@@ -17,9 +17,9 @@ const searchController = require('../controllers/searchController');
 
   Args:
     q (str) (required): query key word
-    features (array containing Mongoose ObjectId's): comma-separated list of MongoObjectIDs
+    features (array containing Mongoose ObjectId's): IDs of features to search by
     category (str): query category
-    subcategories (array of strings): comma-separated list of subcategories
+    subcategories (array of strings): names of query subcategories
 
   Returns:
     array of all matching products
@@ -66,9 +66,9 @@ router.get(
 
   Args:
     q (str) (required): query key word
-    features (array containing Mongo ObjectId's): comma-separated list of Mongo Object id's (required).
+    features (array containing Mongo ObjectId's): IDs of features to search by
     category (str): query category
-    subcategories (array of strings): subcategories
+    subcategories (array of strings): query subcategories
 
   Returns:
     array of ProductFeature documents

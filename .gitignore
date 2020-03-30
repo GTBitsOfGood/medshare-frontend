@@ -2,3 +2,4 @@
 .idea/
 node_modules/
 backend/resources/product-uploads/
+**/.env

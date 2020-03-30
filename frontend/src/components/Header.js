@@ -7,13 +7,13 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem 1rem;
+  margin: 1.5rem auto;
 `;
 
 const Header = () => {
   return (
     <Wrapper>
-      <img src={Logo} alt="medshare-logo" width="75rem" height="75rem" margin-top="1.5rem" />
+      <img src={Logo} alt="medshare-logo" width="75rem" height="75rem" />
     </Wrapper>
   );
 };

@@ -24,9 +24,9 @@ const useProductsQuery = () => {
   const debouncedQuery = useDebounce(query, 400);
 
   useEffect(() => {
-    const filteredFeatureIds = selectedFeatures.map(feature => feature._id).join(',');
+    const filteredFeatureIds = selectedFeatures.map(feature => feature._id);
 
-    getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats.join(','))
+    getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats)
       .then(results => {
         setProducts(results.data);
       })
