@@ -1,3 +1,8 @@
+/**
+ * CLI script that creates admin 'User' documents
+ * Usage:
+ *    node create-admin-user.js <username> <password>
+ */
 const { databaseConnectUsingEnv } = require('../database');
 require('dotenv').config();
 const User = require('../database/models/User');
