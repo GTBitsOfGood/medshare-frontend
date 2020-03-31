@@ -46,8 +46,8 @@ Providers.propTypes = {
 const RootPage = () => {
   return (
     <Providers>
+      <Header />
       <Wrapper>
-        <Header />
         <QueryComponents />
         <FeatureList />
         <ProductList />

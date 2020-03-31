@@ -9,19 +9,19 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem 3rem;
+  padding: 0.5rem;
 `;
 
 const NavBar = () => {
-    return (
-        <Navbar>
-            <NavbarGroup align={Alignment.LEFT}>
-                <Button className="bp3-minimal" icon="menu"/>
-            </NavbarGroup>
-            <Wrapper>
-                <img src={Logo} alt="medshare-logo" width="25rem" height="25rem" margin-top="1.5rem" />
-            </Wrapper>
-        </Navbar>
-    )
-}
+  return (
+    <Navbar>
+      <NavbarGroup align={Alignment.LEFT}>
+        <Button className="bp3-minimal" icon="menu" />
+      </NavbarGroup>
+      <Wrapper>
+        <img src={Logo} alt="medshare-logo" width="35rem" height="35rem" />
+      </Wrapper>
+    </Navbar>
+  );
+};
 export default NavBar;

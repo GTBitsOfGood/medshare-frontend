@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Header from './Header';
 import ProductList from './ProductList';
 import QueryComponents from './QueryComponents';
-import { deviceSize } from '../theme';
 import CategoryContainer from '../containers/categoryContainer';
 import FeaturesContainer from '../containers/featuresContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
@@ -16,9 +15,6 @@ const Wrapper = styled.div`
   align-items: center;
   max-width: 600px;
   margin: 2rem auto;
-
-  @media ${deviceSize.laptop} {
-  }
 `;
 
 const SearchPage = () => {

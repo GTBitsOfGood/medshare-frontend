@@ -1,10 +1,20 @@
 import React from 'react';
-import Logo from '../resources/medshare-logo.png';
+import styled from 'styled-components';
+
 import NavBar from './NavBar';
+
+const Wrapper = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+`;
 
 const Header = () => {
   return (
-    <NavBar />
+    <Wrapper>
+      <NavBar />
+    </Wrapper>
   );
 };
 
