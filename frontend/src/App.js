@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Fallback from './components/Fallback';
-import RootPage from './components/RootPage';
+import SearchPage from './components/SearchPage';
 import { theme } from './theme';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Switch>
           <Route exact path="/">
-            <RootPage />
+            <SearchPage />
           </Route>
           <Route component={Fallback} />
         </Switch>
