@@ -11,14 +11,22 @@ import FeaturesContainer from '../containers/featuresContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
 import FeatureList from './FeatureList';
 
-const Wrapper = styled.div`
+const HeaderWrapper = styled.div`
+  @media ${deviceSize.mobileL} {
+    width: 100vw;
+  }
+  @media ${deviceSize.mobileS} {
+    width: 100vw;
+  }
+`;
+
+const WidthMax = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   max-width: 500px;
   margin: 0 auto;
-
   @media ${deviceSize.laptop} {
     max-width: 500px;
   }
@@ -46,12 +54,14 @@ Providers.propTypes = {
 const RootPage = () => {
   return (
     <Providers>
-      <Header />
-      <Wrapper>
+      <HeaderWrapper>
+        <Header />{' '}
+      </HeaderWrapper>
+      <WidthMax>
         <QueryComponents />
         <FeatureList />
         <ProductList />
-      </Wrapper>
+      </WidthMax>
     </Providers>
   );
 };
