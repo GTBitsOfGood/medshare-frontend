@@ -1,8 +1,8 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import Fallback from './components/Fallback';
-import SearchPage from './components/SearchPage';
+import Fallback from './components/routerpages/Fallback';
+import Search from './components/routerpages/Search';
 import { theme } from './theme';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Switch>
           <Route exact path="/">
-            <SearchPage />
+            <Search />
           </Route>
           <Route component={Fallback} />
         </Switch>

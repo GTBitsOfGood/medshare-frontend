@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import Header from './Header';
-import ProductList from './ProductList';
-import QueryComponents from './QueryComponents';
-import { deviceSize } from '../theme';
-import CategoryContainer from '../containers/categoryContainer';
-import FeaturesContainer from '../containers/featuresContainer';
-import SubcategoriesContainer from '../containers/subcategoriesContainer';
-import FeatureList from './FeatureList';
+import Header from '../Header';
+import ProductList from '../ProductList';
+import QueryComponents from '../QueryComponents';
+import { deviceSize } from '../../theme';
+import CategoryContainer from '../../containers/categoryContainer';
+import FeaturesContainer from '../../containers/featuresContainer';
+import SubcategoriesContainer from '../../containers/subcategoriesContainer';
+import FeatureList from '../FeatureList';
 
 const HeaderWrapper = styled.div`
   @media ${deviceSize.mobileL} {
@@ -51,7 +51,7 @@ Providers.propTypes = {
   children: PropTypes.element.isRequired
 };
 
-const RootPage = () => {
+const Search = () => {
   return (
     <Providers>
       <HeaderWrapper>
@@ -66,4 +66,4 @@ const RootPage = () => {
   );
 };
 
-export default RootPage;
+export default Search;
