@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+
 import { Link } from 'react-router-dom';
 import { Alignment, Button, Navbar, NavbarGroup, Drawer, Position } from '@blueprintjs/core';
-
-import styled from 'styled-components';
+import { deviceSize } from '../theme';
 import Logo from '../resources/medshare-logo.png';
 
 const Wrapper = styled.div`
@@ -13,24 +14,36 @@ const Wrapper = styled.div`
   padding: 0.5rem;
 `;
 
-const InsideDrawer = styled.div`
+const TopDrawer = styled.div`
   margin: 1rem;
 `;
 
 const TextWrapper1 = styled.div`
-  margin-left: 3rem;
-  margin-bottom: 20rem;
+  margin-left: 2rem;
   display: flex;
-  flex: column;
   flex-direction: column;
+  height: 500px;
 `;
 
 const TextWrapper2 = styled.div`
   display: flex;
-  margin-top: 10 rem;
-  justify-content: center;
   border-top-style: solid;
-  padding-top: 1rem;
+  align-items: center;
+  justify-content: center;
+  height: 108px;
+  @media ${deviceSize.mobileL} {
+    height: 84px;
+  }
+  @media ${deviceSize.mobileS} {
+    height: 84px;
+  }
+`;
+
+const DrawerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `;
 
 const NavBar = () => {
@@ -47,27 +60,27 @@ const NavBar = () => {
           onClose={() => handleDrawer(false)}
           position={Position.LEFT}
         >
-          <InsideDrawer>
-            <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
-          </InsideDrawer>
-          <TextWrapper1>
-            <Link to="/" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
+          <DrawerWrapper>
+            <TopDrawer>
+              <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
+            </TopDrawer>
+            <TextWrapper1>
+              <Link to="/" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                 SEARCH
-            </Link>{' '}
-            <Link to="/saved" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
+              </Link>
+              <Link to="/saved" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                 FAVORITES
-            </Link>
-            <Link to="/faq" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
+              </Link>
+              <Link to="/faq" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                 FAQ
-            </Link>
-          </TextWrapper1>
-          <TextWrapper2>
-            <div>
+              </Link>
+            </TextWrapper1>
+            <TextWrapper2>
               <Link to="/admin" style={{ color: '#FFF', fontSize: '24px' }}>
                 ADMIN PORTAL
               </Link>
-            </div>
-          </TextWrapper2>
+            </TextWrapper2>
+          </DrawerWrapper>
         </Drawer>
       </NavbarGroup>
       <Wrapper>
