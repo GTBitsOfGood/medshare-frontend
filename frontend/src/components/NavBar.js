@@ -66,7 +66,7 @@ const NavBar = () => {
           >
             <DrawerWrapper>
               <MenuIconWrapper>
-                <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
+                <Button className="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
               </MenuIconWrapper>
               <TextWrapper1>
                 <Link to="/" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
