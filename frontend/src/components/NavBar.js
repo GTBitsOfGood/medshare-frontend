@@ -29,6 +29,7 @@ const TextWrapper2 = styled.div`
   margin-top: 10 rem;
   justify-content: center;
   border-top-style: solid;
+  padding-top: 1rem;
 `;
 
 const NavBar = () => {
@@ -49,21 +50,21 @@ const NavBar = () => {
             <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
           </InsideDrawer>
           <TextWrapper1>
-            <div>
+            <span>
               <Link to="/" style={{ color: '#FFFFFF', size: '24px' }}>
                 SEARCH
               </Link>{' '}
-            </div>
-            <div>
+            </span>
+            <span>
               <Link to="/saved" style={{ color: '#FFFFFF', size: '24px' }}>
                 FAVORITES
               </Link>
-            </div>
-            <div>
+            </span>
+            <span>
               <Link to="/faq" style={{ color: '#FFFFFF', size: '24px' }}>
                 FAQ
               </Link>
-            </div>
+            </span>
           </TextWrapper1>
           <TextWrapper2>
             <div>
