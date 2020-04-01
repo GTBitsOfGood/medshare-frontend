@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { Link } from 'react-router-dom';
 import { Alignment, Button, Navbar, NavbarGroup, Drawer, Position } from '@blueprintjs/core';
-import { deviceSize } from '../theme';
 import Logo from '../resources/medshare-logo.png';
 
 const Wrapper = styled.div`
@@ -21,15 +20,17 @@ const LogoWrapper = styled.div`
   padding: 0.5rem;
 `;
 
-const TopDrawer = styled.div`
-  margin: 1rem;
+const MenuIconWrapper = styled.div`
+  margin-left: 1.5rem;
+  margin-top: 1.5rem;
 `;
 
 const TextWrapper1 = styled.div`
   margin-left: 2rem;
   display: flex;
   flex-direction: column;
-  height: 500px;
+  padding-top: 0.5rem;
+  padding-bottom: 10rem;
 `;
 
 const TextWrapper2 = styled.div`
@@ -37,13 +38,8 @@ const TextWrapper2 = styled.div`
   border-top-style: solid;
   align-items: center;
   justify-content: center;
-  height: 108px;
-  @media ${deviceSize.mobileL} {
-    height: 84px;
-  }
-  @media ${deviceSize.mobileS} {
-    height: 84px;
-  }
+  padding-bottom: 2.19rem;
+  padding-top: 1.31rem;
 `;
 
 const DrawerWrapper = styled.div`
@@ -69,9 +65,9 @@ const NavBar = () => {
             position={Position.LEFT}
           >
             <DrawerWrapper>
-              <TopDrawer>
+              <MenuIconWrapper>
                 <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
-              </TopDrawer>
+              </MenuIconWrapper>
               <TextWrapper1>
                 <Link to="/" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                   SEARCH
