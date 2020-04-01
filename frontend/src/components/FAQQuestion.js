@@ -29,20 +29,16 @@ const FAQQuestion = props => {
   const { question, border, answer } = props;
 
   const [collapse, handleCollapse] = useState(false);
-  const [caretIcon, changeCaret] = useState(true);
-  const [background, changeColor] = useState(false);
 
   const handleClick = () => {
     handleCollapse(!collapse);
-    changeCaret(!caretIcon);
-    changeColor(!background);
   };
 
   return (
     <Wrapper>
-      <QuestionWrapper border={border} color={background}>
+      <QuestionWrapper border={border} color={collapse}>
         <span style={{ marginRight: '0.75rem' }}> {question}</span>
-        <Button className="bp3-minimal" onClick={() => handleClick()} icon={caretIcon ? 'caret-right' : 'caret-down'} />
+        <Button className="bp3-minimal" onClick={() => handleClick()} icon={collapse ? 'caret-down' : 'caret-right'} />
       </QuestionWrapper>
       <FAQAnswers isOpen={collapse} answer={answer} />
     </Wrapper>
