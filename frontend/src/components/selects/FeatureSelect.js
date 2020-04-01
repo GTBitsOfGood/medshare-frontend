@@ -51,11 +51,11 @@ const FeatureSelect = ({
         key={feature._id}
         icon={checkIsFeatureSelected(feature) ? 'tick' : 'blank'}
         onClick={handleClick}
-        text={feature.name}
+        text={<span style={{marginRight: '2rem' }}> {feature.name} </span>}
         active={modifiers.active}
         label={feature.IS_ID ? 
-                <Tag large round style={{ marginRight: '0.25rem', background: '#82B650' }}>
-                  SKU
+                <Tag large round style={{ background: '#82B650' }}>
+                  Product ID
                 </Tag> : undefined}
       />
     );
