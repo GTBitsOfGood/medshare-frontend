@@ -58,7 +58,7 @@ const NavBar = () => {
         <NavbarGroup align={Alignment.LEFT}>
           <Button className="bp3-minimal" icon="menu" onClick={() => handleDrawer(true)} />
           <Drawer
-            style={{ background: '#6396B3', color: '#FFF' }}
+            style={{ background: '#6396B3', color: '#FFFFFF' }}
             size="255px"
             isOpen={drawer}
             onClose={() => handleDrawer(false)}
@@ -69,18 +69,18 @@ const NavBar = () => {
                 <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
               </MenuIconWrapper>
               <TextWrapper1>
-                <Link to="/" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
+                <Link to="/" style={{ color: '#FFFFFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                   SEARCH
                 </Link>
-                <Link to="/saved" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
+                <Link to="/saved" style={{ color: '#FFFFFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                   FAVORITES
                 </Link>
-                <Link to="/faq" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
+                <Link to="/faq" style={{ color: '#FFFFFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                   FAQ
                 </Link>
               </TextWrapper1>
               <TextWrapper2>
-                <Link to="/admin" style={{ color: '#FFF', fontSize: '24px' }}>
+                <Link to="/admin" style={{ color: '#FFFFFF', fontSize: '24px' }}>
                   ADMIN PORTAL
                 </Link>
               </TextWrapper2>
