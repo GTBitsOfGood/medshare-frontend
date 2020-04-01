@@ -55,9 +55,10 @@ const Search = () => {
   return (
     <Providers>
       <HeaderWrapper>
-        <Header />{' '}
+        <Header />
       </HeaderWrapper>
       <WidthMax>
+        <p style={{ color: '#706B6B', fontSize: '24px' }}>Search Tool</p>
         <QueryComponents />
         <FeatureList />
         <ProductList />
