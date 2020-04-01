@@ -5,17 +5,22 @@ import PropTypes from 'prop-types';
 import { Collapse } from '@blueprintjs/core';
 
 const Wrapper = styled.div`
-  margin-bottom: 1rem;
   font-size: 14px;
   font-color: #706b6b;
   background-color: #f6f6f6;
+`;
+
+const TextWrapper = styled.div`
+  padding: 0.5rem;
 `;
 
 const FAQAnswers = props => {
   const { isOpen, answer } = props;
   return (
     <Wrapper>
-      <Collapse isOpen={isOpen}>{answer}</Collapse>
+      <Collapse isOpen={isOpen}>
+        <TextWrapper>{answer}</TextWrapper>
+      </Collapse>
     </Wrapper>
   );
 };

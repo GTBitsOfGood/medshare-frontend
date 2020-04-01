@@ -5,6 +5,11 @@ import PropTypes from 'prop-types';
 import { Button } from '@blueprintjs/core';
 import FAQAnswers from './FAQAnswer';
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const QuestionWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -12,6 +17,8 @@ const QuestionWrapper = styled.div`
   align-items: center;
   padding-top: 1.56rem;
   padding-bottom: 1.56rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   border-top-style: ${props => (props.border ? 'solid' : 'none')};
   border-width: 1px;
   border-color: '#CCC9C9';
@@ -32,13 +39,13 @@ const FAQQuestion = props => {
   };
 
   return (
-    <>
+    <Wrapper>
       <QuestionWrapper border={border} color={background}>
         <span style={{ marginRight: '0.75rem' }}> {question}</span>
         <Button className="bp3-minimal" onClick={() => handleClick()} icon={caretIcon ? 'caret-right' : 'caret-down'} />
       </QuestionWrapper>
       <FAQAnswers isOpen={collapse} answer={answer} />
-    </>
+    </Wrapper>
   );
 };
 
