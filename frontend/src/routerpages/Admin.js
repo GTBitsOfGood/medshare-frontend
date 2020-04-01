@@ -3,14 +3,6 @@ import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 import { deviceSize } from '../theme';
 
-const NavBarWrapper = styled.div`
-  @media ${deviceSize.mobileL} {
-    width: 100vw;
-  }
-  @media ${deviceSize.mobileS} {
-    width: 100vw;
-  }
-`;
 const WidthMax = styled.div`
   display: flex;
   flex-direction: column;
@@ -33,9 +25,7 @@ class Admin extends React.Component {
   render() {
     return (
       <>
-        <NavBarWrapper>
-          <NavBar />
-        </NavBarWrapper>
+        <NavBar />
         <WidthMax>
           <p style={{ color: '#706B6B', fontSize: '24px' }}>Admin Portal</p>
         </WidthMax>

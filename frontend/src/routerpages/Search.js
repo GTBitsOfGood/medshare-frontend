@@ -11,15 +11,6 @@ import FeaturesContainer from '../containers/featuresContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
 import FeatureList from '../components/FeatureList';
 
-const NavBarWrapper = styled.div`
-  @media ${deviceSize.mobileL} {
-    width: 100vw;
-  }
-  @media ${deviceSize.mobileS} {
-    width: 100vw;
-  }
-`;
-
 const WidthMax = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,9 +45,7 @@ Providers.propTypes = {
 const Search = () => {
   return (
     <Providers>
-      <NavBarWrapper>
-        <NavBar />
-      </NavBarWrapper>
+      <NavBar />
       <WidthMax>
         <p style={{ color: '#706B6B', fontSize: '24px' }}>Search Tool</p>
         <QueryComponents />
