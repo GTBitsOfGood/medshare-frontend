@@ -20,7 +20,7 @@ const Providers = ({ children }) => {
   );
 };
 Providers.propTypes = {
-  children: PropTypes.element.isRequired
+  children: PropTypes.node.isRequired
 };
 
 const Search = () => {
