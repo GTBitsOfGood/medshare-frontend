@@ -16,6 +16,18 @@ const InsideDrawer = styled.div`
   margin: 1rem;
 `;
 
+const TextWrapper1 = styled.div`
+  margin-left: 3rem;
+  margin-bottom: 20rem;
+`;
+
+const TextWrapper2 = styled.div`
+  display: flex;
+  margin-top: 5rem;
+  justify-content: center;
+  border-top-style: solid;
+`;
+
 const NavBar = () => {
   const [drawer, handleDrawer] = useState(false);
 
@@ -24,18 +36,23 @@ const NavBar = () => {
       <NavbarGroup align={Alignment.LEFT}>
         <Button className="bp3-minimal" icon="menu" onClick={() => handleDrawer(true)} />
         <Drawer
-          background-color="#6396B3"
-          size="250px"
+          style={{ background: '#6396B3', color: '#FFFFFF' }}
+          size="255px"
           isOpen={drawer}
           onClose={() => handleDrawer(false)}
           position={Position.LEFT}
         >
           <InsideDrawer>
             <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
-            <h1>SEARCH </h1>
-            <h1>UPLOAD </h1>
-            <h1>SETTINGS </h1>
           </InsideDrawer>
+          <TextWrapper1>
+            <h1>SEARCH </h1>
+            <h1>FAVORITES </h1>
+            <h1>FAQ </h1>
+          </TextWrapper1>
+          <TextWrapper2>
+            <h2 style={{ background: '#6396B3', color: '#FFFFFF' }}>ADMIN PORTAL</h2>
+          </TextWrapper2>
         </Drawer>
       </NavbarGroup>
       <Wrapper>
