@@ -1,8 +1,11 @@
 import React from 'react';
+import { PageWrapper } from '../components/common';
 
-class Fallback extends React.Component {
-  render() {
-    return <h1>Fallback</h1>;
-  }
-}
-export default Fallback;
+const FallbackPage = () => {
+  return (
+    <PageWrapper>
+      <p style={{ color: '#706B6B', fontSize: '24px' }}>Fallback</p>
+    </PageWrapper>
+  );
+};
+export default FallbackPage;

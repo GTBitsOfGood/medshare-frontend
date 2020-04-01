@@ -6,12 +6,14 @@ import Search from './routerpages/Search';
 import FAQ from './routerpages/FAQ';
 import Admin from './routerpages/Admin';
 import Saved from './routerpages/Saved';
+import NavBar from './components/NavBar';
 import { theme } from './theme';
 
 function App() {
   return (
     <Router>
       <ThemeProvider theme={theme}>
+        <NavBar />
         <Switch>
           <Route exact path="/">
             <Search />
