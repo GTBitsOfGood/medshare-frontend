@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { MenuItem, Button, Menu } from '@blueprintjs/core';
+import { MenuItem, Button, Menu, Tag } from '@blueprintjs/core';
 import { MultiSelect } from '@blueprintjs/select';
 import PropTypes from 'prop-types';
 
@@ -51,8 +51,12 @@ const FeatureSelect = ({
         key={feature._id}
         icon={checkIsFeatureSelected(feature) ? 'tick' : 'blank'}
         onClick={handleClick}
-        text={feature.name}
+        text={<span style={{marginRight: '2rem' }}> {feature.name} </span>}
         active={modifiers.active}
+        label={feature.IS_ID ? 
+                <Tag large round style={{ background: '#82B650' }}>
+                  Product ID
+                </Tag> : undefined}
       />
     );
   };
