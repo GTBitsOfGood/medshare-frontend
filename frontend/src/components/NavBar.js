@@ -22,6 +22,7 @@ const TextWrapper1 = styled.div`
   margin-bottom: 20rem;
   display: flex;
   flex: column;
+  flex-direction: column;
 `;
 
 const TextWrapper2 = styled.div`
@@ -40,7 +41,7 @@ const NavBar = () => {
       <NavbarGroup align={Alignment.LEFT}>
         <Button className="bp3-minimal" icon="menu" onClick={() => handleDrawer(true)} />
         <Drawer
-          style={{ background: '#6396B3', color: '#FFFFFF' }}
+          style={{ background: '#6396B3', color: '#FFF' }}
           size="255px"
           isOpen={drawer}
           onClose={() => handleDrawer(false)}
@@ -50,25 +51,19 @@ const NavBar = () => {
             <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
           </InsideDrawer>
           <TextWrapper1>
-            <span>
-              <Link to="/" style={{ color: '#FFFFFF', size: '24px' }}>
+            <Link to="/" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                 SEARCH
-              </Link>{' '}
-            </span>
-            <span>
-              <Link to="/saved" style={{ color: '#FFFFFF', size: '24px' }}>
+            </Link>{' '}
+            <Link to="/saved" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                 FAVORITES
-              </Link>
-            </span>
-            <span>
-              <Link to="/faq" style={{ color: '#FFFFFF', size: '24px' }}>
+            </Link>
+            <Link to="/faq" style={{ color: '#FFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
                 FAQ
-              </Link>
-            </span>
+            </Link>
           </TextWrapper1>
           <TextWrapper2>
             <div>
-              <Link to="/admin" style={{ color: '#FFFFFF', size: '24px' }}>
+              <Link to="/admin" style={{ color: '#FFF', fontSize: '24px' }}>
                 ADMIN PORTAL
               </Link>
             </div>
