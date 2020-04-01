@@ -131,7 +131,12 @@ const SubcategorySelect = ({ selectedItems, onRemoveByIdx, onSelect, onClear, ch
         onItemSelect={onSelect}
         noResults={<MenuItem disabled text="No results." />}
         tagRenderer={renderTag}
-        tagInputProps={{ rightElement: clearButton, onRemove: handleRemove, large: true }}
+        tagInputProps={{
+          rightElement: clearButton,
+          onRemove: handleRemove,
+          large: true,
+          tagProps: { style: { backgroundColor: '#D6A636' } }
+        }}
         selectedItems={selectedItems}
         placeholder="Subcategories.."
       />
