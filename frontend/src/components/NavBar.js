@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'
 import { Alignment, Button, Navbar, NavbarGroup, Drawer, Position } from '@blueprintjs/core';
 
 import styled from 'styled-components';
@@ -46,12 +47,12 @@ const NavBar = () => {
             <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
           </InsideDrawer>
           <TextWrapper1>
-            <h1>SEARCH </h1>
-            <h1>FAVORITES </h1>
-            <h1>FAQ </h1>
+            <h1 style={{color: '#FFF'}}><Link to="/">SEARCH</Link></h1>
+            <h1 style={{color: '#FFF'}}><Link to="/saved">FAVORITES</Link></h1>
+            <h1 style={{color: '#FFF'}}><Link to="/faq">FAQ</Link></h1>
           </TextWrapper1>
           <TextWrapper2>
-            <h2 style={{ background: '#6396B3', color: '#FFFFFF' }}>ADMIN PORTAL</h2>
+            <h2 style={{ background: '#6396B3', color: '#FFF' }}><Link to='/admin'>ADMIN PORTAL</Link></h2>
           </TextWrapper2>
         </Drawer>
       </NavbarGroup>
