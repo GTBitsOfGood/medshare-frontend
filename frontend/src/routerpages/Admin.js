@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import Header from '../Header';
-import { deviceSize } from '../../theme';
+import NavBar from '../components/NavBar';
+import { deviceSize } from '../theme';
 
-const HeaderWrapper = styled.div`
+const NavBarWrapper = styled.div`
   @media ${deviceSize.mobileL} {
     width: 100vw;
   }
@@ -33,9 +33,9 @@ class Admin extends React.Component {
   render() {
     return (
       <>
-        <HeaderWrapper>
-          <Header />
-        </HeaderWrapper>
+        <NavBarWrapper>
+          <NavBar />
+        </NavBarWrapper>
         <WidthMax>
           <p style={{ color: '#706B6B', fontSize: '24px' }}>Admin Portal</p>
         </WidthMax>

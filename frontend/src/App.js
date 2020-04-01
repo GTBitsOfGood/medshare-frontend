@@ -1,11 +1,11 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import Fallback from './components/routerpages/Fallback';
-import Search from './components/routerpages/Search';
-import FAQ from './components/routerpages/FAQ';
-import Admin from './components/routerpages/Admin';
-import Saved from './components/routerpages/Saved';
+import Fallback from './routerpages/Fallback';
+import Search from './routerpages/Search';
+import FAQ from './routerpages/FAQ';
+import Admin from './routerpages/Admin';
+import Saved from './routerpages/Saved';
 import { theme } from './theme';
 
 function App() {

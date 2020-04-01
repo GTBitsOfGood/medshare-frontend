@@ -2,16 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import Header from '../Header';
-import ProductList from '../ProductList';
-import QueryComponents from '../QueryComponents';
-import { deviceSize } from '../../theme';
-import CategoryContainer from '../../containers/categoryContainer';
-import FeaturesContainer from '../../containers/featuresContainer';
-import SubcategoriesContainer from '../../containers/subcategoriesContainer';
-import FeatureList from '../FeatureList';
+import NavBar from '../components/NavBar';
+import ProductList from '../components/ProductList';
+import QueryComponents from '../components/QueryComponents';
+import { deviceSize } from '../theme';
+import CategoryContainer from '../containers/categoryContainer';
+import FeaturesContainer from '../containers/featuresContainer';
+import SubcategoriesContainer from '../containers/subcategoriesContainer';
+import FeatureList from '../components/FeatureList';
 
-const HeaderWrapper = styled.div`
+const NavBarWrapper = styled.div`
   @media ${deviceSize.mobileL} {
     width: 100vw;
   }
@@ -54,9 +54,9 @@ Providers.propTypes = {
 const Search = () => {
   return (
     <Providers>
-      <HeaderWrapper>
-        <Header />
-      </HeaderWrapper>
+      <NavBarWrapper>
+        <NavBar />
+      </NavBarWrapper>
       <WidthMax>
         <p style={{ color: '#706B6B', fontSize: '24px' }}>Search Tool</p>
         <QueryComponents />
