@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import NavBar from '../components/NavBar';
 import { deviceSize } from '../theme';
+
+import NavBar from '../components/NavBar';
+import FAQCards from '../components/FAQCards';
 
 const WidthMax = styled.div`
   display: flex;
@@ -28,6 +30,7 @@ class FAQ extends React.Component {
         <NavBar />
         <WidthMax>
           <p style={{ color: '#706B6B', fontSize: '24px' }}>FAQ</p>
+          <FAQCards />
         </WidthMax>
       </>
     );
