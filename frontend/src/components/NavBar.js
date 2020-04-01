@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { Alignment, Button, Navbar, NavbarGroup, Drawer, Position } from '@blueprintjs/core';
 
 import styled from 'styled-components';
@@ -20,11 +20,13 @@ const InsideDrawer = styled.div`
 const TextWrapper1 = styled.div`
   margin-left: 3rem;
   margin-bottom: 20rem;
+  display: flex;
+  flex: column;
 `;
 
 const TextWrapper2 = styled.div`
   display: flex;
-  margin-top: 5rem;
+  margin-top: 10 rem;
   justify-content: center;
   border-top-style: solid;
 `;
@@ -47,12 +49,28 @@ const NavBar = () => {
             <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
           </InsideDrawer>
           <TextWrapper1>
-            <h1 style={{color: '#FFF'}}><Link to="/">SEARCH</Link></h1>
-            <h1 style={{color: '#FFF'}}><Link to="/saved">FAVORITES</Link></h1>
-            <h1 style={{color: '#FFF'}}><Link to="/faq">FAQ</Link></h1>
+            <div>
+              <Link to="/" style={{ color: '#FFFFFF', size: '24px' }}>
+                SEARCH
+              </Link>{' '}
+            </div>
+            <div>
+              <Link to="/saved" style={{ color: '#FFFFFF', size: '24px' }}>
+                FAVORITES
+              </Link>
+            </div>
+            <div>
+              <Link to="/faq" style={{ color: '#FFFFFF', size: '24px' }}>
+                FAQ
+              </Link>
+            </div>
           </TextWrapper1>
           <TextWrapper2>
-            <h2 style={{ background: '#6396B3', color: '#FFF' }}><Link to='/admin'>ADMIN PORTAL</Link></h2>
+            <div>
+              <Link to="/admin" style={{ color: '#FFFFFF', size: '24px' }}>
+                ADMIN PORTAL
+              </Link>
+            </div>
           </TextWrapper2>
         </Drawer>
       </NavbarGroup>
