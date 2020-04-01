@@ -25,7 +25,7 @@ const FAQCards = () => {
   return (
     <Wrapper>
       <CardWrapper>
-        <Card>
+        <Card style={{ padding: '0rem' }}>
           <TextWrapper>
             <FAQQuestion question="How do I search for a product?" answer="answer1" />
             <FAQQuestion question="What features should I search for?" border answer="answer2" />
