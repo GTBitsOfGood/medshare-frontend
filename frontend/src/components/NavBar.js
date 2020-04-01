@@ -5,6 +5,12 @@ import { Link } from 'react-router-dom';
 import { Alignment, Button, Navbar, NavbarGroup, Drawer, Position } from '@blueprintjs/core';
 import Logo from '../resources/medshare-logo.png';
 
+const NavLink = styled(Link)`
+  color: #ffffff;
+  font-size: 24px;
+  margin: 0.75rem 0.75rem;
+`;
+
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
@@ -25,7 +31,7 @@ const MenuIconWrapper = styled.div`
   margin-top: 1.5rem;
 `;
 
-const TextWrapper1 = styled.div`
+const LinkWrapper = styled.div`
   margin-left: 2rem;
   display: flex;
   flex-direction: column;
@@ -33,13 +39,12 @@ const TextWrapper1 = styled.div`
   padding-bottom: 10rem;
 `;
 
-const TextWrapper2 = styled.div`
+const PortalTextWrapper = styled.div`
   display: flex;
   border-top-style: solid;
   align-items: center;
   justify-content: center;
-  padding-bottom: 2.19rem;
-  padding-top: 1.31rem;
+  padding: 1rem 0;
 `;
 
 const DrawerWrapper = styled.div`
@@ -66,24 +71,16 @@ const NavBar = () => {
           >
             <DrawerWrapper>
               <MenuIconWrapper>
-                <Button classname="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
+                <Button className="bp3-minimal" icon="menu" onClick={() => handleDrawer(false)} />
               </MenuIconWrapper>
-              <TextWrapper1>
-                <Link to="/" style={{ color: '#FFFFFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
-                  SEARCH
-                </Link>
-                <Link to="/saved" style={{ color: '#FFFFFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
-                  FAVORITES
-                </Link>
-                <Link to="/faq" style={{ color: '#FFFFFF', fontSize: '24px', margin: '0.75rem 0.75rem' }}>
-                  FAQ
-                </Link>
-              </TextWrapper1>
-              <TextWrapper2>
-                <Link to="/admin" style={{ color: '#FFFFFF', fontSize: '24px' }}>
-                  ADMIN PORTAL
-                </Link>
-              </TextWrapper2>
+              <LinkWrapper>
+                <NavLink to="/">SEARCH</NavLink>
+                <NavLink to="/saved">FAVORITES</NavLink>
+                <NavLink to="/faq">FAQ</NavLink>
+              </LinkWrapper>
+              <PortalTextWrapper>
+                <NavLink to="/admin">ADMIN PORTAL</NavLink>
+              </PortalTextWrapper>
             </DrawerWrapper>
           </Drawer>
         </NavbarGroup>
