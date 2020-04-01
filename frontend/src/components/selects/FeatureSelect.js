@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { MenuItem, Button, Menu } from '@blueprintjs/core';
+import { MenuItem, Button, Menu, Tag } from '@blueprintjs/core';
 import { MultiSelect } from '@blueprintjs/select';
 import PropTypes from 'prop-types';
 
@@ -53,6 +53,10 @@ const FeatureSelect = ({
         onClick={handleClick}
         text={feature.name}
         active={modifiers.active}
+        label={feature.IS_ID ? 
+                <Tag large round style={{ marginRight: '0.25rem', background: '#82B650' }}>
+                  SKU
+                </Tag> : undefined}
       />
     );
   };
