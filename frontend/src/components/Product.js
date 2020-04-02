@@ -43,7 +43,7 @@ const Product = props => {
           <b>SKU: </b> {productID}
         </span>
         <TagContainer>
-          <Tag large round style={{ marginRight: '0.25rem', background: '##6396b3' }}>
+          <Tag large round style={{ marginRight: '0.25rem', background: '#6396b3' }}>
             {category}
           </Tag>
           <Tag large round style={{ marginTop: '0.15rem', backgroundColor: '#D6A636' }}>
