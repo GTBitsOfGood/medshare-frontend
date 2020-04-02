@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { PageWrapper } from '../components/common';
 
 const SavedProductsPage = () => {
@@ -8,4 +8,4 @@ const SavedProductsPage = () => {
     </PageWrapper>
   );
 };
-export default SavedProductsPage;
+export default memo(SavedProductsPage);

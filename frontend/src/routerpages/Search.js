@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
 import { PageWrapper } from '../components/common';
@@ -36,4 +36,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default memo(Search);

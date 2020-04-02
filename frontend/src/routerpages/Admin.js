@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { PageWrapper } from '../components/common';
 
 const AdminPage = () => {
@@ -8,4 +8,4 @@ const AdminPage = () => {
     </PageWrapper>
   );
 };
-export default AdminPage;
+export default memo(AdminPage);

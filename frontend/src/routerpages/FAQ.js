@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { PageWrapper } from '../components/common';
 import FAQCards from '../components/FAQCards';
 
@@ -10,4 +10,4 @@ const FAQPage = () => {
     </PageWrapper>
   );
 };
-export default FAQPage;
+export default memo(FAQPage);

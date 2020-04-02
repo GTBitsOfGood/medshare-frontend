@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { PageWrapper } from '../components/common';
 
 const FallbackPage = () => {
@@ -8,4 +8,4 @@ const FallbackPage = () => {
     </PageWrapper>
   );
 };
-export default FallbackPage;
+export default memo(FallbackPage);
