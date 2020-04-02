@@ -15,10 +15,7 @@ const QuestionWrapper = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1.56rem;
-  padding-bottom: 1.56rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding: 1.2rem 1rem;
   border-top-style: ${props => (props.border ? 'solid' : 'none')};
   border-width: 1px;
   border-color: '#CCC9C9';
@@ -38,7 +35,7 @@ const FAQQuestion = props => {
     <Wrapper>
       <QuestionWrapper border={border} open={open}>
         <span style={{ marginRight: '0.75rem' }}>{question}</span>
-        <Button className="bp3-minimal" onClick={handleClick} icon={open ? 'caret-down' : 'caret-right'} />
+        <Button className="bp3-minimal" onClick={handleClick} icon={open ? 'chevron-down' : 'chevron-right'} />
       </QuestionWrapper>
       <FAQAnswers isOpen={open} answer={answer} />
     </Wrapper>
