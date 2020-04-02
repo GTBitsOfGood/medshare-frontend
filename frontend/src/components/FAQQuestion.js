@@ -22,33 +22,36 @@ const QuestionWrapper = styled.div`
   border-top-style: ${props => (props.border ? 'solid' : 'none')};
   border-width: 1px;
   border-color: '#CCC9C9';
-  background-color: ${props => (props.color ? '#f6f6f6' : '#ffffff')};
+  background-color: ${props => (props.open ? '#f6f6f6' : '#ffffff')};
 `;
 
 const FAQQuestion = props => {
   const { question, border, answer } = props;
 
-  const [collapse, handleCollapse] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
-    handleCollapse(!collapse);
+    setOpen(!open);
   };
 
   return (
     <Wrapper>
-      <QuestionWrapper border={border} color={collapse}>
-        <span style={{ marginRight: '0.75rem' }}> {question}</span>
-        <Button className="bp3-minimal" onClick={() => handleClick()} icon={collapse ? 'caret-down' : 'caret-right'} />
+      <QuestionWrapper border={border} open={open}>
+        <span style={{ marginRight: '0.75rem' }}>{question}</span>
+        <Button className="bp3-minimal" onClick={handleClick} icon={open ? 'caret-down' : 'caret-right'} />
       </QuestionWrapper>
-      <FAQAnswers isOpen={collapse} answer={answer} />
+      <FAQAnswers isOpen={open} answer={answer} />
     </Wrapper>
   );
 };
 
 FAQQuestion.propTypes = {
   question: PropTypes.string.isRequired,
-  border: PropTypes.bool.isRequired,
+  border: PropTypes.bool,
   answer: PropTypes.string.isRequired
+};
+FAQQuestion.defaultProps = {
+  border: false
 };
 
 export default FAQQuestion;
