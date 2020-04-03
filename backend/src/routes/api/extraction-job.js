@@ -29,9 +29,13 @@ const fileUpload = multer({ dest: UPLOAD_ROOT });
  * but if the user kills his/her API session early (or there is some issue with the DB), the uploaded file will not be cleaned up in the job.
  * This is more of a 'double-check' than anything
  */
-process.on('exit', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
-process.on('SIGINT', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
-process.on('SIGTERM', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
+const exitHandler = () => {
+  fileController.deleteAllFilesInDirectory(UPLOAD_ROOT);
+  process.exit(1);
+};
+
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
 
 /**
  * Gets the most recent job (might be active)
