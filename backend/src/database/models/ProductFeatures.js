@@ -67,6 +67,10 @@ function wait(timeInMilli) {
   });
 }
 
+productFeaturesSchema.statics.deleteAll = async function() {
+  return this.deleteMany({}).then(result => result.deletedCount);
+};
+
 const ProductFeatures = mongoose.model('ProductFeatures', productFeaturesSchema);
 
 module.exports = ProductFeatures;
