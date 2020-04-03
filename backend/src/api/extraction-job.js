@@ -31,6 +31,7 @@ const fileUpload = multer({ dest: UPLOAD_ROOT });
  */
 process.on('exit', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
 process.on('SIGINT', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
+process.on('SIGTERM', () => fileController.deleteAllFilesInDirectory(UPLOAD_ROOT));
 
 /**
  * Gets the most recent job (might be active)
