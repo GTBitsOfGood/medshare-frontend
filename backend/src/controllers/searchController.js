@@ -53,7 +53,7 @@ function getTotalLengthOfFeatures(features) {
 }
 
 /**
- * Queries Product documents and returns the matching Product documents
+ * Queries Product documents and returns [PAGE_SIZE] matching Product documents and total number of products matched
  * @param productName  - must be within the product's "searchableName"
  * @param filterCategory (can be null) - the category the product must be in
  * @param filterSubcategories (array) (can be null) - the product's subcategories must fall under one of these subcategories [OR'ED]
@@ -67,7 +67,18 @@ searchController.queryProducts = async (productName, filterCategory, filterSubca
     filterSubcategories,
     filterFeatureIds
   );
-  return Product.find(filter).limit(PAGE_SIZE);
+  return Product.aggregate()
+    .facet({
+      products: [{ $match: filter }, { $limit: PAGE_SIZE }],
+      count: [{ $match: filter }, { $count: 'count' }]
+    })
+    .project({
+      products: '$products',
+      count: { $arrayElemAt: ['$count.count', 0] }
+    })
+    .then(results => {
+      return results[0];
+    });
 };
 
 /**
