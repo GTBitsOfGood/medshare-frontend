@@ -28,7 +28,9 @@ const useProductsQuery = () => {
 
     getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats)
       .then(results => {
-        setProducts(results.data);
+        if (results.data) {
+          setProducts(results.data.products);
+        }
       })
       .catch(err => {
         console.log(err);
