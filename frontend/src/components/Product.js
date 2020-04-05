@@ -40,7 +40,7 @@ const Product = props => {
       <span>{name}</span>
       <InnerWrap>
         <span>
-          <b>SKU: </b> {productID}
+          <b>Product ID: </b> {productID}
         </span>
         <TagContainer>
           <Tag large round style={{ marginRight: '0.25rem', background: '#6396b3' }}>
