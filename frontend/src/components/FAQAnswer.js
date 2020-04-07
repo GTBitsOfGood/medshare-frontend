@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import { Collapse } from '@blueprintjs/core';
 
 const Wrapper = styled(Collapse)`
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.5rem;
   font-color: #706b6b;
   background-color: #f6f6f6;
 `;
