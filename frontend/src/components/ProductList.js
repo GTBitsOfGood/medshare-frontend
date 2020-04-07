@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import CategoryContainer from '../containers/categoryContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
 import FeaturesContainer from '../containers/featuresContainer';
@@ -8,7 +9,7 @@ import { getProductResults } from '../httpApi';
 import { useDebounce } from '../utils';
 import Product from './Product';
 
-const ItemList = styled.div`
+const ItemList = styled(InfiniteScroll)`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -39,10 +40,25 @@ const useProductsQuery = () => {
   return products;
 };
 
+const fetchMore = () => {
+  // add more search results to product
+  return null;
+};
+
 const ProductList = () => {
   const products = useProductsQuery();
   return (
-    <ItemList>
+    <ItemList
+      dataLength={products.length}
+      next={fetchMore}
+      hasMore
+      loader={<h4>Loading...</h4>}
+      endMessage={
+        <p style={{ textAlign: 'center' }}>
+          <b>Yay! You have seen it all</b>
+        </p>
+      }
+    >
       {products.map(product => {
         return (
           <Product
