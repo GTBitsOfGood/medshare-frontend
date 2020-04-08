@@ -39,6 +39,15 @@ const DrawerWrapper = styled.div`
   height: 100%;
 `;
 
+const HamburgerButton = styled(Button).attrs({
+  icon: 'menu',
+  className: 'bp3-minimal'
+})`
+  .bp3-icon {
+    color: white;
+  }
+`;
+
 const NavDrawer = ({ open, onClose }) => {
   return (
     <Drawer
@@ -50,7 +59,7 @@ const NavDrawer = ({ open, onClose }) => {
     >
       <DrawerWrapper>
         <MenuIconWrapper>
-          <Button className="bp3-minimal" icon="menu" onClick={onClose} />
+          <HamburgerButton onClick={onClose} />
         </MenuIconWrapper>
         <LinkWrapper>
           <NavLink to="/">SEARCH</NavLink>
