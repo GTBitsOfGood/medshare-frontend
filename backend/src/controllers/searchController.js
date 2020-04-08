@@ -1,3 +1,4 @@
+const { ObjectID } = require('mongodb').ObjectID;
 const { Product, ProductFeatures } = require('../database/models');
 
 const searchController = {};
@@ -60,13 +61,19 @@ function getTotalLengthOfFeatures(features) {
  * @param filterFeatureIds (array of Mongoose ObjectId's) - the required feature's the product must have. If empty array, then no required features [AND'ed]
  * @returns {Promise<*>}
  */
-searchController.queryProducts = async (productName, filterCategory, filterSubcategories, filterFeatureIds) => {
+searchController.queryProducts = async (productName, filterCategory, filterSubcategories, filterFeatureIds, lastID) => {
   const filter = generateProductFilterWithRequiredFeatures(
     productName,
     filterCategory,
     filterSubcategories,
     filterFeatureIds
   );
+  if (lastID) {
+    console.log('querying more, starting from' + lastID);
+    const lastSearchedID = new ObjectID(lastID);
+    filter._id = { $gt: lastSearchedID };
+    console.log(filter);
+  }
   return Product.aggregate()
     .facet({
       products: [{ $match: filter }, { $limit: PAGE_SIZE }],
@@ -77,6 +84,9 @@ searchController.queryProducts = async (productName, filterCategory, filterSubca
       count: { $arrayElemAt: ['$count.count', 0] }
     })
     .then(results => {
+      if (lastID) {
+        console.log(results[0]);
+      }
       return results[0];
     });
 };

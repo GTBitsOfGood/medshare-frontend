@@ -54,6 +54,53 @@ router.get(
 );
 
 /*
+  GET search for more results when scrolled
+
+  Essentially the same as the search api above except continue last search
+  from the last document in the previous search. Use objectID to identify
+  the last document searched.
+
+  Args:
+    q (str) (required): query key word
+    features (array containing Mongoose ObjectId's): IDs of features to search by
+    category (str): query category
+    subcategories (array of strings): names of query subcategories
+    lastID (ObjectID): query last document object ID
+
+  Returns:
+    array of all matching products
+ */
+router.get(
+  '/more',
+  [
+    query('q')
+      .exists()
+      .bail()
+      .customSanitizer(toLowerCaseSanitizer),
+    query('subcategories')
+      .toArray()
+      .customSanitizer(arrayToLowerCaseSanitizer),
+    query('features')
+      .toArray()
+      .customSanitizer(arrayToMongoIdsSanitizer),
+    query('category')
+      .optional()
+      .customSanitizer(toLowerCaseSanitizer),
+    query('lastID'),
+    errorOnBadValidation
+  ],
+  async (req, res) => {
+    const { q, subcategories, category, features, lastID } = req.query;
+    try {
+      return res.send(await searchController.queryProducts(q, category, subcategories, features, lastID));
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send(err.message);
+    }
+  }
+);
+
+/*
   GET autocomplete endpoint
 
   Gets list of ProductFeatures from Products that match the arguments filter. Note: Any ProductFeature's

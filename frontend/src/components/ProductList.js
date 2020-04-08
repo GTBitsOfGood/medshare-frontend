@@ -32,6 +32,8 @@ const useProductsQuery = () => {
         if (results.data) {
           if (results.data.products.length < 15) {
             setHasMore(false);
+          } else {
+            setHasMore(true);
           }
           setLastID(results.data.products[results.data.products.length - 1]._id);
           setProducts(results.data.products);
@@ -43,14 +45,19 @@ const useProductsQuery = () => {
   }, [debouncedQuery, filteredFeatureIds, selectedFeatures, category, selectedSubcats, setHasMore, setLastID]);
 
   const fetchMore = () => {
+    console.log('fetching more!');
     getMoreResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats, lastID)
       .then(results => {
         if (results.data) {
+          console.log(results.data.products);
           const newList = products.concat(results.data.products);
           if (results.data.products.length < 15) {
             setHasMore(false);
+          } else {
+            setHasMore(true);
           }
           setProducts(newList);
+          console.log(newList);
         }
       })
       .catch(err => {
