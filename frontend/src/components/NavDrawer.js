@@ -39,7 +39,7 @@ const DrawerWrapper = styled.div`
   height: 100%;
 `;
 
-const NavDrawer = ({ open, onClose }) => {
+const NavDrawer = ({ open, onClose, isAdmin }) => {
   return (
     <Drawer
       style={{ background: '#6396B3', color: '#FFFFFF' }}
@@ -56,9 +56,15 @@ const NavDrawer = ({ open, onClose }) => {
           <NavLink to="/">SEARCH</NavLink>
           <NavLink to="/saved">FAVORITES</NavLink>
           <NavLink to="/faq">FAQ</NavLink>
+          {isAdmin && (
+            <>
+              <NavLink to="/">UPLOAD</NavLink>
+              <NavLink to="/settings">SETTINGS</NavLink>
+            </>
+          )}
         </LinkWrapper>
         <PortalTextWrapper>
-          <NavLink to="/admin">ADMIN PORTAL</NavLink>
+          {isAdmin ? <NavLink to="/">LOG OUT</NavLink> : <NavLink to="/admin">ADMIN PORTAL</NavLink>}
         </PortalTextWrapper>
       </DrawerWrapper>
     </Drawer>
@@ -66,7 +72,8 @@ const NavDrawer = ({ open, onClose }) => {
 };
 NavDrawer.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  isAdmin: PropTypes.bool.isRequired
 };
 
 export default NavDrawer;

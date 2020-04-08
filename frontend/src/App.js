@@ -6,12 +6,15 @@ import Search from './routerpages/Search';
 import FAQ from './routerpages/FAQ';
 import Admin from './routerpages/Admin';
 import Saved from './routerpages/Saved';
+import Settings from './routerpages/Settings';
 import NavBar from './components/NavBar';
 import NavDrawer from './components/NavDrawer';
 import { theme } from './theme';
 
 function App() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isAdmin] = useState(false);
+
   const showDrawer = () => {
     setDrawerOpen(true);
   };
@@ -23,7 +26,7 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <NavBar onNavClick={showDrawer} />
-        <NavDrawer open={isDrawerOpen} onClose={hideDrawer} />
+        <NavDrawer open={isDrawerOpen} onClose={hideDrawer} isAdmin={isAdmin} />
         <Switch>
           <Route exact path="/">
             <Search />
@@ -36,6 +39,9 @@ function App() {
           </Route>
           <Route exact path="/saved">
             <Saved />
+          </Route>
+          <Route exact path="/settings">
+            <Settings />
           </Route>
           <Route exact path="/">
             <Search />
