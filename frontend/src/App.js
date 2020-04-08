@@ -17,7 +17,7 @@ function App() {
   const [isAdmin, setAdmin] = useState(false);
 
   const changeAdmin = () => {
-    setAdmin(isAdmin);
+    setAdmin(!isAdmin);
   };
 
   const showDrawer = () => {
