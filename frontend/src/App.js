@@ -14,6 +14,12 @@ import { theme } from './theme';
 
 function App() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isAdmin, setAdmin] = useState(false);
+
+  const changeAdmin = () => {
+    setAdmin(isAdmin);
+  };
+
   const showDrawer = () => {
     setDrawerOpen(true);
   };
@@ -25,7 +31,7 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <NavBar onNavClick={showDrawer} />
-        <NavDrawer open={isDrawerOpen} onClose={hideDrawer} />
+        <NavDrawer open={isDrawerOpen} onClose={hideDrawer} isAdmin={changeAdmin} />
         <Switch>
           <Route exact path="/">
             <Search />
