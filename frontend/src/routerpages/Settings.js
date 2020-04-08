@@ -1,5 +1,4 @@
-import React, { memo, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { memo } from 'react';
 
 import styled from 'styled-components';
 import { InputGroup, Button } from '@blueprintjs/core';
@@ -22,22 +21,19 @@ const InputWrapper = styled.div`
 `;
 
 const Settings = () => {
-  const [submit, setSubmit] = useState(false);
-
-  if (submit) {
-    return <Redirect to="/successful" />;
-  }
-
+  const onSubmit = () => {
+    console.log('Submitted');
+  };
   return (
     <PageWrapper>
       <p style={{ fontSize: '24px', marginBottom: '3rem' }}>Admin Portal</p>
       <InputWrapper>
-        <InputGroup input type="password" placeholder="old password" />
-        <InputGroup input type="password" placeholder="new password" />
-        <InputGroup input type="password" placeholder="confirm password" />
+        <InputGroup type="password" placeholder="old password" />
+        <InputGroup type="password" placeholder="new password" />
+        <InputGroup type="password" placeholder="confirm password" />
       </InputWrapper>
       <Button
-        onClick={() => setSubmit(!submit)}
+        onClick={onSubmit}
         minimal
         style={{
           backgroundColor: '#6396B3',

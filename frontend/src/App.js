@@ -7,18 +7,16 @@ import FAQ from './routerpages/FAQ';
 import Admin from './routerpages/Admin';
 import Saved from './routerpages/Saved';
 import Settings from './routerpages/Settings';
-import Successful from './routerpages/Successful';
 import NavBar from './components/NavBar';
 import NavDrawer from './components/NavDrawer';
 import { theme } from './theme';
 
 function App() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const [isAdmin, setAdmin] = useState(false);
+  const [isAdmin] = useState(false);
 
   const showDrawer = () => {
     setDrawerOpen(true);
-    setAdmin(!isAdmin); // changes on clicking hamburger
   };
   const hideDrawer = () => {
     setDrawerOpen(false);
@@ -44,9 +42,6 @@ function App() {
           </Route>
           <Route exact path="/settings">
             <Settings />
-          </Route>
-          <Route exact path="/successful">
-            <Successful />
           </Route>
           <Route exact path="/">
             <Search />

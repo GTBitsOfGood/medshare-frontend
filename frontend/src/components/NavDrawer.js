@@ -40,31 +40,6 @@ const DrawerWrapper = styled.div`
 `;
 
 const NavDrawer = ({ open, onClose, isAdmin }) => {
-  if (!isAdmin) {
-    return (
-      <Drawer
-        style={{ background: '#6396B3', color: '#FFFFFF' }}
-        size="255px"
-        isOpen={open}
-        onClose={onClose}
-        position={Position.LEFT}
-      >
-        <DrawerWrapper>
-          <MenuIconWrapper>
-            <Button className="bp3-minimal" icon="menu" onClick={onClose} />
-          </MenuIconWrapper>
-          <LinkWrapper>
-            <NavLink to="/">SEARCH</NavLink>
-            <NavLink to="/saved">FAVORITES</NavLink>
-            <NavLink to="/faq">FAQ</NavLink>
-          </LinkWrapper>
-          <PortalTextWrapper>
-            <NavLink to="/admin">ADMIN PORTAL</NavLink>
-          </PortalTextWrapper>
-        </DrawerWrapper>
-      </Drawer>
-    );
-  }
   return (
     <Drawer
       style={{ background: '#6396B3', color: '#FFFFFF' }}
@@ -79,11 +54,17 @@ const NavDrawer = ({ open, onClose, isAdmin }) => {
         </MenuIconWrapper>
         <LinkWrapper>
           <NavLink to="/">SEARCH</NavLink>
-          <NavLink to="/">UPLOAD</NavLink>
-          <NavLink to="/settings">SETTINGS</NavLink>
+          <NavLink to="/saved">FAVORITES</NavLink>
+          <NavLink to="/faq">FAQ</NavLink>
+          {isAdmin && (
+            <>
+              <NavLink to="/">UPLOAD</NavLink>
+              <NavLink to="/settings">SETTINGS</NavLink>
+            </>
+          )}
         </LinkWrapper>
         <PortalTextWrapper>
-          <NavLink to="/">LOG OUT</NavLink>
+          {isAdmin ? <NavLink to="/">LOG OUT</NavLink> : <NavLink to="/admin">ADMIN PORTAL</NavLink>}
         </PortalTextWrapper>
       </DrawerWrapper>
     </Drawer>
