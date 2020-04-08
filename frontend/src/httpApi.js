@@ -24,4 +24,15 @@ export const getProductResults = (query, features, category, subcategories) =>
     }
   });
 
+export const getMoreResults = (query, features, category, subcategories, lastID) =>
+  client.get('/search/more', {
+    params: {
+      q: query,
+      features,
+      category,
+      subcategories,
+      lastID
+    }
+  });
+
 export const getFrequentFeatures = () => client.get('/features');
