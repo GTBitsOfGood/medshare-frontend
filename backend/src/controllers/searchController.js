@@ -68,7 +68,7 @@ searchController.queryProducts = async (productName, filterCategory, filterSubca
     filterSubcategories,
     filterFeatureIds
   );
-  if (lastID) {
+  if (lastID && lastID !== '') {
     console.log('querying more, starting from' + lastID);
     const lastSearchedID = new ObjectID(lastID);
     filter._id = { $gt: lastSearchedID };

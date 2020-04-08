@@ -14,12 +14,15 @@ const searchController = require('../../controllers/searchController');
   Gets list of Product documents whose name field matches the query text. Category and subcategory have to
   match as well if they are provided. All subcategories and/or categories
   are searched if they are not provided as search params.
+  When lastID is present, continue last search from the last document in the previous search.
+  Use objectID to identify the last document searched.
 
   Args:
     q (str) (required): query key word
     features (array containing Mongoose ObjectId's): IDs of features to search by
     category (str): query category
     subcategories (array of strings): names of query subcategories
+    lastID (str): query last document object ID
 
   Returns:
     array of all matching products
@@ -40,53 +43,7 @@ router.get(
     query('category')
       .optional()
       .customSanitizer(toLowerCaseSanitizer),
-    errorOnBadValidation
-  ],
-  async (req, res) => {
-    const { q, subcategories, category, features } = req.query;
-    try {
-      return res.send(await searchController.queryProducts(q, category, subcategories, features));
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send(err.message);
-    }
-  }
-);
-
-/*
-  GET search for more results when scrolled
-
-  Essentially the same as the search api above except continue last search
-  from the last document in the previous search. Use objectID to identify
-  the last document searched.
-
-  Args:
-    q (str) (required): query key word
-    features (array containing Mongoose ObjectId's): IDs of features to search by
-    category (str): query category
-    subcategories (array of strings): names of query subcategories
-    lastID (ObjectID): query last document object ID
-
-  Returns:
-    array of all matching products
- */
-router.get(
-  '/more',
-  [
-    query('q')
-      .exists()
-      .bail()
-      .customSanitizer(toLowerCaseSanitizer),
-    query('subcategories')
-      .toArray()
-      .customSanitizer(arrayToLowerCaseSanitizer),
-    query('features')
-      .toArray()
-      .customSanitizer(arrayToMongoIdsSanitizer),
-    query('category')
-      .optional()
-      .customSanitizer(toLowerCaseSanitizer),
-    query('lastID'),
+    query('lastID').optional(),
     errorOnBadValidation
   ],
   async (req, res) => {

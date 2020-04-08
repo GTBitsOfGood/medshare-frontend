@@ -5,7 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import CategoryContainer from '../containers/categoryContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
 import FeaturesContainer from '../containers/featuresContainer';
-import { getProductResults, getMoreResults } from '../httpApi';
+import { getProductResults } from '../httpApi';
 import { useDebounce } from '../utils';
 import Product from './Product';
 
@@ -46,7 +46,7 @@ const useProductsQuery = () => {
 
   const fetchMore = () => {
     const filteredFeatureIds = selectedFeatures.map(feature => feature._id);
-    getMoreResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats, lastID)
+    getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats, lastID)
       .then(results => {
         if (results.data) {
           console.log(results.data.products);
@@ -80,7 +80,6 @@ const ProductList = () => {
           <b>All results displayed.</b>
         </p>
       }
-      pull
     >
       {products.map(product => {
         return (
