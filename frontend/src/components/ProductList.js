@@ -23,10 +23,10 @@ const useProductsQuery = () => {
   const { category } = CategoryContainer.useContainer();
   const { selectedSubcats } = SubcategoriesContainer.useContainer();
   const { selectedFeatures, query } = FeaturesContainer.useContainer();
-  const filteredFeatureIds = selectedFeatures.map(feature => feature._id);
   const debouncedQuery = useDebounce(query, 400);
 
   useEffect(() => {
+    const filteredFeatureIds = selectedFeatures.map(feature => feature._id);
     getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats)
       .then(results => {
         if (results.data) {
@@ -42,10 +42,10 @@ const useProductsQuery = () => {
       .catch(err => {
         console.log(err);
       });
-  }, [debouncedQuery, filteredFeatureIds, selectedFeatures, category, selectedSubcats, setHasMore, setLastID]);
+  }, [debouncedQuery, selectedFeatures, category, selectedSubcats]);
 
   const fetchMore = () => {
-    console.log('fetching more!');
+    const filteredFeatureIds = selectedFeatures.map(feature => feature._id);
     getMoreResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats, lastID)
       .then(results => {
         if (results.data) {
@@ -56,8 +56,8 @@ const useProductsQuery = () => {
           } else {
             setHasMore(true);
           }
+          setLastID(results.data.products[results.data.products.length - 1]._id);
           setProducts(newList);
-          console.log(newList);
         }
       })
       .catch(err => {
