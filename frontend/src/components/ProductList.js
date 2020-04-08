@@ -49,7 +49,6 @@ const useProductsQuery = () => {
     getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats, lastID)
       .then(results => {
         if (results.data) {
-          console.log(results.data.products);
           const newList = products.concat(results.data.products);
           if (results.data.products.length < 15) {
             setHasMore(false);

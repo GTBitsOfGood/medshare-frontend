@@ -69,10 +69,8 @@ searchController.queryProducts = async (productName, filterCategory, filterSubca
     filterFeatureIds
   );
   if (lastID && lastID !== '') {
-    console.log('querying more, starting from' + lastID);
     const lastSearchedID = new ObjectID(lastID);
     filter._id = { $gt: lastSearchedID };
-    console.log(filter);
   }
   return Product.aggregate()
     .facet({
@@ -84,9 +82,6 @@ searchController.queryProducts = async (productName, filterCategory, filterSubca
       count: { $arrayElemAt: ['$count.count', 0] }
     })
     .then(results => {
-      if (lastID) {
-        console.log(results[0]);
-      }
       return results[0];
     });
 };
