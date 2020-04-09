@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Tag } from '@blueprintjs/core';
@@ -63,4 +63,4 @@ Product.propTypes = {
   productID: PropTypes.string.isRequired
 };
 
-export default Product;
+export default memo(Product);
