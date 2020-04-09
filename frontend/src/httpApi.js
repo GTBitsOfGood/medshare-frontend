@@ -14,13 +14,14 @@ export const getAutocompleteResults = (query, features, category, subcategories)
     }
   });
 
-export const getProductResults = (query, features, category, subcategories) =>
+export const getProductResults = (query, features, category, subcategories, lastID) =>
   client.get('/search', {
     params: {
       q: query,
       features,
       category,
-      subcategories
+      subcategories,
+      lastID
     }
   });
 
