@@ -16,6 +16,7 @@ const OuterWrap = styled.div`
   padding: 0.5rem 1rem;
   margin-bottom: 0.75rem;
   cursor: pointer;
+  width: 100%;
 `;
 
 const TagContainer = styled.div`

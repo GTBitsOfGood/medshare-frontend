@@ -16,3 +16,7 @@ code {
 input {
   font-size: 100%;
 }
+/* For customizing Infinite Scroll 3rd party component */
+.infinite-scroll-component__outerdiv {
+  width: 100%;
+}
