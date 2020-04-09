@@ -19,7 +19,6 @@ const ItemList = styled(InfiniteScroll)`
 const useProductsQuery = () => {
   const [products, setProducts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [lastID, setLastID] = useState('');
   const { category } = CategoryContainer.useContainer();
   const { selectedSubcats } = SubcategoriesContainer.useContainer();
   const { selectedFeatures, query } = FeaturesContainer.useContainer();
@@ -30,12 +29,7 @@ const useProductsQuery = () => {
     getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats)
       .then(results => {
         if (results.data) {
-          if (results.data.products.length < 15) {
-            setHasMore(false);
-          } else {
-            setHasMore(true);
-          }
-          setLastID(results.data.products[results.data.products.length - 1]._id);
+          setHasMore(results.data.products.length === 15);
           setProducts(results.data.products);
         }
       })
@@ -46,16 +40,12 @@ const useProductsQuery = () => {
 
   const fetchMore = () => {
     const filteredFeatureIds = selectedFeatures.map(feature => feature._id);
+    const lastID = products[products.length - 1]._id;
     getProductResults(debouncedQuery, filteredFeatureIds, category, selectedSubcats, lastID)
       .then(results => {
         if (results.data) {
           const newList = products.concat(results.data.products);
-          if (results.data.products.length < 15) {
-            setHasMore(false);
-          } else {
-            setHasMore(true);
-          }
-          setLastID(results.data.products[results.data.products.length - 1]._id);
+          setHasMore(results.data.products.length === 15);
           setProducts(newList);
         }
       })
