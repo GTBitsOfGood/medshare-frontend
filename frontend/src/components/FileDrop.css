@@ -65,7 +65,7 @@
   box-shadow: 0 0 13px 3px #ff6e40;
 }
 
-div {
+#fileUploadDiv {
   font-family: Ubuntu;
   font-style: normal;
   font-weight: normal;
@@ -73,6 +73,8 @@ div {
   line-height: 34px;
   text-align: center;
   color: #706b6b;
+  width: 704px;
+  height: 494px;
 }
 
 .message {
@@ -86,7 +88,7 @@ div {
   color: #706b6b;
 }
 
-svg {
+#uploadSVG {
   margin: 20px;
 }
 

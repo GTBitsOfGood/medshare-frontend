@@ -37,7 +37,6 @@ const Button = styled.button`
 `;
 
 const DropUpload = () => {
-  const styles = { width: 704, height: 394 };
   const [message, setMessage] = useState('');
   const [boxDrop, setBoxDrop] = useState(false);
   const [enableButton, setEnableButton] = useState(false);
@@ -86,7 +85,6 @@ const DropUpload = () => {
     setFilesToUpload(filesSubmitted);
     const filename = filesSubmitted[0];
     const objectURL = window.URL.createObjectURL(filename);
-    console.log(filename);
     if (filename) {
       setMessage(<a href={objectURL}> {filename.name}</a>);
       setEnableButton(true);
@@ -94,10 +92,11 @@ const DropUpload = () => {
   };
 
   const handleUpload = () => {
+    setMessage('Uploading.....');
     uploadFiles(filesToUpload)
       .then(results => {
         if (results.status === 202) {
-          console.log(results);
+          setMessage('Upload Success!');
         } else if (results.status === 406) {
           console.log(results);
         }
@@ -108,7 +107,7 @@ const DropUpload = () => {
   };
 
   return (
-    <div style={styles}>
+    <div id="fileUploadDiv">
       <FileDrop
         onFrameDragEnter={frameDragEnter}
         onFrameDragLeave={frameDragLeave}
@@ -129,6 +128,7 @@ const DropUpload = () => {
           Browse
         </button>
         <svg
+          id="uploadSVG"
           onClick={() => {
             fileInput.current.click();
           }}
