@@ -88,3 +88,21 @@ div {
 svg {
   margin: 20px;
 }
+
+#fileInput {
+  display: none;
+}
+
+#fileInputButton {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  font-family: Ubuntu;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 34px;
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
