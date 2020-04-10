@@ -94,7 +94,7 @@ svg {
   display: none;
 }
 
-#fileInputButton {
+.buttonLikeLink {
   background: none !important;
   border: none;
   padding: 0 !important;

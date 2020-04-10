@@ -8,7 +8,6 @@ const Button = styled.button`
   margin-top: 10px;
   width: 204px;
   height: 61px;
-  background: #b3b3b3;
   border: 1px solid #aeb2b4;
   box-sizing: border-box;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
@@ -20,13 +19,29 @@ const Button = styled.button`
   line-height: 28px;
   text-align: center;
   color: #ffffff;
+  outline: none;
+  ${props =>
+    props.disabled
+      ? `
+          background: #b3b3b3;
+        `
+      : `
+          background: #6396B3;
+          :hover {
+            cursor: pointer;
+          }
+        `};
+  :focus {
+    background: #4c7d9a;
+  }
 `;
 
 const DropUpload = () => {
   const styles = { width: 704, height: 394 };
   const [message, setMessage] = useState('');
   const [boxDrop, setBoxDrop] = useState(false);
-  const [buttonColor, setButtonColor] = useState({ background: '#b3b3b3' });
+  const [enableButton, setEnableButton] = useState(false);
+  const [filesToUpload, setFilesToUpload] = useState(null);
   const fileInput = React.createRef();
 
   const dragOver = () => {
@@ -51,15 +66,38 @@ const DropUpload = () => {
     }
   };
 
-  const handleFile = files => {
-    setBoxDrop(true);
+  const handleDrop = files => {
     console.log(files);
+    setBoxDrop(true);
     setMessage('Uploading.....');
-    uploadFiles(files)
+    setFilesToUpload(files);
+    const filename = files[0];
+    const objectURL = window.URL.createObjectURL(filename);
+    if (filename) {
+      setMessage(<a href={objectURL}> {filename.name}</a>);
+      setEnableButton(true);
+    }
+  };
+
+  const handleSubmit = () => {
+    const filesSubmitted = fileInput.current.files;
+    setBoxDrop(true);
+    setMessage('Uploading.....');
+    setFilesToUpload(filesSubmitted);
+    const filename = filesSubmitted[0];
+    const objectURL = window.URL.createObjectURL(filename);
+    console.log(filename);
+    if (filename) {
+      setMessage(<a href={objectURL}> {filename.name}</a>);
+      setEnableButton(true);
+    }
+  };
+
+  const handleUpload = () => {
+    uploadFiles(filesToUpload)
       .then(results => {
         if (results.status === 202) {
-          setMessage('filename here');
-          setButtonColor({ background: '#6396B3' });
+          console.log(results);
         } else if (results.status === 406) {
           console.log(results);
         }
@@ -77,13 +115,13 @@ const DropUpload = () => {
         onFrameDrop={frameDrop}
         onDragOver={dragOver}
         onDragLeave={dragOverLeave}
-        onDrop={files => handleFile(files)}
+        onDrop={files => handleDrop(files)}
       >
-        <input type="file" id="fileInput" ref={fileInput} />
+        <input type="file" id="fileInput" ref={fileInput} onChange={handleSubmit} />
         Drag Document or{' '}
         <button
           type="button"
-          id="fileInputButton"
+          className="buttonLikeLink"
           onClick={() => {
             fileInput.current.click();
           }}
@@ -108,7 +146,9 @@ const DropUpload = () => {
         </svg>
         <span className="message"> {message} </span>
       </FileDrop>
-      <Button style={buttonColor}>Upload</Button>
+      <Button type="submit" disabled={!enableButton} onClick={handleUpload}>
+        Upload
+      </Button>
     </div>
   );
 };
