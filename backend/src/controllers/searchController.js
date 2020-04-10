@@ -1,4 +1,4 @@
-const { ObjectID } = require('mongodb').ObjectID;
+const { ObjectId } = require('mongoose').Types;
 const { Product, ProductFeatures } = require('../database/models');
 
 const searchController = {};
@@ -69,7 +69,7 @@ searchController.queryProducts = async (productName, filterCategory, filterSubca
     filterFeatureIds
   );
   if (lastID && lastID !== '') {
-    const lastSearchedID = new ObjectID(lastID);
+    const lastSearchedID = new ObjectId(lastID);
     filter._id = { $gt: lastSearchedID };
   }
   return Product.aggregate()
