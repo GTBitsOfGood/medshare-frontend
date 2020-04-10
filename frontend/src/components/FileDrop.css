@@ -79,9 +79,10 @@ div {
   font-family: Ubuntu;
   font-style: normal;
   font-weight: normal;
-  font-size: 24px;
   line-height: 28px;
   text-align: center;
+  margin: 5px;
+  font-size: 18px;
   color: #706b6b;
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FileDrop } from 'react-file-drop';
 import './FileDrop.css';
 import styled from 'styled-components';
@@ -23,17 +23,52 @@ const Button = styled.button`
 
 const DropUpload = () => {
   const styles = { width: 704, height: 394 };
-  const message = 'placeholder';
+  const [message, setMessage] = useState('');
+  const [boxDrop, setBoxDrop] = useState(false);
+  const [buttonColor, setButtonColor] = useState({ background: '#b3b3b3' });
   const fileInput = React.createRef();
+
+  const dragOver = () => {
+    setMessage('Drop!');
+  };
+
+  const frameDragEnter = () => {
+    setMessage('Drag your file here!');
+  };
+
+  const frameDragLeave = () => {
+    setMessage('');
+  };
+
+  const dragOverLeave = () => {
+    setMessage('Drag your file here!');
+  };
+
+  const frameDrop = () => {
+    if (boxDrop === false) {
+      setMessage('Please drop your file in the box!');
+    }
+  };
+
+  const handleFile = files => {
+    setBoxDrop(true);
+    console.log(files);
+    setMessage('Uploading.....');
+    // call file upload api
+    // when finished
+    setMessage('filename here');
+    setButtonColor({ background: '#6396B3' });
+  };
+
   return (
     <div style={styles}>
       <FileDrop
-        onFrameDragEnter={event => console.log('onFrameDragEnter', event)}
-        onFrameDragLeave={event => console.log('onFrameDragLeave', event)}
-        onFrameDrop={event => console.log('onFrameDrop', event)}
-        onDragOver={event => console.log('onDragOver', event)}
-        onDragLeave={event => console.log('onDragLeave', event)}
-        onDrop={(files, event) => console.log('onDrop!', files, event)}
+        onFrameDragEnter={frameDragEnter}
+        onFrameDragLeave={frameDragLeave}
+        onFrameDrop={frameDrop}
+        onDragOver={dragOver}
+        onDragLeave={dragOverLeave}
+        onDrop={files => handleFile(files)}
       >
         <input type="file" id="fileInput" ref={fileInput} />
         Drag Document or{' '}
@@ -64,7 +99,7 @@ const DropUpload = () => {
         </svg>
         <span className="message"> {message} </span>
       </FileDrop>
-      <Button>Upload</Button>
+      <Button style={buttonColor}>Upload</Button>
     </div>
   );
 };
