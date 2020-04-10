@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FileDrop } from 'react-file-drop';
 import './FileDrop.css';
 import styled from 'styled-components';
+import { uploadFiles } from '../httpApi';
 
 const Button = styled.button`
   margin-top: 10px;
@@ -54,10 +55,18 @@ const DropUpload = () => {
     setBoxDrop(true);
     console.log(files);
     setMessage('Uploading.....');
-    // call file upload api
-    // when finished
-    setMessage('filename here');
-    setButtonColor({ background: '#6396B3' });
+    uploadFiles(files)
+      .then(results => {
+        if (results.status === 202) {
+          setMessage('filename here');
+          setButtonColor({ background: '#6396B3' });
+        } else if (results.status === 406) {
+          console.log(results);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
