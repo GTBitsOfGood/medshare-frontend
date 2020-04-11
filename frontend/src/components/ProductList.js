@@ -13,12 +13,16 @@ const ItemList = styled(InfiniteScroll)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 1rem;
+`;
+const StyleWrapper = styled.div`
+  margin-top: 1.5rem;
+  text-align: right;
 `;
 
 const useProductsQuery = () => {
   const [products, setProducts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [count, setCount] = useState(0);
   const { category } = CategoryContainer.useContainer();
   const { selectedSubcats } = SubcategoriesContainer.useContainer();
   const { selectedFeatures, query } = FeaturesContainer.useContainer();
@@ -31,6 +35,7 @@ const useProductsQuery = () => {
         if (results.data) {
           setHasMore(results.data.products.length === 15);
           setProducts(results.data.products);
+          setCount(results.data.count);
         }
       })
       .catch(err => {
@@ -47,17 +52,18 @@ const useProductsQuery = () => {
           const newList = products.concat(results.data.products);
           setHasMore(results.data.products.length === 15);
           setProducts(newList);
+          setCount(results.data.count);
         }
       })
       .catch(err => {
         console.log(err);
       });
   };
-  return [products, fetchMore, hasMore];
+  return [products, fetchMore, hasMore, count];
 };
 
 const ProductList = () => {
-  const [products, fetchMore, hasMore] = useProductsQuery();
+  const [products, fetchMore, hasMore, count] = useProductsQuery();
 
   const [favorited, setFavorite] = useState(false);
   console.log('working favorited');
@@ -68,6 +74,8 @@ const ProductList = () => {
   }
   
   return (
+    <StyleWrapper>
+    <p style={{ color: '#A9A7A7' }}>{count} Results</p>
     <ItemList
       dataLength={products.length}
       next={fetchMore}
@@ -94,6 +102,7 @@ const ProductList = () => {
         );
       })}
     </ItemList>
+    </StyleWrapper>
   );
 };
 
