@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import Fallback from './routerpages/Fallback';
+import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
+import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
+
 import Search from './routerpages/Search';
 import FAQ from './routerpages/FAQ';
 import Admin from './routerpages/Admin';
@@ -12,8 +13,13 @@ import NavDrawer from './components/NavDrawer';
 import { theme } from './theme';
 
 function App() {
+  const history = useHistory();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isAdmin] = useState(false);
+
+  const onAuthRequired = () => {
+    history.push('/');
+  };
 
   const showDrawer = () => {
     setDrawerOpen(true);
@@ -23,7 +29,13 @@ function App() {
   };
 
   return (
-    <Router>
+    <Security
+      pkce
+      issuer={process.env.REACT_APP_OKTA_ISSUER}
+      clientId={process.env.REACT_APP_OKTA_CLIENT_ID}
+      redirectUri={window.location.origin + '/implicit/callback'}
+      onAuthRequired={onAuthRequired}
+    >
       <ThemeProvider theme={theme}>
         <NavBar onNavClick={showDrawer} />
         <NavDrawer open={isDrawerOpen} onClose={hideDrawer} isAdmin={isAdmin} />
@@ -40,17 +52,16 @@ function App() {
           <Route exact path="/saved">
             <Saved />
           </Route>
-          <Route exact path="/settings">
-            <Settings />
-          </Route>
+          <SecureRoute path="/settings" component={Settings} />
           <Route exact path="/">
             <Search />
           </Route>
-          <Route component={Fallback} />
+          <Route exact path="/implicit/callback" component={LoginCallback} />
+          <Redirect to="/" />
         </Switch>
       </ThemeProvider>
-    </Router>
+    </Security>
   );
 }
 
-export default App;
+export default memo(App);
