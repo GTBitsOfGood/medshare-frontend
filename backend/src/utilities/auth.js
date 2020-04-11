@@ -9,7 +9,12 @@ const jwtVerifier = new OktaJwtVerifier({
 
 const checkOktaAuth = async (req, res, next) => {
   try {
-    if (!req.headers.authorization) throw new Error('Authorization header is required');
+    if (!req.headers.authorization) {
+      res.status(401).json({
+        message: 'Authorization header is required'
+      });
+      return;
+    }
 
     const accessToken = req.headers.authorization.trim().split(' ')[1];
     await jwtVerifier.verifyAccessToken(accessToken, 'api://default');
