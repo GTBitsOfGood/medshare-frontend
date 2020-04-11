@@ -75,33 +75,32 @@ const ProductList = () => {
   
   return (
     <StyleWrapper>
-    <p style={{ color: '#A9A7A7' }}>{count} Results</p>
-    <ItemList
-      dataLength={products.length}
-      next={fetchMore}
-      hasMore={hasMore}
-      loader={<h4>Loading...</h4>}
-      endMessage={
-        <p style={{ textAlign: 'center' }}>
-          <b>All results displayed.</b>
-        </p>
-      }
-    >
-      {products.map(product => {
-
-        return (
-          <Product
-            key={product._id}
-            name={product.name}
-            category={product.category}
-            subcategory={product.subcategory}
-            productID={product.productId}
-            saved={product.favorited}
-            onSaveClick={product.onSaveClick}
-          />
-        );
-      })}
-    </ItemList>
+      <p style={{ color: '#A9A7A7' }}>{count} Results</p>
+      <ItemList
+        dataLength={products.length}
+        next={fetchMore}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{ textAlign: 'center' }}>
+            <b>All results displayed.</b>
+          </p>
+        }
+      >
+        {products.map(product => {
+          return (
+            <Product
+              key={product._id}
+              name={product.name}
+              category={product.category}
+              subcategory={product.subcategory}
+              productID={product.productId}
+              saved={favorited}
+              onSaveClick={onSaveClick}
+            />
+          );
+        })}
+      </ItemList>
     </StyleWrapper>
   );
 };

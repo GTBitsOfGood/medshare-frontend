@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Button, Icon, Tag } from '@blueprintjs/core';
-import { MINIMAL } from '@blueprintjs/core/lib/esm/common/classes';
+import { Button, Tag } from '@blueprintjs/core';
 
 const OuterWrap = styled.div`
   font-size: 16px;
@@ -36,7 +35,6 @@ const InnerWrap = styled.div`
 
 const Star = styled(Button).attrs({
   minimal: true,
-  large: true,
   className: 'bp3-minimal'
 })`
   .bp3-icon {
