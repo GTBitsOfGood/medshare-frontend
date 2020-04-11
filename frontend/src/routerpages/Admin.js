@@ -9,7 +9,9 @@ const AdminPage = () => {
 
   return (
     <PageWrapper>
-      <p style={{ color: '#706B6B', fontSize: '24px' }}>Admin Portal</p>
+      <p style={{ color: '#706B6B', fontSize: '24px' }}>
+        {authState.isAuthenticated ? 'Upload Spreadsheet' : 'Admin Login'}
+      </p>
       {authState.isAuthenticated ? <FileUpload /> : <LoginForm />}
     </PageWrapper>
   );

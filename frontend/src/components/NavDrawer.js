@@ -69,23 +69,23 @@ const NavDrawer = ({ open, onClose }) => {
           <HamburgerButton onClick={onClose} />
         </MenuIconWrapper>
         <LinkWrapper>
-          <NavLink to="/">SEARCH</NavLink>
-          <NavLink to="/saved">FAVORITES</NavLink>
+          <NavLink to="/">Search</NavLink>
+          <NavLink to="/saved">Saved Products</NavLink>
           <NavLink to="/faq">FAQ</NavLink>
           {authState.isAuthenticated && (
             <>
-              <NavLink to="/admin">UPLOAD</NavLink>
-              <NavLink to="/settings">SETTINGS</NavLink>
+              <NavLink to="/admin">Upload</NavLink>
+              <NavLink to="/settings">Settings</NavLink>
             </>
           )}
         </LinkWrapper>
         <PortalTextWrapper>
           {authState.isAuthenticated ? (
             <NavLink to="/" onClick={handleLogoutClick}>
-              LOG OUT
+              Log Out
             </NavLink>
           ) : (
-            <NavLink to="/admin">ADMIN PORTAL</NavLink>
+            <NavLink to="/admin">Admin Portal</NavLink>
           )}
         </PortalTextWrapper>
       </DrawerWrapper>
