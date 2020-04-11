@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const process = require('process');
 const router = require('express').Router();
+const { FeatureExtractionError } = require('../../utilities/feature-extraction/error-handling');
 
 const {
   errorOnBadValidation,
@@ -20,7 +21,7 @@ const fileController = require('../../utilities/file-controller');
 const DEFAULT_FILE_ENCODING = 'utf-8';
 const DEFAULT_USER_ID = 'Unknown user';
 const FILE_FIELD_IN_FORM = 'productFile';
-const UPLOAD_ROOT = path.join(__dirname, '../../resources/product-uploads'); // needs to be an absolute path
+const UPLOAD_ROOT = path.join(__dirname, '../../../resources/product-uploads'); // needs to be an absolute path
 
 const fileUpload = multer({ dest: UPLOAD_ROOT });
 
@@ -75,15 +76,17 @@ router.post('/submit-job', [
     const fileMetadata = new FileMetadata(originalname, DEFAULT_FILE_ENCODING, absolutePath);
     const extractionJobRequest = new ExtractionJobRequest(DEFAULT_USER_ID, fileMetadata);
     try {
-      const requestErrorMaybe = await extractJobController.submit(extractionJobRequest);
-      if (requestErrorMaybe) {
-        res.status(406).send(requestErrorMaybe);
-      } else {
-        res.status(202);
-      }
+      const job = await extractJobController.submit(extractionJobRequest);
+      res.status(202).send(job);
     } catch (error) {
-      console.error(error);
-      res.status(500).send(`Unknown error when submitting request: ${error.toString()}`);
+      if (error instanceof FeatureExtractionError) {
+        res.status(406).send({
+          message: error.errorMessage
+        });
+      } else {
+        console.error(error);
+        res.status(500).send(`Unknown error when submitting request: ${error.toString()}`);
+      }
     }
   }
 ]);

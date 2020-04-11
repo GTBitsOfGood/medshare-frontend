@@ -12,7 +12,7 @@ const EXTRACTION_CHILD_PROCESS_PATH = path.join(
 
 async function submit(extractionJobRequest) {
   if (await isThereJobRunning()) {
-    return new FeatureExtractionError(
+    throw new FeatureExtractionError(
       FeatureExtractionErrorCategory.JOB_CURRENTLY_RUNNING,
       'There is a job currently running'
     );
