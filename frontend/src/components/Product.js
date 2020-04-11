@@ -3,6 +3,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Button, Tag } from '@blueprintjs/core';
 
+const Text = styled.span`
+  margin-bottom: 0.5rem;
+`;
+
 const OuterWrap = styled.div`
   font-size: 16px;
   display: flex;
@@ -21,7 +25,7 @@ const OuterWrap = styled.div`
 const TagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 const InnerWrap = styled.div`
@@ -38,20 +42,19 @@ const Star = styled(Button).attrs({
   className: 'bp3-minimal'
 })`
   .bp3-icon {
-    color: #FFBB1C;
+    color: #ffbb1c;
   }
 `;
 
 const Product = props => {
-  
-  const { name, category, subcategory, productID, saved, onSaveClick} = props;
+  const { name, category, subcategory, productID, saved, onSaveClick } = props;
   return (
     <OuterWrap>
-      <span>{name}</span>
+      <Text>{name}</Text>
+      <Text>
+        <b>Product ID: </b> {productID}
+      </Text>
       <InnerWrap>
-        <span>
-          <b>Product ID: </b> {productID}
-        </span>
         <TagContainer>
           <Tag large round style={{ marginRight: '0.25rem', background: '#6396b3' }}>
             {category}
@@ -60,7 +63,7 @@ const Product = props => {
             {subcategory}
           </Tag>
         </TagContainer>
-        <Star icon={ saved ? "star" : "star-empty" } onClick={onSaveClick} active={saved} />
+        <Star icon={saved ? 'star' : 'star-empty'} onClick={onSaveClick} active={saved} />
       </InnerWrap>
     </OuterWrap>
   );
