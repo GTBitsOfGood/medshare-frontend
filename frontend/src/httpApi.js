@@ -25,4 +25,6 @@ export const getProductResults = (query, features, category, subcategories, last
     }
   });
 
+export const uploadFiles = formData => client.post('/extraction-job/submit-job', formData);
+
 export const getFrequentFeatures = () => client.get('/features');
