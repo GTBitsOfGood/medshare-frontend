@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { Link } from 'react-router-dom';
 import { Button, Drawer, Position } from '@blueprintjs/core';
@@ -48,7 +49,13 @@ const HamburgerButton = styled(Button).attrs({
   }
 `;
 
-const NavDrawer = ({ open, onClose, isAdmin }) => {
+const NavDrawer = ({ open, onClose }) => {
+  const { authState, authService } = useOktaAuth();
+  const handleLogoutClick = e => {
+    e.preventDefault();
+    authService.logout('/');
+  };
+
   return (
     <Drawer
       style={{ background: '#6396B3', color: '#FFFFFF' }}
@@ -62,18 +69,24 @@ const NavDrawer = ({ open, onClose, isAdmin }) => {
           <HamburgerButton onClick={onClose} />
         </MenuIconWrapper>
         <LinkWrapper>
-          <NavLink to="/">SEARCH</NavLink>
-          <NavLink to="/saved">FAVORITES</NavLink>
+          <NavLink to="/">Search</NavLink>
+          <NavLink to="/saved">Saved Products</NavLink>
           <NavLink to="/faq">FAQ</NavLink>
-          {isAdmin && (
+          {authState.isAuthenticated && (
             <>
-              <NavLink to="/">UPLOAD</NavLink>
-              <NavLink to="/settings">SETTINGS</NavLink>
+              <NavLink to="/admin">Upload</NavLink>
+              <NavLink to="/settings">Settings</NavLink>
             </>
           )}
         </LinkWrapper>
         <PortalTextWrapper>
-          {isAdmin ? <NavLink to="/">LOG OUT</NavLink> : <NavLink to="/admin">ADMIN PORTAL</NavLink>}
+          {authState.isAuthenticated ? (
+            <NavLink to="/" onClick={handleLogoutClick}>
+              Log Out
+            </NavLink>
+          ) : (
+            <NavLink to="/admin">Admin Portal</NavLink>
+          )}
         </PortalTextWrapper>
       </DrawerWrapper>
     </Drawer>
@@ -81,8 +94,7 @@ const NavDrawer = ({ open, onClose, isAdmin }) => {
 };
 NavDrawer.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  isAdmin: PropTypes.bool.isRequired
+  onClose: PropTypes.func.isRequired
 };
 
 export default NavDrawer;

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useOktaAuth } from '@okta/okta-react';
 import { FileDrop } from 'react-file-drop';
 import './FileUpload.css';
 import styled from 'styled-components';
@@ -37,6 +38,7 @@ const Button = styled.button`
 `;
 
 const FileUpload = () => {
+  const { authState } = useOktaAuth();
   const [message, setMessage] = useState('');
   const [fileToUpload, setFileToUpload] = useState(null);
   const fileInput = useRef(null);
@@ -84,7 +86,7 @@ const FileUpload = () => {
     setMessage('Uploading.....');
     const formData = new FormData();
     formData.append('productFile', fileToUpload);
-    uploadFiles(formData)
+    uploadFiles(authState.accessToken, formData)
       .then(() => {
         setMessage('Upload Success! Job might take some time to complete so check back later!');
       })
@@ -98,6 +100,7 @@ const FileUpload = () => {
       })
       .finally(() => {
         fileInput.current.value = null;
+        setFileToUpload(null);
       });
   };
 
