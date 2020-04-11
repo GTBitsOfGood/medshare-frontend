@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FileDrop } from 'react-file-drop';
-import './FileDrop.css';
+import './FileUpload.css';
 import styled from 'styled-components';
-import { uploadFiles } from '../httpApi';
+import { uploadFiles } from '../../httpApi';
 
 const Button = styled.button`
   margin-top: 10px;
@@ -36,12 +36,10 @@ const Button = styled.button`
   }
 `;
 
-const DropUpload = () => {
+const FileUpload = () => {
   const [message, setMessage] = useState('');
-  const [boxDrop, setBoxDrop] = useState(false);
-  const [enableButton, setEnableButton] = useState(false);
-  const [filesToUpload, setFilesToUpload] = useState(null);
-  const fileInput = React.createRef();
+  const [fileToUpload, setFileToUpload] = useState(null);
+  const fileInput = useRef(null);
 
   const dragOver = () => {
     setMessage('Drop!');
@@ -59,50 +57,47 @@ const DropUpload = () => {
     setMessage('Drag your file here!');
   };
 
-  const frameDrop = () => {
-    if (boxDrop === false) {
-      setMessage('Please drop your file in the box!');
+  const handleDrop = files => {
+    const firstFile = files[0];
+    console.log(files);
+    if (!firstFile) {
+      return;
+    }
+    if (firstFile.type !== 'text/csv') {
+      setMessage('You can only upload .csv files, please select another file');
+    } else {
+      setFileToUpload(firstFile);
+      const objectURL = window.URL.createObjectURL(firstFile);
+      setMessage(<a href={objectURL}>{firstFile.name}</a>);
     }
   };
 
-  const handleDrop = files => {
-    console.log(files);
-    setBoxDrop(true);
-    setMessage('Uploading.....');
-    setFilesToUpload(files);
-    const filename = files[0];
-    const objectURL = window.URL.createObjectURL(filename);
-    if (filename) {
-      setMessage(<a href={objectURL}> {filename.name}</a>);
-      setEnableButton(true);
-    }
+  const triggerFileInput = () => {
+    fileInput.current.click();
   };
 
   const handleSubmit = () => {
-    const filesSubmitted = fileInput.current.files;
-    setBoxDrop(true);
-    setMessage('Uploading.....');
-    setFilesToUpload(filesSubmitted);
-    const filename = filesSubmitted[0];
-    const objectURL = window.URL.createObjectURL(filename);
-    if (filename) {
-      setMessage(<a href={objectURL}> {filename.name}</a>);
-      setEnableButton(true);
-    }
+    handleDrop(fileInput.current.files);
   };
 
-  const handleUpload = () => {
+  const handleUploadClick = () => {
     setMessage('Uploading.....');
-    uploadFiles(filesToUpload)
-      .then(results => {
-        if (results.status === 202) {
-          setMessage('Upload Success!');
-        } else if (results.status === 406) {
-          console.log(results);
-        }
+    const formData = new FormData();
+    formData.append('productFile', fileToUpload);
+    uploadFiles(formData)
+      .then(() => {
+        setMessage('Upload Success! Job might take some time to complete so check back later!');
       })
       .catch(err => {
-        console.log(err);
+        if (err.response.status === 406) {
+          setMessage('There is an upload job currently running, please try again later');
+        } else {
+          setMessage('An unexpected error occured, please try again');
+          console.log(err);
+        }
+      })
+      .finally(() => {
+        fileInput.current.value = null;
       });
   };
 
@@ -111,27 +106,19 @@ const DropUpload = () => {
       <FileDrop
         onFrameDragEnter={frameDragEnter}
         onFrameDragLeave={frameDragLeave}
-        onFrameDrop={frameDrop}
         onDragOver={dragOver}
         onDragLeave={dragOverLeave}
         onDrop={files => handleDrop(files)}
       >
-        <input type="file" id="fileInput" ref={fileInput} onChange={handleSubmit} />
+        <input type="file" id="fileInput" ref={fileInput} onChange={handleSubmit} accept=".csv" />
         Drag Document or{' '}
-        <button
-          type="button"
-          className="buttonLikeLink"
-          onClick={() => {
-            fileInput.current.click();
-          }}
-        >
+        <button type="button" className="buttonLikeLink" onClick={triggerFileInput}>
           Browse
         </button>
         <svg
           id="uploadSVG"
-          onClick={() => {
-            fileInput.current.click();
-          }}
+          onClick={triggerFileInput}
+          style={{ cursor: 'pointer' }}
           width="60"
           height="73"
           viewBox="0 0 60 73"
@@ -146,11 +133,11 @@ const DropUpload = () => {
         </svg>
         <span className="message"> {message} </span>
       </FileDrop>
-      <Button type="submit" disabled={!enableButton} onClick={handleUpload}>
+      <Button type="submit" disabled={!fileToUpload} onClick={handleUploadClick}>
         Upload
       </Button>
     </div>
   );
 };
 
-export default DropUpload;
+export default FileUpload;
