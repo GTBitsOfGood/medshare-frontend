@@ -58,6 +58,15 @@ const useProductsQuery = () => {
 
 const ProductList = () => {
   const [products, fetchMore, hasMore] = useProductsQuery();
+
+  const [favorited, setFavorite] = useState(false);
+  console.log('working favorited');
+
+  const onSaveClick = () => {
+    console.log('working');
+    setFavorite(!favorited);
+  }
+  
   return (
     <ItemList
       dataLength={products.length}
@@ -71,6 +80,7 @@ const ProductList = () => {
       }
     >
       {products.map(product => {
+
         return (
           <Product
             key={product._id}
@@ -78,6 +88,8 @@ const ProductList = () => {
             category={product.category}
             subcategory={product.subcategory}
             productID={product.productId}
+            saved={product.favorited}
+            onSaveClick={product.onSaveClick}
           />
         );
       })}

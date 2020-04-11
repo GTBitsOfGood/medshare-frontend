@@ -1,7 +1,8 @@
-import React, { memo } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Tag } from '@blueprintjs/core';
+import { Button, Icon, Tag } from '@blueprintjs/core';
+import { MINIMAL } from '@blueprintjs/core/lib/esm/common/classes';
 
 const OuterWrap = styled.div`
   font-size: 16px;
@@ -16,7 +17,6 @@ const OuterWrap = styled.div`
   padding: 0.5rem 1rem;
   margin-bottom: 0.75rem;
   cursor: pointer;
-  width: 100%;
 `;
 
 const TagContainer = styled.div`
@@ -34,8 +34,19 @@ const InnerWrap = styled.div`
   margin-bottom: 0.5rem;
 `;
 
+const Star = styled(Button).attrs({
+  minimal: true,
+  large: true,
+  className: 'bp3-minimal'
+})`
+  .bp3-icon {
+    color: #FFBB1C;
+  }
+`;
+
 const Product = props => {
-  const { name, category, subcategory, productID } = props;
+  
+  const { name, category, subcategory, productID, saved, onSaveClick} = props;
   return (
     <OuterWrap>
       <span>{name}</span>
@@ -51,6 +62,7 @@ const Product = props => {
             {subcategory}
           </Tag>
         </TagContainer>
+        <Star icon={ saved ? "star" : "star-empty" } onClick={onSaveClick} active={saved} />
       </InnerWrap>
     </OuterWrap>
   );
@@ -60,7 +72,9 @@ Product.propTypes = {
   name: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   subcategory: PropTypes.string.isRequired,
-  productID: PropTypes.string.isRequired
+  productID: PropTypes.string.isRequired,
+  saved: PropTypes.bool.isRequired,
+  onSaveClick: PropTypes.func.isRequired
 };
 
-export default memo(Product);
+export default Product;
