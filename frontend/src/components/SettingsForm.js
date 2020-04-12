@@ -19,6 +19,9 @@ const Input = styled(InputGroup).attrs({
 
 const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/g;
 const validatePassword = password => {
+  if (password.length === 0) {
+    return 'Password cannot be empty';
+  }
   if (password.length < 8) {
     return 'Password must be at least 8 characters';
   }
