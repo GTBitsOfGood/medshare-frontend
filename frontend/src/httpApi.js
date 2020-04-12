@@ -25,6 +25,13 @@ export const getProductResults = (query, features, category, subcategories, last
     }
   });
 
+export const getMostRecentUpload = accessToken =>
+  client.get('/extraction-job/mostRecent', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+
 export const uploadFiles = (accessToken, formData) =>
   client.post('/extraction-job/submit-job', formData, {
     headers: {

@@ -1,12 +1,27 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import { FileDrop } from 'react-file-drop';
 import './FileUpload.css';
 import styled from 'styled-components';
-import { uploadFiles } from '../../httpApi';
+import { uploadFiles, getMostRecentUpload } from '../../httpApi';
+
+const LastUploadText = styled.span`
+  margin-top: 1.5rem;
+  font-size: 16px;
+  color: #069;
+  width: 100%;
+  text-align: center;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
 
 const Button = styled.button`
-  margin-top: 10px;
+  margin-top: 1rem;
   width: 204px;
   height: 61px;
   border: 1px solid #aeb2b4;
@@ -39,9 +54,26 @@ const Button = styled.button`
 
 const FileUpload = () => {
   const { authState } = useOktaAuth();
+  const [lastUpload, setLastUpload] = useState({});
   const [message, setMessage] = useState('');
   const [fileToUpload, setFileToUpload] = useState(null);
   const fileInput = useRef(null);
+
+  useEffect(() => {
+    if (authState.accessToken) {
+      getMostRecentUpload(authState.accessToken).then(resp => {
+        const { jobStatus, finishedAt } = resp.data;
+        const uploadInfo = {
+          running: true,
+          finishedAt
+        };
+        if (jobStatus === 'FINISHED_SUCCESSFULLY' || jobStatus === 'FINISHED_WITH_ERRORS') {
+          uploadInfo.running = false;
+        }
+        setLastUpload(uploadInfo);
+      });
+    }
+  }, [authState]);
 
   const dragOver = () => {
     setMessage('Drop!');
@@ -104,7 +136,7 @@ const FileUpload = () => {
   };
 
   return (
-    <div id="fileUploadDiv">
+    <Wrapper>
       <FileDrop
         onFrameDragEnter={frameDragEnter}
         onFrameDragLeave={frameDragLeave}
@@ -135,10 +167,16 @@ const FileUpload = () => {
         </svg>
         <span className="message"> {message} </span>
       </FileDrop>
-      <Button style={{ marginTop: '1rem' }} type="submit" disabled={!fileToUpload} onClick={handleUploadClick}>
+
+      <Button type="submit" disabled={!fileToUpload || lastUpload.running} onClick={handleUploadClick}>
         Upload
       </Button>
-    </div>
+      <LastUploadText>
+        {lastUpload.running
+          ? `Upload in progress... Please check back later`
+          : `Last upload finished at: ${lastUpload.finishedAt}`}
+      </LastUploadText>
+    </Wrapper>
   );
 };
 
