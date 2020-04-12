@@ -1,11 +1,12 @@
 import React, { useState, memo } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { Security, LoginCallback } from '@okta/okta-react';
+import { Security, LoginCallback, SecureRoute } from '@okta/okta-react';
 import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
 
 import Search from './routerpages/Search';
 import FAQ from './routerpages/FAQ';
 import Admin from './routerpages/Admin';
+import Settings from './routerpages/Settings';
 import Saved from './routerpages/Saved';
 import NavBar from './components/NavBar';
 import NavDrawer from './components/NavDrawer';
@@ -53,7 +54,7 @@ function App() {
             <Route exact path="/admin">
               <Admin />
             </Route>
-            {/* <SecureRoute path="/settings" component={Settings} /> */}
+            <SecureRoute path="/settings" component={Settings} />
             <Route exact path="/implicit/callback" component={LoginCallback} />
             <Redirect to="/" />
           </Switch>
