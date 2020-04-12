@@ -23,7 +23,7 @@ const faqItems = [
   },
   {
     question: "How do I access the products I've saved?",
-    answer: 'Press the hamburger menu (the 3 horizontal buttons) and press on the "Favorites" tab.'
+    answer: 'Press the hamburger menu (the 3 horizontal buttons) and press on the "Saved Products" tab.'
   },
   {
     question: 'How does the search tool handle typos?',
