@@ -5,6 +5,7 @@ import { Button, Tag } from '@blueprintjs/core';
 
 const Text = styled.span`
   margin-bottom: 0.5rem;
+  text-align: left;
 `;
 
 const OuterWrap = styled.div`

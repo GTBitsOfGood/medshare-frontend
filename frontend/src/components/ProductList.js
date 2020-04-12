@@ -15,8 +15,9 @@ const ItemList = styled(InfiniteScroll)`
   width: 100%;
 `;
 const StyleWrapper = styled.div`
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   text-align: right;
+  width: 100%;
 `;
 
 const useProductsQuery = () => {
@@ -35,7 +36,7 @@ const useProductsQuery = () => {
         if (results.data) {
           setHasMore(results.data.products.length === 15);
           setProducts(results.data.products);
-          setCount(results.data.count);
+          setCount(results.data.count || 0);
         }
       })
       .catch(err => {
@@ -52,7 +53,7 @@ const useProductsQuery = () => {
           const newList = products.concat(results.data.products);
           setHasMore(results.data.products.length === 15);
           setProducts(newList);
-          setCount(results.data.count);
+          setCount(results.data.count || 0);
         }
       })
       .catch(err => {
@@ -66,13 +67,11 @@ const ProductList = () => {
   const [products, fetchMore, hasMore, count] = useProductsQuery();
 
   const [favorited, setFavorite] = useState(false);
-  console.log('working favorited');
 
   const onSaveClick = () => {
-    console.log('working');
     setFavorite(!favorited);
-  }
-  
+  };
+
   return (
     <StyleWrapper>
       <p style={{ color: '#A9A7A7' }}>{count} Results</p>
