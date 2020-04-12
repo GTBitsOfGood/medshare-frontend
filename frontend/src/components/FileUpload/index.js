@@ -61,7 +61,6 @@ const FileUpload = () => {
 
   const handleDrop = files => {
     const firstFile = files[0];
-    console.log(files);
     if (!firstFile) {
       return;
     }
@@ -136,7 +135,7 @@ const FileUpload = () => {
         </svg>
         <span className="message"> {message} </span>
       </FileDrop>
-      <Button type="submit" disabled={!fileToUpload} onClick={handleUploadClick}>
+      <Button style={{ marginTop: '1rem' }} type="submit" disabled={!fileToUpload} onClick={handleUploadClick}>
         Upload
       </Button>
     </div>

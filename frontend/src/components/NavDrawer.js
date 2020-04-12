@@ -75,7 +75,7 @@ const NavDrawer = ({ open, onClose }) => {
           {authState.isAuthenticated && (
             <>
               <NavLink to="/admin">Upload</NavLink>
-              <NavLink to="/settings">Settings</NavLink>
+              {/* <NavLink to="/settings">Settings</NavLink> */}
             </>
           )}
         </LinkWrapper>

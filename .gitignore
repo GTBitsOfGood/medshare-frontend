@@ -3,3 +3,4 @@
 node_modules/
 backend/resources/product-uploads/*
 **/.env
+.DS_Store
