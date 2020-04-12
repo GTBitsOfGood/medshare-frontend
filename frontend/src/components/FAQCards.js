@@ -36,7 +36,7 @@ const faqItems = [
   {
     question: 'Who should I contact for technical inquiries and feedback?',
     answer:
-      'Please contact the Product Manager for this project, Raymond Zhu, at rayzhu one two at gmail dot com. Be sure to copy product@bitsofgood.org and include an explanation of the issue and screenshots (if applicable/possible)! We will get in touch with you as soon as we can.'
+      'Please contact the Product Manager for this project, Raymond Zhu, at rayzhu12@gmail.com. Be sure to copy product@bitsofgood.org and include an explanation of the issue and screenshots (if applicable/possible)! We will get in touch with you as soon as we can.'
   }
 ];
 
