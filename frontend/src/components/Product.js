@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Button, Tag } from '@blueprintjs/core';
@@ -79,4 +79,4 @@ Product.propTypes = {
   onSaveClick: PropTypes.func.isRequired
 };
 
-export default Product;
+export default memo(Product);

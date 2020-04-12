@@ -10,6 +10,7 @@ import Saved from './routerpages/Saved';
 import Settings from './routerpages/Settings';
 import NavBar from './components/NavBar';
 import NavDrawer from './components/NavDrawer';
+import SavedProductsContainer from './containers/savedProductsContainer';
 import { theme } from './theme';
 
 function App() {
@@ -40,18 +41,21 @@ function App() {
         <NavBar onNavClick={showDrawer} />
         <NavDrawer open={isDrawerOpen} onClose={hideDrawer} isAdmin={isAdmin} />
         <Switch>
-          <Route exact path="/">
-            <Search />
-          </Route>
           <Route exact path="/faq">
             <FAQ />
           </Route>
+          <SavedProductsContainer.Provider>
+            <Route exact path="/">
+              <Search />
+            </Route>
+            <Route exact path="/saved">
+              <Saved />
+            </Route>
+          </SavedProductsContainer.Provider>
           <Route exact path="/admin">
             <Admin />
           </Route>
-          <Route exact path="/saved">
-            <Saved />
-          </Route>
+
           <SecureRoute path="/settings" component={Settings} />
           <Route exact path="/">
             <Search />

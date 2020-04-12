@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import CategoryContainer from '../containers/categoryContainer';
 import SubcategoriesContainer from '../containers/subcategoriesContainer';
 import FeaturesContainer from '../containers/featuresContainer';
+import SavedProductsContainer from '../containers/savedProductsContainer';
 import { getProductResults } from '../httpApi';
 import { useDebounce } from '../utils';
 import Product from './Product';
@@ -65,11 +66,10 @@ const useProductsQuery = () => {
 
 const ProductList = () => {
   const [products, fetchMore, hasMore, count] = useProductsQuery();
+  const { isSaved, toggleProductSave } = SavedProductsContainer.useContainer();
 
-  const [favorited, setFavorite] = useState(false);
-
-  const onSaveClick = () => {
-    setFavorite(!favorited);
+  const handleSaveClick = product => () => {
+    toggleProductSave(product);
   };
 
   return (
@@ -94,8 +94,8 @@ const ProductList = () => {
               category={product.category}
               subcategory={product.subcategory}
               productID={product.productId}
-              saved={favorited}
-              onSaveClick={onSaveClick}
+              saved={isSaved(product._id)}
+              onSaveClick={handleSaveClick(product)}
             />
           );
         })}
