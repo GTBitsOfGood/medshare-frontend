@@ -16,10 +16,8 @@ const useSavedProductsContainer = () => {
   };
 
   const removeSavedProduct = documentId => {
-    setSavedProducts({
-      ...savedProducts,
-      [documentId]: undefined
-    });
+    const { [documentId]: omit, ...products } = savedProducts;
+    setSavedProducts(products);
   };
 
   const toggleProductSave = product => {
