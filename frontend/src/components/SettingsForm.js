@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
-import { InputGroup, Button, FormGroup, Intent } from '@blueprintjs/core';
+import { InputGroup, Button, FormGroup, Intent, Toaster, Position } from '@blueprintjs/core';
 import { useOktaAuth } from '@okta/okta-react';
+import { updatePassword } from '../httpApi';
 
 const Form = styled.form`
   width: 100%;
@@ -16,6 +17,10 @@ const Input = styled(InputGroup).attrs({
 })`
   width: 100%;
 `;
+
+export const messageToast = Toaster.create({
+  position: Position.TOP
+});
 
 const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/g;
 const validatePassword = password => {
@@ -32,7 +37,7 @@ const validatePassword = password => {
 };
 
 const SettingsForm = () => {
-  const { authService } = useOktaAuth();
+  const { authService, authState } = useOktaAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmedPassword, setConfirmedPassword] = useState('');
@@ -61,6 +66,25 @@ const SettingsForm = () => {
       setErrMessage(err);
     } else {
       setErrMessage(null);
+      updatePassword(authState.accessToken, username, password)
+        .then(() => {
+          messageToast.show({
+            icon: 'tick',
+            intent: Intent.SUCCESS,
+            message: 'Successfully updated password!'
+          });
+        })
+        .catch(() => {
+          messageToast.show({
+            icon: 'error',
+            intent: Intent.DANGER,
+            message: 'An error occured, please contact an admin or try again'
+          });
+        })
+        .finally(() => {
+          setPassword('');
+          setConfirmedPassword('');
+        });
     }
   };
 

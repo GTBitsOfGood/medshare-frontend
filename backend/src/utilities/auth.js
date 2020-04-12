@@ -1,7 +1,13 @@
 const OktaJwtVerifier = require('@okta/jwt-verifier');
+const okta = require('@okta/okta-sdk-nodejs');
+
+const oktaClient = new okta.Client({
+  orgUrl: process.env.OKTA_DOMAIN,
+  token: process.env.OKTA_API_TOKEN
+});
 
 const jwtVerifier = new OktaJwtVerifier({
-  issuer: process.env.OKTA_ISSUER,
+  issuer: process.env.OKTA_DOMAIN + '/oauth2/default',
   assertClaims: {
     aud: 'api://default'
   }
@@ -24,6 +30,13 @@ const checkOktaAuth = async (req, res, next) => {
   }
 };
 
+const updateUserPassword = async (username, password) => {
+  const user = await oktaClient.getUser(username);
+  user.credentials.password = password;
+  return user.update();
+};
+
 module.exports = {
-  checkOktaAuth
+  checkOktaAuth,
+  updateUserPassword
 };

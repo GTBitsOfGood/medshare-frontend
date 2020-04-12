@@ -39,4 +39,18 @@ export const uploadFiles = (accessToken, formData) =>
     }
   });
 
+export const updatePassword = (accessToken, username, password) =>
+  client.put(
+    '/user/credentials',
+    {
+      username,
+      password
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    }
+  );
+
 export const getFrequentFeatures = () => client.get('/features');
