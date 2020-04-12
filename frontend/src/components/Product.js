@@ -1,7 +1,12 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Tag } from '@blueprintjs/core';
+import { Button, Tag } from '@blueprintjs/core';
+
+const Text = styled.span`
+  margin-bottom: 0.5rem;
+  text-align: left;
+`;
 
 const OuterWrap = styled.div`
   font-size: 16px;
@@ -16,13 +21,12 @@ const OuterWrap = styled.div`
   padding: 0.5rem 1rem;
   margin-bottom: 0.75rem;
   cursor: pointer;
-  width: 100%;
 `;
 
 const TagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 const InnerWrap = styled.div`
@@ -34,15 +38,24 @@ const InnerWrap = styled.div`
   margin-bottom: 0.5rem;
 `;
 
+const Star = styled(Button).attrs({
+  minimal: true,
+  className: 'bp3-minimal'
+})`
+  .bp3-icon {
+    color: #ffbb1c;
+  }
+`;
+
 const Product = props => {
-  const { name, category, subcategory, productID } = props;
+  const { name, category, subcategory, productID, saved, onSaveClick } = props;
   return (
     <OuterWrap>
-      <span>{name}</span>
+      <Text>{name}</Text>
+      <Text>
+        <b>Product ID: </b> {productID}
+      </Text>
       <InnerWrap>
-        <span>
-          <b>Product ID: </b> {productID}
-        </span>
         <TagContainer>
           <Tag large round style={{ marginRight: '0.25rem', background: '#6396b3' }}>
             {category}
@@ -51,6 +64,7 @@ const Product = props => {
             {subcategory}
           </Tag>
         </TagContainer>
+        <Star icon={saved ? 'star' : 'star-empty'} onClick={onSaveClick} />
       </InnerWrap>
     </OuterWrap>
   );
@@ -60,7 +74,9 @@ Product.propTypes = {
   name: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   subcategory: PropTypes.string.isRequired,
-  productID: PropTypes.string.isRequired
+  productID: PropTypes.string.isRequired,
+  saved: PropTypes.bool.isRequired,
+  onSaveClick: PropTypes.func.isRequired
 };
 
 export default memo(Product);
