@@ -40,29 +40,25 @@ function App() {
       <ThemeProvider theme={theme}>
         <NavBar onNavClick={showDrawer} />
         <NavDrawer open={isDrawerOpen} onClose={hideDrawer} isAdmin={isAdmin} />
-        <Switch>
-          <Route exact path="/faq">
-            <FAQ />
-          </Route>
-          <SavedProductsContainer.Provider>
+        <SavedProductsContainer.Provider>
+          <Switch>
+            <Route exact path="/faq">
+              <FAQ />
+            </Route>
             <Route exact path="/">
               <Search />
             </Route>
             <Route exact path="/saved">
               <Saved />
             </Route>
-          </SavedProductsContainer.Provider>
-          <Route exact path="/admin">
-            <Admin />
-          </Route>
-
-          <SecureRoute path="/settings" component={Settings} />
-          <Route exact path="/">
-            <Search />
-          </Route>
-          <Route exact path="/implicit/callback" component={LoginCallback} />
-          <Redirect to="/" />
-        </Switch>
+            <Route exact path="/admin">
+              <Admin />
+            </Route>
+            <SecureRoute path="/settings" component={Settings} />
+            <Route exact path="/implicit/callback" component={LoginCallback} />
+            <Redirect to="/" />
+          </Switch>
+        </SavedProductsContainer.Provider>
       </ThemeProvider>
     </Security>
   );

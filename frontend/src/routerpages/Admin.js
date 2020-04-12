@@ -6,7 +6,6 @@ import FileUpload from '../components/FileUpload/index';
 
 const AdminPage = () => {
   const { authState } = useOktaAuth();
-
   return (
     <PageWrapper>
       <p style={{ color: '#706B6B', fontSize: '24px' }}>
