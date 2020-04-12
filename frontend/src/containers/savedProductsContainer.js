@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createContainer } from 'unstated-next';
+
+const LOCALSTORAGE_KEY = 'SAVED_PRODUCTS';
 
 const useSavedProductsContainer = () => {
   const [savedProducts, setSavedProducts] = useState({});
+
+  useEffect(() => {
+    setSavedProducts(JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)) || {});
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(savedProducts));
+  }, [savedProducts]);
 
   const isSaved = documentId => {
     return !!savedProducts[documentId];

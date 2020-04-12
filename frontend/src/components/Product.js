@@ -64,7 +64,7 @@ const Product = props => {
             {subcategory}
           </Tag>
         </TagContainer>
-        <Star icon={saved ? 'star' : 'star-empty'} onClick={onSaveClick} active={saved} />
+        <Star icon={saved ? 'star' : 'star-empty'} onClick={onSaveClick} />
       </InnerWrap>
     </OuterWrap>
   );
