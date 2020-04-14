@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import { FileDrop } from 'react-file-drop';
 import './FileUpload.css';
@@ -52,9 +52,11 @@ const Button = styled.button`
   }
 `;
 
+const padDate = num => (num < 10 ? '0' + num : num);
+
 const FileUpload = () => {
   const { authState } = useOktaAuth();
-  const [lastUpload, setLastUpload] = useState({});
+  const [lastUpload, setLastUpload] = useState(null);
   const [message, setMessage] = useState('');
   const [fileToUpload, setFileToUpload] = useState(null);
   const fileInput = useRef(null);
@@ -135,6 +137,20 @@ const FileUpload = () => {
       });
   };
 
+  const uploadText = useMemo(() => {
+    if (!lastUpload) {
+      return '';
+    }
+    if (lastUpload.running) {
+      return 'Upload in progress... Please check back later';
+    }
+    const finishedAt = new Date(lastUpload.finishedAt);
+    const dateString = `${padDate(finishedAt.getMonth())}/${padDate(finishedAt.getDate())} - ${padDate(
+      finishedAt.getHours()
+    )}:${padDate(finishedAt.getMinutes())} `;
+    return `Last upload finished at: ${dateString}`;
+  }, [lastUpload]);
+
   return (
     <Wrapper>
       <FileDrop
@@ -171,11 +187,7 @@ const FileUpload = () => {
       <Button type="submit" disabled={!fileToUpload || lastUpload.running} onClick={handleUploadClick}>
         Upload
       </Button>
-      <LastUploadText>
-        {lastUpload.running
-          ? `Upload in progress... Please check back later`
-          : `Last upload finished at: ${lastUpload.finishedAt}`}
-      </LastUploadText>
+      <LastUploadText>{uploadText}</LastUploadText>
     </Wrapper>
   );
 };

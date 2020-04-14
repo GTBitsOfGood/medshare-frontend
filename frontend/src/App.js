@@ -19,7 +19,7 @@ function App() {
   const [isAdmin] = useState(false);
 
   const onAuthRequired = () => {
-    history.push('/admin');
+    history.push('/');
   };
 
   const showDrawer = () => {
