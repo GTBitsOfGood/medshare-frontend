@@ -186,7 +186,7 @@ function aggregateProductFeaturesFromProducts(productFilter, productFeatureFilte
     .lookup({ from: 'productfeatures', localField: '_id', foreignField: '_id', as: 'productFeature' })
     .unwind('productFeature')
     .replaceRoot({ $mergeObjects: ['$productFeature', '$$ROOT'] }) // merge the root with the productFeature object because we want to keep the DIFF_FIELD (and maybe other calculated fields in the future)
-    .project({ productFeature: 0 }) // it's attributes go merged in, remove it
+    .project({ productFeature: 0 }) // its attributes got merged in, remove it
     .match(featureFilter)
     .sort({ [DIFF_FIELD]: 1, [FREQUENCY_FIELD]: -1 }) // sort by position diff
     .limit(PAGE_SIZE);
