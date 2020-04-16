@@ -118,17 +118,17 @@ function textValueToFeatureMap(features) {
 }
 
 function getFeatureOrGetEmpty(featureMap, featureText) {
-  const output = { count: 0, medianIndex: -1 };
-  if (featureMap.has(featureText)) {
-    const feature = featureMap.get(featureText);
-    output.count = feature.count;
-    output.medianIndex = feature.medianPosition;
-  }
   return featureMap.has(featureText) ? featureMap.get(featureText) : AttributeFeature.newEmptyFeature(featureText);
 }
 
 async function getProductFeaturePromise(nameAttrFeature, productIdAttrFeature) {
-  const featureId = (await ProductFeatures.featureFound(nameAttrFeature.featureText, nameAttrFeature.count))._id;
+  const featureId = (
+    await ProductFeatures.featureFound(
+      nameAttrFeature.featureText,
+      nameAttrFeature.count,
+      nameAttrFeature.getHolisticLocation()
+    )
+  )._id;
   return new ProductFeature(featureId, nameAttrFeature, productIdAttrFeature);
 }
 
