@@ -69,7 +69,13 @@ const FileUpload = () => {
           running: true,
           finishedAt
         };
-        if (!jobStatus || jobStatus === 'FINISHED_SUCCESSFULLY' || jobStatus === 'FINISHED_WITH_ERRORS') {
+        console.log(resp.data);
+        if (
+          !jobStatus ||
+          jobStatus === 'FINISHED_SUCCESSFULLY' ||
+          jobStatus === 'FINISHED_WITH_ERRORS' ||
+          jobStatus === 'STALE'
+        ) {
           uploadInfo.running = false;
         }
         setLastUpload(uploadInfo);
