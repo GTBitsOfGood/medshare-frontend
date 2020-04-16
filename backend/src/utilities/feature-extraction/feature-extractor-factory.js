@@ -1,4 +1,4 @@
-const csvFeatureExtractor = require('./feature-extractors/csv-feature-extractor');
+const csvFeatureExtractor = require('./file-feature-extractors/csv-feature-extractor');
 
 /**
  * A factory to get the FeatureExtractor for an unknown file type.

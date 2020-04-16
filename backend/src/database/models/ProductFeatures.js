@@ -6,7 +6,10 @@ const RETRY_TIMEOUT = 10;
 
 const productFeaturesSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
-  count: { type: Number, required: true }
+  count: { type: Number, required: true }, // one product could have the feature multiple times
+  productsWithFeatureCount: { type: Number, required: true }, // the number of products with the feuatre
+  medianIndexSum: { type: Number, required: true }, // sum of all the median indexes (used to calculate average)
+  minMedianIndex: { type: Number, required: true }
 });
 
 /**
@@ -29,14 +32,24 @@ function generateIdsFilter(featureIds) {
   };
 }
 
-productFeaturesSchema.statics.featureFound = async function featureFound(featureLabel, count = 1, recursionDepth = 0) {
+productFeaturesSchema.statics.featureFound = async function featureFound(
+  featureLabel,
+  count,
+  medianIndex,
+  recursionDepth = 0
+) {
   return this.findOneAndUpdate(
     {
       name: featureLabel
     },
     {
       $inc: {
-        count
+        count,
+        medianIndexSum: medianIndex,
+        productsWithFeatureCount: 1
+      },
+      $min: {
+        minMedianIndex: medianIndex
       }
     },
     {
