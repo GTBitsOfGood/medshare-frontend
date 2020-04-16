@@ -150,11 +150,14 @@ const FileUpload = () => {
     if (lastUpload.running) {
       return 'Upload in progress... Please check back later';
     }
-    const finishedAt = new Date(lastUpload.finishedAt);
-    const dateString = `${padDate(finishedAt.getMonth())}/${padDate(finishedAt.getDate())} - ${padDate(
-      finishedAt.getHours()
-    )}:${padDate(finishedAt.getMinutes())} `;
-    return `Last upload finished at: ${dateString}`;
+    if (lastUpload.finishedAt) {
+      const finishedAt = new Date(lastUpload.finishedAt);
+      const dateString = `${padDate(finishedAt.getMonth())}/${padDate(finishedAt.getDate())} - ${padDate(
+        finishedAt.getHours()
+      )}:${padDate(finishedAt.getMinutes())} `;
+      return `Last upload finished at: ${dateString}`;
+    }
+    return '';
   }, [lastUpload]);
 
   return (
