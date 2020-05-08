@@ -8,7 +8,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "extract-features": "node src/scripts/feature-extractor-script.js",
-    "production-start": "forever start src/server.js"
+    "deploy": "pm2 start ecosystem.config.js"
   },
   "license": "MIT",
   "devDependencies": {
@@ -23,7 +23,6 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
-    "forever": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.10",
     "multer": "^1.4.2",
