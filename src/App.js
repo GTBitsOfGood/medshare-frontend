@@ -8,6 +8,7 @@ import FAQ from './routerpages/FAQ';
 import Admin from './routerpages/Admin';
 import Settings from './routerpages/Settings';
 import Saved from './routerpages/Saved';
+import ResetPassword from './routerpages/ResetPassword';
 import NavBar from './components/NavBar';
 import NavDrawer from './components/NavDrawer';
 import SavedProductsContainer from './containers/savedProductsContainer';
@@ -53,6 +54,9 @@ function App() {
             </Route>
             <Route exact path="/admin">
               <Admin />
+            </Route>
+            <Route exact path="/reset-password">
+              <ResetPassword />
             </Route>
             <SecureRoute path="/settings" component={Settings} />
             <Route exact path="/implicit/callback" component={LoginCallback} />
