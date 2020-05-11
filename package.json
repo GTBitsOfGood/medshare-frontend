@@ -4,9 +4,24 @@
   "description": "Inventory management solution for Medshare",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint \"frontend/**/*.js\" && eslint \"backend/**/*.js\"",
-    "format": "prettier --write \"frontend/**/*.{js,css}\" && prettier --write \"backend/**/*.js\""
+    "lint": "eslint \"**/*.js\"",
+    "format": "prettier --write \"**/*.{js,css}\"",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "husky": {
     "hooks": {
@@ -29,7 +44,6 @@
   "bugs": {
     "url": "https://github.com/GTBitsOfGood/medshare/issues"
   },
-  "homepage": "https://github.com/GTBitsOfGood/medshare#readme",
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
@@ -45,6 +59,22 @@
     "prettier": "^1.19.1"
   },
   "dependencies": {
-    "react": "^16.12.0"
+    "react": "^16.12.0",
+    "@blueprintjs/core": "^3.23.1",
+    "@blueprintjs/select": "^3.11.2",
+    "@okta/okta-auth-js": "^3.0.1",
+    "@okta/okta-react": "^3.0.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.19.2",
+    "prop-types": "^15.7.2",
+    "react-dom": "^16.12.0",
+    "react-file-drop": "^3.0.6",
+    "react-infinite-scroll-component": "^5.0.4",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.1",
+    "styled-components": "^5.0.1",
+    "unstated-next": "^1.1.0"
   }
 }
