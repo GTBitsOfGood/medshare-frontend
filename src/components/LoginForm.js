@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { InputGroup, Button, Intent } from '@blueprintjs/core';
 import { useOktaAuth } from '@okta/okta-react';
 import OktaAuth from '@okta/okta-auth-js';
@@ -9,7 +10,6 @@ const FormWrapper = styled.form`
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 
 const Input = styled(InputGroup).attrs({ large: true })`
@@ -50,6 +50,9 @@ const LoginForm = () => {
       <Input type="text" placeholder="Username..." value={username} onChange={handleUsernameChange} />
       <Input type="password" placeholder="Password..." value={password} onChange={handlePasswordChange} />
       <Button type="submit" large text="Login" intent={Intent.PRIMARY} rightIcon="arrow-right" />
+      <Link to="/reset-password" style={{ marginTop: '1rem' }}>
+        Forgot Password?
+      </Link>
     </FormWrapper>
   );
 };
