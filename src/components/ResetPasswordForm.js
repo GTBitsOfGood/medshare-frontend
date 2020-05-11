@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
+import { FormGroup, InputGroup, Button, Intent, Toaster, Position } from '@blueprintjs/core';
+import OktaAuth from '@okta/okta-auth-js';
 
 const Form = styled.form`
   width: 100%;
@@ -14,29 +15,48 @@ const Input = styled(InputGroup)`
   width: 100%;
 `;
 
+export const messageToast = Toaster.create({
+  position: Position.TOP
+});
+
 const ResetPasswordForm = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errMessage, setErrMessage] = useState('');
 
   const handleChange = e => {
     setEmail(e.target.value);
-    setErrMessage('');
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
+    try {
+      const oktaAuth = new OktaAuth({ issuer: process.env.REACT_APP_OKTA_ISSUER });
+      await oktaAuth.forgotPassword({
+        username: email,
+        factorType: 'EMAIL'
+      });
+      messageToast.show({
+        icon: 'envelope',
+        intent: Intent.SUCCESS,
+        message: 'Password reset email has been sent!'
+      });
+      setEmail('');
+    } catch (err) {
+      console.log(err);
+      messageToast.show({
+        icon: 'error',
+        intent: Intent.DANGER,
+        message: 'Something went wrong, please try again'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <InputWrapper
-        label="Your login email"
-        labelFor="reset-password-input"
-        helperText={errMessage}
-        intent={Intent.DANGER}
-      >
+      <InputWrapper label="Your login email" labelFor="reset-password-input">
         <Input
           large
           id="reset-password-input"
